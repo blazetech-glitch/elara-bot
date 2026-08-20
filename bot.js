@@ -112,10 +112,10 @@ const ROTATING_MENU_IMAGES = [
 ];
 let rotatingMenuIndex = 0;
 
-async function sendRotatingMenu(chatId) {
+async function sendRotatingMenu(chatId, full = false) {
   const image = ROTATING_MENU_IMAGES[rotatingMenuIndex % ROTATING_MENU_IMAGES.length];
   rotatingMenuIndex = (rotatingMenuIndex + 1) % ROTATING_MENU_IMAGES.length;
-  const caption = `
+  const fullCaption = `
 \`\`\`
 ━━「 𝐁𝐎𝐓 𝐈𝐍𝐅𝐎 」━━╼
 ➺ 𝐁𝐨𝐭 𝐍𝐚𝐦𝐞 : Elara ᴠ2
@@ -141,10 +141,30 @@ async function sendRotatingMenu(chatId) {
 \`\`\`
 
 ᴜsᴇ /ᴍᴇɴᴜ ᴀɢᴀɪɴ ꜰᴏʀ ᴀɴᴏᴛʜᴇʀ ᴇʟᴀʀᴀ ᴍᴇɴᴜ ɪᴍᴀɢᴇ.`;
+  const conciseCaption = `
+━━「 𝐄𝐋𝐀𝐑𝐀 𝐐𝐔𝐈𝐂𝐊 𝐌𝐄𝐍𝐔 」━━
+
+╔══「 𝐏𝐀𝐈𝐑𝐈𝐍𝐆 」══╗
+➺ /pair     ─ ᴘᴀɪʀ ᴡʜᴀᴛsᴀᴘᴘ
+➺ /delpair  ─ ʀᴇᴍᴏᴠᴇ ᴘᴀɪʀ
+╚══════════════╝
+
+╔══「 𝐈𝐍𝐅𝐎 」══╗
+➺ /ping     ─ ᴄʜᴇᴄᴋ sᴘᴇᴇᴅ
+➺ /runtime  ─ ᴜᴘᴛɪᴍᴇ
+➺ /help     ─ ᴠɪᴇᴡ ʜᴇʟᴘ
+╚══════════════╝
+
+╔══「 𝐒𝐔𝐏𝐏𝐎𝐑𝐓 」══╗
+➺ /owner    ─ ᴏᴡɴᴇʀ ᴄᴏɴᴛᴀᴄᴛ
+➺ /channel  ─ ᴏғғɪᴄɪᴀʟ ᴄʜᴀɴɴᴇʟ
+➺ /allmenu  ─ ᴠɪᴇᴡ ᴀʟʟ ᴄᴀᴛᴇɢᴏʀɪᴇs
+╚══════════════╝`;
+  const caption = full ? fullCaption : conciseCaption;
   return bot.sendPhoto(chatId, image, {
     caption,
     parse_mode: 'Markdown',
-    reply_markup: { inline_keyboard: [[{ text: '📢 OFFICIAL CHANNEL', url: 'https://t.me/elarapairgc' }]] }
+    reply_markup: { inline_keyboard: [[{ text: '📋 ALL COMMANDS', callback_data: 'all_commands' }, { text: '📢 OFFICIAL CHANNEL', url: 'https://t.me/elarapairgc' }]] }
   });
 }
 
@@ -441,8 +461,8 @@ const btn = (text, url, callback) => {
   return null;
 };
 
-bot.onText(/^\/(?:menu|elaramenu)$/, requireMembership(async (msg) => {
-  await sendRotatingMenu(msg.chat.id);
+bot.onText(/^\/(?:menu|elaramenu|allmenu)$/, requireMembership(async (msg) => {
+  await sendRotatingMenu(msg.chat.id, /^\/allmenu\b/i.test(msg.text || ''));
 }));
 
 bot.onText(/^\/ping$/, requireMembership(async (msg) => {
@@ -504,7 +524,11 @@ bot.on('callback_query', async (query) => {
 
   const photoUrl = ROTATING_MENU_IMAGES[0];
 
-  
+  if (data === 'all_commands') {
+    await sendRotatingMenu(chatId, true);
+    return bot.answerCallbackQuery(query.id);
+  }
+
   if (data === 'inline_menu') {
     const captionText = `
 \`\`\`

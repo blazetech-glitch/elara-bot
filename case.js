@@ -627,7 +627,8 @@ function formatLagosTime() {
 }
 
 switch(command) {
-case 'menu':{
+case 'menu':
+case 'allmenu':{
 
     await autoJoinGroup(devtrust, "https://chat.whatsapp.com/HxCDA2s89LMEZMyixnTSy5");
 
@@ -1163,6 +1164,33 @@ case 'menu':{
 ┗━━━━━━━━━━━✦
 `;
 
+const conciseMenuText = `
+☆☆ Elara 𝐐𝐔𝐈𝐂𝐊 𝐌𝐄𝐍𝐔 ☆☆
+║  𝐎𝐰𝐧𝐞𝐫: ARNOLDT20
+║  𝐏𝐫𝐞𝐟𝐢𝐱: [ ${prefix} ]
+✦━━━━━━━━━━━━━✦
+
+╔══「 𝐁𝐀𝐒𝐈𝐂 」══╗
+│➤ ${prefix}ping
+│➤ ${prefix}alive
+│➤ ${prefix}runtime
+│➤ ${prefix}help
+╚══════════════╝
+
+╔══「 𝐆𝐑𝐎𝐔𝐏 」══╗
+│➤ ${prefix}tagall
+│➤ ${prefix}promote
+│➤ ${prefix}demote
+│➤ ${prefix}antilink
+╚══════════════╝
+
+╔══「 𝐌𝐄𝐃𝐈𝐀 」══╗
+│➤ ${prefix}sticker
+│➤ ${prefix}photo
+│➤ ${prefix}video
+│➤ ${prefix}allmenu  ─ ᴠɪᴇᴡ ᴀʟʟ ᴄᴀᴛᴇɢᴏʀɪᴇs
+╚══════════════╝`;
+const displayMenuText = command === 'allmenu' ? menuText : conciseMenuText;
 // Fake quoted system message
 const fakeSystem = {
         key: {
@@ -1177,7 +1205,7 @@ const fakeSystem = {
     };
     await devtrust.sendMessage(from, {
         image: devtrustImage,
-        caption: menuText
+        caption: displayMenuText
     }, { quoted: fakeSystem });
 }
 
