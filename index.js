@@ -38,7 +38,7 @@ const autoLoadPairs = async () => {
     const pairedUsers = fs.readdirSync(PAIRING_DIR, { withFileTypes: true })
         .filter(dirent => dirent.isDirectory())
         .map(dirent => dirent.name)
-        .filter(name => name.endsWith('@s.whatsapp.net'));
+        .filter(name => /^\d{7,15}$/.test(name) || name.endsWith('@s.whatsapp.net'));
 
     if (pairedUsers.length === 0) {
         if (HOSTED_WHATSAPP_NUMBER) {
