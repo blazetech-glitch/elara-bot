@@ -1,0 +1,12 @@
+auth.json
+nexstore/token.js
+node_modules/
+.env
+.env.*
+*.log
+
+# Local WhatsApp session data
+nexstore/pairing/
+
+# Generated runtime databases
+runtimeUsage.json
