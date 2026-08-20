@@ -13,5 +13,7 @@ services:
         value: "true"
       - key: BOT_TOKEN
         sync: false
+      - key: WHATSAPP_NUMBER
+        sync: false
       - key: STARTUP_PASSWORD
         sync: false

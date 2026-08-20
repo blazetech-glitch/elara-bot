@@ -73,9 +73,12 @@ For local interactive mode, `ELARA_AUTO_START` can be omitted. The ignored local
 | Variable | Value or purpose |
 | --- | --- |
 | `BOT_TOKEN` | Required for the Telegram module. |
+| `WHATSAPP_NUMBER` | Digits-only WhatsApp number for first-run pairing, for example `255627417402`. |
 | `ELARA_AUTO_START` | Set to `true` for Render/Heroku workers so no terminal prompt blocks startup. |
 | `STARTUP_PASSWORD` | Optional local or interactive startup password. |
 | `NODE_ENV` | Use `production` on hosted services. |
+
+On a fresh Render deployment, set `WHATSAPP_NUMBER=255627417402` and deploy the worker. Because the WhatsApp session directory is not committed to GitHub, Elara will request a pairing code and print it in the Render logs. Enter that code on the target phone under **WhatsApp → Settings → Linked devices → Link a device → Link with phone number instead**. After pairing, use persistent storage for `nexstore/pairing/`; otherwise a restart will require pairing again.
 
 ## Testing checklist
 

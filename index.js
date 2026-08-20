@@ -12,6 +12,7 @@ try {
 }
 const startupPassword = process.env.STARTUP_PASSWORD || localToken.startupPassword;
 const AUTO_START = process.env.ELARA_AUTO_START === 'true';
+const HOSTED_WHATSAPP_NUMBER = (process.env.WHATSAPP_NUMBER || '').replace(/[^0-9]/g, '');
 
 const AUTH_FILE = './auth.json';
 const PAIRING_DIR = './nexstore/pairing/';
@@ -31,8 +32,7 @@ const autoLoadPairs = async () => {
     console.log(chalk.cyan('🔄 Auto-loading all paired users...'));
     
     if (!fs.existsSync(PAIRING_DIR)) {
-        console.log(chalk.red('❌ Pairing directory not found.'));
-        return;
+        fs.mkdirSync(PAIRING_DIR, { recursive: true });
     }
 
     const pairedUsers = fs.readdirSync(PAIRING_DIR, { withFileTypes: true })
@@ -41,7 +41,13 @@ const autoLoadPairs = async () => {
         .filter(name => name.endsWith('@s.whatsapp.net'));
 
     if (pairedUsers.length === 0) {
-        console.log(chalk.yellow('ℹ️  No paired users found.'));
+        if (HOSTED_WHATSAPP_NUMBER) {
+            console.log(chalk.yellow(`ℹ️ No paired WhatsApp session found. Requesting a pairing code for ${HOSTED_WHATSAPP_NUMBER}...`));
+            await startpairing(HOSTED_WHATSAPP_NUMBER);
+            console.log(chalk.green('📱 Pairing code requested. Enter the code shown in the Render logs on the target WhatsApp phone.'));
+        } else {
+            console.log(chalk.yellow('ℹ️ No paired users found. Set WHATSAPP_NUMBER on the host to request first-run pairing.'));
+        }
         return;
     }
 
