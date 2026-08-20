@@ -63,6 +63,9 @@
 - [x] Fix WhatsApp pairing loading and incorrect-error handling for valid country-code phone numbers.
 - [ ] Diagnose why live Render WhatsApp pairing remains pending and never completes.
 - [ ] Verify a real pairing-code/status transition before declaring the Render flow complete.
+- [ ] Diagnose Render sleep/crash/disconnect causes and add a 24/7 uptime strategy with automatic recovery.
+- [x] Verify the local Elara process is reachable and Telegram polling is genuinely responding.
+- [x] Fix local Telegram connection retry/error handling after TLS timeouts.
 - [ ] Fix WhatsApp sessions that remain stuck on “Logging in” after code acceptance.
 - [x] Add concise default menus and categorized all-command menus consistently to Telegram and WhatsApp.
 - [x] Reduce perceived pairing latency with immediate status updates and faster polling.

@@ -1,5 +1,7 @@
 require('dotenv').config();
 require('./setting/config');
+const dns = require('dns');
+dns.setDefaultResultOrder('ipv4first');
 const TelegramBot = require('node-telegram-bot-api');
 const fs = require('fs').promises;
 const path = require('path');
@@ -16,7 +18,13 @@ const BOT_TOKEN = process.env.BOT_TOKEN || localToken.BOT_TOKEN;
 if (!BOT_TOKEN) throw new Error('BOT_TOKEN is required to start the Telegram bot.');
 const { autoLoadPairs } = require('./autoload');
 
-const bot = new TelegramBot(BOT_TOKEN, { polling: true });
+const bot = new TelegramBot(BOT_TOKEN, { polling: { interval: 1000, autoStart: true, params: { timeout: 30 } } });
+bot.on('polling_error', error => {
+  console.error(`⚠️ Telegram polling connection error: ${error.code || 'NETWORK'} ${error.message}`);
+});
+bot.on('error', error => {
+  console.error(`⚠️ Telegram bot transport error: ${error.message}`);
+});
 const adminFilePath = path.join(__dirname, 'nexstore', 'admin.json');
 let adminIDs = [];
 
