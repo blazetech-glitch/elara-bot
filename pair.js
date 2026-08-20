@@ -645,7 +645,8 @@ nexus.ev.on("messages.upsert", async (update) => {
 
         if (connection === "close") {
             if (typeof options.onConnectionUpdate === 'function') options.onConnectionUpdate('close', lastDisconnect);
-            const shouldReconnect = new Boom(lastDisconnect?.error)?.output.statusCode;
+            const reason = new Boom(lastDisconnect?.error)?.output?.statusCode || 0;
+            const shouldReconnect = reason;
             console.log(chalk.yellow(`🔌 Connection closed for ${nexusDevNumber}, reason: ${reason}`));
 
             if (reason === 405) {

@@ -61,6 +61,9 @@
 - [x] Remove the Manus portal redirect from the Render-facing page.
 - [ ] Add Render page inputs for WhatsApp number and Telegram token with pairing/status responses.
 - [x] Fix WhatsApp pairing loading and incorrect-error handling for valid country-code phone numbers.
+- [ ] Diagnose why live Render WhatsApp pairing remains pending and never completes.
+- [ ] Verify a real pairing-code/status transition before declaring the Render flow complete.
+- [x] Fix WhatsApp sessions that remain stuck on “Logging in” after code acceptance.
 - [x] Reduce perceived pairing latency with immediate status updates and faster polling.
 - [x] Add a copy button that appears only when a WhatsApp pairing code is available.
 - [ ] Persist each Render connection under an isolated database-backed owner/session record and continue into normal Elara logic.
