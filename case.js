@@ -619,19 +619,18 @@ case 'menu':{
     await devtrust.sendMessage(m.chat, {
         react: { text: '✦', key: m.key }
     });
-
     const menuImages = [
-        'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/UPZFrLSiOSeECPhU.jpeg',
-        'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/zmQIDKfnOheZyGkQ.jpeg',
-        'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/bAtvbOvTpoGmmkqk.jpeg',
-        'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/BKMbvqEzobmYvaSm.jpeg',
-        'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/jcCclVBDwLLduDOq.jpeg',
-        'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/wUpqjpkiKdAcNsKv.jpeg',
-        'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/iSLRpgGnjorSesEf.jpeg',
-        'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/InYjGmfKbhnjxJBw.jpeg',
+        path.join(__dirname, 'media', 'elara1.jpeg'),
+        path.join(__dirname, 'media', 'elara2.jpeg'),
+        path.join(__dirname, 'media', 'elara3.jpeg'),
+        path.join(__dirname, 'media', 'elara4.jpeg'),
+        path.join(__dirname, 'media', 'elara5.jpeg'),
+        path.join(__dirname, 'media', 'elara6.jpeg'),
+        path.join(__dirname, 'media', 'elara7.jpeg'),
+        path.join(__dirname, 'media', 'elara8.jpeg'),
     ];
-
-    const devtrustImageUrl = menuImages[Math.floor(Math.random() * menuImages.length)];
+    const devtrustImagePath = menuImages[Math.floor(Math.random() * menuImages.length)];
+    const devtrustImage = fs.readFileSync(devtrustImagePath);
 
     let uptime = runtime(process.uptime());
 
@@ -1162,7 +1161,7 @@ const fakeSystem = {
         }
     };
     await devtrust.sendMessage(from, {
-        image: { url: devtrustImageUrl },
+        image: devtrustImage,
         caption: menuText
     }, { quoted: fakeSystem });
 }
