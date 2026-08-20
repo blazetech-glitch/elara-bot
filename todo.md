@@ -59,7 +59,9 @@
 - [ ] Make the Render-hosted Elara service the primary user-facing connection website instead of the Manus portal.
 - [ ] Document the Render-only user flow and its session-isolation limitations before implementation.
 - [x] Remove the Manus portal redirect from the Render-facing page.
-- [x] Add Render page inputs for WhatsApp number and Telegram token with pairing/status responses.
+- [ ] Add Render page inputs for WhatsApp number and Telegram token with pairing/status responses.
+- [x] Reduce perceived pairing latency with immediate status updates and faster polling.
+- [x] Add a copy button that appears only when a WhatsApp pairing code is available.
 - [ ] Persist each Render connection under an isolated database-backed owner/session record and continue into normal Elara logic.
 - [ ] Configure the Render-only deployment to use a managed database without exposing DATABASE_URL to the user.
 - [ ] Prepare a Supabase-compatible schema and Render database setup for the Render-only connection service.
