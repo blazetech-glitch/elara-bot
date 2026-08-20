@@ -14,3 +14,8 @@
 - [x] Configure the Telegram bot token through environment-backed credential loading without committing it.
 - [x] Validate Telegram connectivity and confirm WhatsApp remains connected.
 - [x] Restart Elara and push the Telegram integration update to GitHub.
+- [x] Audit Telegram channel publishing permissions, destination configuration, and existing bot admin controls.
+- [x] Add a secure owner-only publishing command for tech menu polls and questions.
+- [x] Add image-backed tech question posts and varied poll content without fake engagement claims.
+- [x] Validate Telegram API channel publishing and poll/media behavior.
+- [ ] Restart Elara and push the Telegram publishing update to GitHub.

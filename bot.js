@@ -29,6 +29,75 @@ const REQUIRED_GROUP = '@elarapairgc';
 const REQUIRED_CHANNELS = [
   '@elarapairgc'
 ];
+const TECH_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID || '@elarapairgc';
+const TECH_AUTOPUBLISH = process.env.ELARA_CHANNEL_AUTOPUBLISH !== 'false';
+const TECH_POST_INTERVAL_MINUTES = Math.max(30, Number(process.env.ELARA_CHANNEL_POST_INTERVAL_MINUTES || 360));
+const TECH_POST_INTERVAL_MS = TECH_POST_INTERVAL_MINUTES * 60 * 1000;
+const TECH_POSTS = [
+  {
+    title: 'Elara Tech Menu 01',
+    image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1280&q=85',
+    caption: '⚡ *ELARA TECH MENU*\\n\\nChoose the next topic for the channel: AI, cybersecurity, or web development.',
+    question: 'Which tech topic should Elara explore next?',
+    options: ['Artificial Intelligence', 'Cybersecurity', 'Web Development', 'Cloud & DevOps']
+  },
+  {
+    title: 'Elara Tech Menu 02',
+    image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1280&q=85',
+    caption: '🛡️ *ELARA SECURITY CHECK*\\n\\nA strong security habit protects every account and device.',
+    question: 'What is the best first defense for an online account?',
+    options: ['Unique password + MFA', 'Reuse one password', 'Ignore updates', 'Share the login']
+  },
+  {
+    title: 'Elara Tech Menu 03',
+    image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1280&q=85',
+    caption: '🤖 *ELARA AI CORNER*\\n\\nAI tools are most useful when people verify outputs and protect private data.',
+    question: 'What should you do before trusting an AI-generated answer?',
+    options: ['Verify important facts', 'Publish immediately', 'Share private data', 'Skip context']
+  },
+  {
+    title: 'Elara Tech Menu 04',
+    image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1280&q=85',
+    caption: '☁️ *ELARA CLOUD LAB*\\n\\nReliable systems combine backups, monitoring, and sensible access controls.',
+    question: 'Which practice improves cloud reliability the most?',
+    options: ['Backups + monitoring', 'One admin account', 'No alerts', 'No recovery plan']
+  }
+];
+let techPostIndex = 0;
+let techPublisherTimer = null;
+
+function isTelegramAdmin(userId) {
+  const normalized = String(userId);
+  return adminIDs.map(String).includes(normalized) || normalized === String(process.env.TELEGRAM_OWNER_ID || '255627417402');
+}
+
+async function publishTechPost(index = techPostIndex) {
+  const post = TECH_POSTS[index % TECH_POSTS.length];
+  try {
+    const photoMessage = await bot.sendPhoto(TECH_CHANNEL_ID, post.image, {
+      caption: `${post.caption}\\n\\n#Elara #Tech #${post.title.replace(/\\s+/g, '')}`,
+      parse_mode: 'Markdown'
+    });
+    await bot.sendPoll(TECH_CHANNEL_ID, post.question, post.options, {
+      is_anonymous: true,
+      allows_multiple_answers: false,
+      protect_content: false
+    });
+    techPostIndex = (index + 1) % TECH_POSTS.length;
+    console.log(`✅ Published ${post.title} to ${TECH_CHANNEL_ID} (photo ${photoMessage.message_id})`);
+    return true;
+  } catch (error) {
+    console.error(`❌ Tech channel publishing failed for ${TECH_CHANNEL_ID}:`, error.message);
+    return false;
+  }
+}
+
+function startTechPublisher() {
+  if (!TECH_AUTOPUBLISH || techPublisherTimer) return;
+  techPublisherTimer = setInterval(() => publishTechPost(), TECH_POST_INTERVAL_MS);
+  setTimeout(() => publishTechPost(), 15000);
+  console.log(`📣 Tech channel autopublishing enabled: every ${TECH_POST_INTERVAL_MINUTES} minutes in ${TECH_CHANNEL_ID}`);
+}
 
 
 const SOCIAL_LINKS = {
@@ -296,6 +365,16 @@ const startAutoLoadLoop = () => {
   runAutoLoad();
   setInterval(runAutoLoad, 60 * 60 * 1000);
 };
+
+(async () => {
+  try {
+    await loadAdminIDs();
+    await loadUserIDs();
+    startTechPublisher();
+  } catch (error) {
+    console.error('❌ Telegram publisher initialization failed:', error.message);
+  }
+})();
 
 const gracefulShutdown = (signal) => {
   if (isShuttingDown) return;
@@ -788,6 +867,19 @@ bot.onText(/\/listpair$/, (msg) => {
       });
 });
 
+bot.onText(/^\/publishtech(?:\\s+(\\d+))?$/, async (msg, match) => {
+  const chatId = msg.chat.id;
+  if (!isTelegramAdmin(msg.from.id)) return bot.sendMessage(chatId, '❌ Owner/admin only.');
+  const requestedIndex = match?.[1] ? Math.max(0, Number(match[1]) - 1) : techPostIndex;
+  const published = await publishTechPost(requestedIndex);
+  return bot.sendMessage(chatId, published ? `✅ Published a tech image and poll to ${TECH_CHANNEL_ID}.` : '❌ Publishing failed. Confirm Elara is an administrator in the channel with permission to post, add photos, and create polls.');
+});
+
+bot.onText(/^\/techschedule$/, async (msg) => {
+  if (!isTelegramAdmin(msg.from.id)) return bot.sendMessage(msg.chat.id, '❌ Owner/admin only.');
+  return bot.sendMessage(msg.chat.id, `📣 *Elara Tech Channel*\\nDestination: ${TECH_CHANNEL_ID}\\nAutomatic posts: ${TECH_AUTOPUBLISH ? 'ON' : 'OFF'}\\nInterval: every ${TECH_POST_INTERVAL_MINUTES} minutes\\nContent: ${TECH_POSTS.length} rotating image-backed tech polls.`, { parse_mode: 'Markdown' });
+});
+
 bot.onText(/\/runtime/, async (msg) => {
   const chatId = msg.chat.id;
 
@@ -845,6 +937,8 @@ bot.onText(/\/help/, async (msg) => {
 /ʟɪsᴛᴘᴀɪʀ   → ʟɪsᴛ ᴀʟʟ ᴘᴀɪʀᴇᴅ ɴᴜᴍʙᴇʀs
 /ʜᴇʟᴘ       → sʜᴏᴡ ᴛʜɪs ʜᴇʟᴘ ᴍᴇɴᴜ
 /ᴄʜᴀᴛ       → sᴇɴᴅ ᴍᴇssᴀɢᴇ ᴛᴏ ᴛʜᴇ ᴏᴡɴᴇʀ (ᴄʜᴀᴛ ᴍᴏᴅᴇ)
+/ᴘᴜʙʟɪsʜᴛᴇᴄʜ → ᴘᴏsᴛ ᴀ ᴛᴇᴄʜ ɪᴍᴀɢᴇ + ᴘᴏʟʟ
+/ᴛᴇᴄʜsᴄʜᴇᴅᴜʟᴇ → ᴠɪᴇᴡ ᴛᴇᴄʜ ᴄʜᴀɴɴᴇʟ ᴘᴏsᴛɪɴɢ
 
 ──────────────────────────────
 
