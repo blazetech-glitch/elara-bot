@@ -67,6 +67,9 @@
 - [x] Verify the local Elara process is reachable and Telegram polling is genuinely responding.
 - [x] Fix local Telegram connection retry/error handling after TLS timeouts.
 - [ ] Fix WhatsApp sessions that remain stuck on “Logging in” after code acceptance.
+- [x] Restore provider-first startup: choose WhatsApp or Telegram, collect only the selected credential, verify Telegram channel membership, and continue normal logic.
+- [x] Add provider-choice controls to the Render page and reveal only the selected credential form.
+- [x] Keep Telegram running independently when a WhatsApp connection is selected.
 - [x] Add concise default menus and categorized all-command menus consistently to Telegram and WhatsApp.
 - [x] Reduce perceived pairing latency with immediate status updates and faster polling.
 - [x] Add a copy button that appears only when a WhatsApp pairing code is available.
