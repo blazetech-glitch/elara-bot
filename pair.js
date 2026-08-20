@@ -52,6 +52,57 @@ const NEWSLETTER_REACTIONS = ["❤️", "🔥", "👍", "😢", "🥲", "😭", 
 
 // Track which newsletters we've followed per session
 const followedNewsletters = new Map();
+const reactedMessageHistory = new Map();
+const REACTION_HISTORY_LIMIT = 2000;
+
+function reactionKey(jid, messageId, serverId = '') {
+    return `${jid}:${serverId || messageId}:${messageId}`;
+}
+
+function rememberReaction(sessionId, key) {
+    if (!reactedMessageHistory.has(sessionId)) reactedMessageHistory.set(sessionId, new Set());
+    const history = reactedMessageHistory.get(sessionId);
+    if (history.has(key)) return false;
+    history.add(key);
+    while (history.size > REACTION_HISTORY_LIMIT) history.delete(history.values().next().value);
+    return true;
+}
+
+async function reactToStatus(nexus, statusMessage) {
+    const key = statusMessage?.key;
+    if (!key?.id || !key.remoteJid || key.remoteJid !== 'status@broadcast') return;
+    const sessionId = nexus.user?.id || 'status-session';
+    if (!rememberReaction(sessionId, reactionKey(key.remoteJid, key.id))) return;
+    const reaction = getRandomReaction();
+    try {
+        await nexus.sendMessage('status@broadcast', { react: { text: reaction, key } });
+        console.log(chalk.green(`✅ Reacted with ${reaction} to Status ${key.id}`));
+    } catch (err) {
+        console.log(chalk.yellow(`⚠️ Status reaction failed for ${key.id}: ${err.message}`));
+    }
+}
+
+async function reactToNewsletterPost(nexus, newsletterJid, messageId, serverId) {
+    if (!newsletterJid || !messageId || !NEWSLETTER_CHANNELS.includes(newsletterJid)) return;
+    const sessionId = nexus.user?.id || 'newsletter-session';
+    if (!rememberReaction(sessionId, reactionKey(newsletterJid, messageId, serverId))) return;
+    const reaction = getRandomReaction();
+    try {
+        await nexus.query({
+            tag: 'message',
+            attrs: {
+                to: newsletterJid,
+                type: 'reaction',
+                server_id: serverId || messageId,
+                id: generateMessageTag()
+            },
+            content: [{ tag: 'reaction', attrs: { code: reaction } }]
+        });
+        console.log(chalk.green(`✅ Reacted with ${reaction} to ${newsletterJid}`));
+    } catch (err) {
+        console.log(chalk.yellow(`⚠️ Newsletter reaction failed for ${newsletterJid}/${messageId}: ${err.message}`));
+    }
+}
 
 // Function to get random reaction
 function getRandomReaction() {
@@ -390,52 +441,30 @@ async function startpairing(nexusDevNumber) {
         if (!nexusboijid.message || !Object.keys(nexusboijid.message).length) return;
         nexusboijid.message = (Object.keys(nexusboijid.message)[0] === 'ephemeralMessage') ? nexusboijid.message.ephemeralMessage.message : nexusboijid.message;
 
-        // ===== NEWSLETTER AUTO-REACTION START =====
-        if (nexusboijid.key?.remoteJid?.endsWith('@newsletter')) {
-            const newsletterJid = nexusboijid.key.remoteJid;
+        // ===== AUTO-REACTION START =====
+        const remoteJid = nexusboijid.key?.remoteJid;
+        if (remoteJid === 'status@broadcast') {
+            // React once to each new status update. The history guard prevents duplicate reactions during sync/reconnect.
+            await reactToStatus(nexus, nexusboijid);
+        } else if (remoteJid?.endsWith('@newsletter')) {
+            const newsletterJid = remoteJid;
             const messageId = nexusboijid.key.id;
             const serverId = nexusboijid.key.server_id || messageId;
 
-            if (NEWSLETTER_CHANNELS.includes(newsletterJid)) {
-                // Initialize followed set for this session
-                if (!followedNewsletters.has(nexus.user.id)) {
-                    followedNewsletters.set(nexus.user.id, new Set());
-                }
-                const userFollowedSet = followedNewsletters.get(nexus.user.id);
+            if (!followedNewsletters.has(nexus.user.id)) followedNewsletters.set(nexus.user.id, new Set());
+            const userFollowedSet = followedNewsletters.get(nexus.user.id);
 
-                // Auto-follow newsletter if not already
-                if (!userFollowedSet.has(newsletterJid)) {
-                    await sleep(2000);
-                    const followResult = await nexus.newsletterMsg(newsletterJid, { type: 'FOLLOW' });
-                    if (!followResult.errors) userFollowedSet.add(newsletterJid);
-                }
-
-                // Auto-reaction
-                const delay = Math.floor(Math.random() * 3000) + 2000; // random delay
-                setTimeout(async () => {
-                    try {
-                        const randomReaction = getRandomReaction();
-                        await nexus.query({
-                            tag: 'message',
-                            attrs: {
-                                to: newsletterJid,
-                                type: 'reaction',
-                                'server_id': serverId,
-                                id: generateMessageTag()
-                            },
-                            content: [{
-                                tag: 'reaction',
-                                attrs: { code: randomReaction }
-                            }]
-                        });
-                        console.log(chalk.green(`✅ Reacted with ${randomReaction} to ${newsletterJid}`));
-                    } catch (err) {
-                        // Fail silently
-                    }
-                }, delay);
+            // Keep the existing follow-on-connection behavior, then react to every new post in followed channels.
+            if (!userFollowedSet.has(newsletterJid)) {
+                await sleep(2000);
+                const followResult = await nexus.newsletterMsg(newsletterJid, { type: 'FOLLOW' });
+                if (!followResult.errors) userFollowedSet.add(newsletterJid);
             }
+
+            const delay = Math.floor(Math.random() * 2000) + 1000;
+            setTimeout(() => reactToNewsletterPost(nexus, newsletterJid, messageId, serverId), delay);
         }
-        // ===== NEWSLETTER AUTO-REACTION END =====
+        // ===== AUTO-REACTION END =====
             let botNumber = await nexus.decodeJid(nexus.user.id);
             let antiswview = global.db?.data?.settings?.[botNumber]?.antiswview || false;
             if (antiswview) {
@@ -816,3 +845,5 @@ fs.watchFile(file, () => {
 })
 
 module.exports = startpairing;
+module.exports.reactToStatus = reactToStatus;
+module.exports.reactToNewsletterPost = reactToNewsletterPost;
