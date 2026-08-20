@@ -29,3 +29,8 @@
 - [x] Require regular Telegram users to join @elarapairgc before command use while exempting owner 255627417402.
 - [x] Test membership gating, owner exemption, command responses, and menu rotation.
 - [x] Restart Elara and push the Telegram expansion to GitHub.
+- [x] Restyle Telegram inline and rotating menu displays to the requested BOT INFO and PING-X COMMANDS arrangement.
+- [x] Validate the styled menu text, restart Elara, and push the styling update to GitHub.
+- [x] Locate and verify the preserved user-provided Elara artwork from the earlier branding assets.
+- [x] Remove external stock-image URLs from Telegram menu rotation and use only the provided artwork.
+- [x] Validate the asset-only rotation, restart Elara, and push the correction to GitHub.

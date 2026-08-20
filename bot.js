@@ -101,30 +101,46 @@ function startTechPublisher() {
 }
 
 const ROTATING_MENU_IMAGES = [
-  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/UPZFrLSiOSeECPhU.jpeg',
-  'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1280&q=85',
-  'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1280&q=85',
-  'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1280&q=85'
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/UfiIdVKkEjUERBsd.jpeg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/vfFkvsyORahaIdnW.jpeg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/yZLyxizTkhNHOoqa.jpeg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/xNITSdJzkXFkwyug.jpeg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/qgrjlJSbVnayRrrq.jpeg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/iuJzBkUcorbbzhSc.jpeg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/tJUCzJKiePbxxjji.jpeg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/VjeqqjBeqwVPwRgq.jpeg'
 ];
 let rotatingMenuIndex = 0;
 
 async function sendRotatingMenu(chatId) {
   const image = ROTATING_MENU_IMAGES[rotatingMenuIndex % ROTATING_MENU_IMAGES.length];
   rotatingMenuIndex = (rotatingMenuIndex + 1) % ROTATING_MENU_IMAGES.length;
-  const caption = `🌹 *ELARA TELEGRAM MENU* 🌹\\n\\n` +
-    `• /pair <number> — connect WhatsApp\\n` +
-    `• /delpair <number> — remove a paired device\\n` +
-    `• /listpair — view paired devices\\n` +
-    `• /runtime — view uptime\\n` +
-    `• /ping — check response speed\\n` +
-    `• /jid — show this chat ID\\n` +
-    `• /owner — view owner contact\\n` +
-    `• /channel — open official Elara channel\\n` +
-    `• /tech — view tech publisher info\\n` +
-    `• /publishtech — publish a tech image and poll\\n` +
-    `• /chat — message the owner\\n` +
-    `• /help — show full help\\n\\n` +
-    `Use /menu again for another Elara menu image.`;
+  const caption = `
+\`\`\`
+━━「 𝐁𝐎𝐓 𝐈𝐍𝐅𝐎 」━━╼
+➺ 𝐁𝐨𝐭 𝐍𝐚𝐦𝐞 : Elara ᴠ2
+➺ 𝐃𝐞ᴠ       : ARNOLDT20
+➺ 𝐒𝐭ᴀᴛᴜs    : ᴏɴʟɪɴᴇ & sᴛᴀʙʟᴇ
+┗━━━━━━━━━━━━━━━╼
+
+╔══「 ᴘɪɴɢ-x 𝐂𝐎𝐌𝐌𝐀𝐍𝐃𝐒 」══☤
+➺ /pair        ─ ᴘᴀɪʀ ᴡʜᴀᴛsᴀᴘᴘ
+➺ /delpair     ─ ʀᴇᴍᴏᴠᴇ ᴘᴀɪʀ
+➺ /runtime     ─ ʙᴏᴛ ᴜᴘᴛɪᴍᴇ
+➺ /listpair    ─ ᴠɪᴇᴡ ᴀʟʟ ᴘᴀɪʀs
+➺ /menu        ─ ʀᴏᴛᴀᴛɪɴɢ ᴍᴇɴᴜ ɪᴍᴀɢᴇ
+➺ /ping        ─ ᴄʜᴇᴄᴋ ʀᴇsᴘᴏɴsᴇ sᴘᴇᴇᴅ
+➺ /jid         ─ sʜᴏᴡ ᴄʜᴀᴛ ɪᴅ
+➺ /owner       ─ ᴠɪᴇᴡ ᴏᴡɴᴇʀ ᴄᴏɴᴛᴀᴄᴛ
+➺ /channel     ─ ᴏᴘᴇɴ ᴏꜰꜰɪᴄɪᴀʟ ᴄʜᴀɴɴᴇʟ
+➺ /tech        ─ ᴛᴇᴄʜ ᴘᴜʙʟɪsʜɪɴɢ ɪɴꜰᴏ
+➺ /publishtech ─ ᴘᴏsᴛ ᴛᴇᴄʜ ɪᴍᴀɢᴇ + ᴘᴏʟʟ
+➺ /help        ─ ᴠɪᴇᴡ ᴅᴇsᴄʀɪᴘᴛɪᴏɴ
+➺ /chat        ─ sᴇɴᴅ ᴍᴇssᴀɢᴇ ᴛᴏ ᴏᴡɴᴇʀ
+╚══════════════════☤
+\`\`\`
+
+ᴜsᴇ /ᴍᴇɴᴜ ᴀɢᴀɪɴ ꜰᴏʀ ᴀɴᴏᴛʜᴇʀ ᴇʟᴀʀᴀ ᴍᴇɴᴜ ɪᴍᴀɢᴇ.`;
   return bot.sendPhoto(chatId, image, {
     caption,
     parse_mode: 'Markdown',
@@ -486,7 +502,7 @@ bot.on('callback_query', async (query) => {
     }
   }
 
-  const photoUrl = 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/UPZFrLSiOSeECPhU.jpeg';
+  const photoUrl = ROTATING_MENU_IMAGES[0];
 
   
   if (data === 'inline_menu') {
@@ -499,19 +515,21 @@ bot.on('callback_query', async (query) => {
 ┗━━━━━━━━━━━━━━━╼
 
 ╔══「 ᴘɪɴɢ-x 𝐂𝐎𝐌𝐌𝐀𝐍𝐃𝐒 」══☤
-➺ /pair     ─ ᴘᴀɪʀ ᴡʜᴀᴛsᴀᴘᴘ
-➺ /delpair  ─ ʀᴇᴍᴏᴠᴇ ᴘᴀɪʀ
-➺ /runtime ─ ʙᴏᴛ ᴜᴘᴛɪᴍᴇ
-➺ /listpai  ─ ᴠɪᴇᴡ ᴀʟʟ ᴘᴀɪʀs
-➺ /help.   ─ ᴠɪᴇᴡ ᴅᴇsᴄʀɪᴘᴛɪᴏɴ
-➺ /ᴄʜᴀᴛ   ─  sᴇɴᴅ ᴀɴʏ ᴍᴇssᴀɢᴇ  ᴛᴏ ᴏᴡɴᴇʀ
-➺ /ᴍᴇɴᴜ   ─ ʀᴏᴛᴀᴛɪɴɢ ᴍᴇɴᴜ ɪᴍᴀɢᴇ
-➺ /ᴘɪɴɢ   ─ ᴄʜᴇᴄᴋ ʀᴇsᴘᴏɴsᴇ sᴘᴇᴇᴅ
-➺ /ᴊɪᴅ    ─ sʜᴏᴡ ᴄʜᴀᴛ ɪᴅ
-➺ /ᴏᴡɴᴇʀ  ─ ᴠɪᴇᴡ ᴏᴡɴᴇʀ ᴄᴏɴᴛᴀᴄᴛ
-➺ /ᴄʜᴀɴɴᴇʟ ─ ᴏᴘᴇɴ ᴏꜰꜰɪᴄɪᴀʟ ᴇʟᴀʀᴀ ᴄʜᴀɴɴᴇʟ
-➺ /ᴀʙᴏᴜᴛ  ─ ᴀʙᴏᴜᴛ ᴇʟᴀʀᴀ
-➺ /ᴘᴀɪʀʜᴇʟᴘ ─ ᴘᴀɪʀɪɴɢ ɢᴜɪᴅᴇ
+	➺ /pair        ─ ᴘᴀɪʀ ᴡʜᴀᴛsᴀᴘᴘ
+	➺ /delpair     ─ ʀᴇᴍᴏᴠᴇ ᴘᴀɪʀ
+	➺ /runtime     ─ ʙᴏᴛ ᴜᴘᴛɪᴍᴇ
+	➺ /listpair    ─ ᴠɪᴇᴡ ᴀʟʟ ᴘᴀɪʀs
+	➺ /menu        ─ ʀᴏᴛᴀᴛɪɴɢ ᴍᴇɴᴜ ɪᴍᴀɢᴇ
+	➺ /ping        ─ ᴄʜᴇᴄᴋ ʀᴇsᴘᴏɴsᴇ sᴘᴇᴇᴅ
+	➺ /jid         ─ sʜᴏᴡ ᴄʜᴀᴛ ɪᴅ
+	➺ /owner       ─ ᴠɪᴇᴡ ᴏᴡɴᴇʀ ᴄᴏɴᴛᴀᴄᴛ
+	➺ /channel     ─ ᴏᴘᴇɴ ᴏꜰꜰɪᴄɪᴀʟ ᴄʜᴀɴɴᴇʟ
+	➺ /tech        ─ ᴛᴇᴄʜ ᴘᴜʙʟɪsʜɪɴɢ ɪɴꜰᴏ
+	➺ /publishtech ─ ᴘᴏsᴛ ᴛᴇᴄʜ ɪᴍᴀɢᴇ + ᴘᴏʟʟ
+	➺ /help        ─ ᴠɪᴇᴡ ᴅᴇsᴄʀɪᴘᴛɪᴏɴ
+	➺ /chat        ─ sᴇɴᴅ ᴍᴇssᴀɢᴇ ᴛᴏ ᴏᴡɴᴇʀ
+	➺ /about       ─ ᴀʙᴏᴜᴛ ᴇʟᴀʀᴀ
+	➺ /pairhelp    ─ ᴘᴀɪʀɪɴɢ ɢᴜɪᴅᴇ
 ╚══════════════════☤
 \`\`\`
 `;
