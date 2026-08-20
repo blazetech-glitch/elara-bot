@@ -54,4 +54,14 @@
 - [x] Provide the shared-site deployment steps and required secrets.
 - [x] Repair the Render no-open-port failure so the Elara panel binds to the assigned PORT.
 - [ ] Redeploy the latest bot commit and verify the Render service remains Live.
+- [x] Diagnose why the live Render root still shows the old menu or redirect.
+- [x] Make the Render-only connection form the live root page.
+- [ ] Make the Render-hosted Elara service the primary user-facing connection website instead of the Manus portal.
+- [ ] Document the Render-only user flow and its session-isolation limitations before implementation.
+- [x] Remove the Manus portal redirect from the Render-facing page.
+- [x] Add Render page inputs for WhatsApp number and Telegram token with pairing/status responses.
+- [ ] Persist each Render connection under an isolated database-backed owner/session record and continue into normal Elara logic.
+- [ ] Configure the Render-only deployment to use a managed database without exposing DATABASE_URL to the user.
+- [ ] Prepare a Supabase-compatible schema and Render database setup for the Render-only connection service.
+- [ ] Document Supabase provisioning and private Render environment-variable wiring steps.
 - [x] Remove the direct Render panel access-key prompt from the public panel UI while preserving private adapter authorization.
