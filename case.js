@@ -25,6 +25,7 @@ const {
 } = require("@whiskeysockets/baileys");
 
 const fs = require('fs')
+const path = require('path')
 const util = require('util')
 const chalk = require('chalk')
 const os = require('os')
