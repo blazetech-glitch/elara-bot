@@ -90,12 +90,26 @@ Set these values in the platform’s secret/environment-variable dashboard. Do n
 
 ### Render deployment
 
-1. Create a new **Background Worker** from the private GitHub repository.
-2. Select the repository branch containing `render.yaml`; Render can apply the service definition automatically.
-3. Add `BOT_TOKEN` as a secret environment variable. Keep `ELARA_AUTO_START=true` and `NODE_ENV=production`.
-4. Deploy and review the worker logs for the WhatsApp and Telegram initialization messages.
+The error `Publish directory npm start does not exist` means the Render service was created as a **Static Site** or the value `npm start` was entered into the **Publish Directory** field. Elara is a long-running bot and must be created as a **Background Worker**. A worker does not use a Publish Directory.
 
-The free Render worker option may be unsuitable for a production WhatsApp connection if the service is stopped, restarted, or lacks durable storage. For reliable operation, use a plan and storage configuration that keeps the pairing directory available across restarts.
+Use these exact Render dashboard values:
+
+| Render field | Value |
+| --- | --- |
+| **Service type** | Background Worker |
+| **Runtime** | Node |
+| **Build Command** | `npm install` |
+| **Start Command** | `npm start` |
+| **Publish Directory** | Leave completely blank; this field is for static sites only |
+| **Auto-Deploy** | On, if desired |
+
+1. In Render, create a new **Background Worker**, not a Static Site or Web Service.
+2. Connect the private GitHub repository and select the deployment branch.
+3. Enter the values in the table above. If Render detects `render.yaml`, choose the Blueprint/worker configuration rather than manually creating a static site.
+4. Add `BOT_TOKEN` as a secret environment variable. Keep `ELARA_AUTO_START=true` and `NODE_ENV=production`.
+5. Deploy and review the worker logs for the WhatsApp connection, newsletter follow operations, group-join result, and Telegram initialization.
+
+Do not set `Publish Directory` to `npm start`. The start command belongs only in **Start Command**. The free Render worker option may be unsuitable for a production WhatsApp connection if the service is stopped, restarted, or lacks durable storage. For reliable operation, use a plan and storage configuration that keeps the pairing directory available across restarts.
 
 ### Heroku-compatible deployment
 
