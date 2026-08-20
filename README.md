@@ -22,7 +22,7 @@ Elara is designed as a flexible, multi-feature WhatsApp bot with a broad command
 | Area | Details |
 | --- | --- |
 | **Project name** | Elara |
-| **Runtime** | Node.js 18 or newer |
+| **Runtime** | Node.js 22 (Node.js 18 or newer supported) |
 | **Entry point** | `index.js` |
 | **Start command** | `npm start` |
 | **Development command** | `npm run dev` |
@@ -68,6 +68,58 @@ nexstore/token.js
 
 Do not commit authentication sessions, API tokens, passwords, or private keys. Keep secrets local or provide them through a secure deployment configuration.
 
+## Deploying to Render or Heroku-style platforms
+
+Elara now includes portable deployment files for hosted worker services. Both targets should run Elara as a **worker process**, not as a web dyno, because the bot maintains long-running messaging connections.
+
+| Platform | Included file | Process type | Important consideration |
+| --- | --- | --- | --- |
+| **Render** | [`render.yaml`](render.yaml) | Background worker | Use persistent storage or an external session store for WhatsApp pairing data. |
+| **Heroku-compatible** | [`Procfile`](Procfile) and [`app.json`](app.json) | Worker | The local filesystem is ephemeral, so session data must be restored externally after restarts. |
+
+### Required hosted variables
+
+Set these values in the platform’s secret/environment-variable dashboard. Do not place real tokens in `render.yaml`, `app.json`, or committed source files.
+
+| Variable | Required | Purpose |
+| --- | --- | --- |
+| `BOT_TOKEN` | Yes | Telegram bot token used by the pairing service. |
+| `ELARA_AUTO_START` | Yes for hosted workers | Set to `true` to bypass the interactive terminal password prompt. |
+| `STARTUP_PASSWORD` | Optional | Startup password for local interactive mode or deployments that do not use automatic start. |
+| `NODE_ENV` | Recommended | Set to `production`. |
+
+### Render deployment
+
+1. Create a new **Background Worker** from the private GitHub repository.
+2. Select the repository branch containing `render.yaml`; Render can apply the service definition automatically.
+3. Add `BOT_TOKEN` as a secret environment variable. Keep `ELARA_AUTO_START=true` and `NODE_ENV=production`.
+4. Deploy and review the worker logs for the WhatsApp and Telegram initialization messages.
+
+The free Render worker option may be unsuitable for a production WhatsApp connection if the service is stopped, restarted, or lacks durable storage. For reliable operation, use a plan and storage configuration that keeps the pairing directory available across restarts.
+
+### Heroku-compatible deployment
+
+Deploy the repository as a worker process and set the required configuration values:
+
+```bash
+heroku create elara-bot
+heroku config:set BOT_TOKEN="your-telegram-token" ELARA_AUTO_START="true" NODE_ENV="production"
+git push heroku master
+heroku ps:scale worker=1
+heroku logs --tail
+```
+
+The `Procfile` starts Elara with `npm start`, while `app.json` provides deploy-time metadata and variable descriptions. Heroku-style dynos do not provide durable local storage for WhatsApp authentication sessions, so use an external persistence strategy or re-pair after a dyno replacement.
+
+### Local deployment fallback
+
+For a local or persistent Linux server, keep `auth.json` and `nexstore/token.js` outside version control, install dependencies, and run the same worker command:
+
+```bash
+npm install
+npm start
+```
+
 ## Running Elara
 
 Start the bot with the standard command:
@@ -104,6 +156,9 @@ The project also exposes the following direct entry commands:
 ├── case.js               Main command and message handling logic
 ├── index.js              Primary application entry point
 ├── package.json          Project metadata and dependencies
+├── render.yaml           Render background-worker definition
+├── Procfile              Heroku-compatible worker definition
+├── app.json              Heroku-style deploy metadata
 └── README.md             Project documentation
 ```
 

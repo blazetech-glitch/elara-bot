@@ -6,7 +6,14 @@ const path = require('path');
 const chalk = require('chalk');
 const os = require('os');
 const { sleep } = require('./nexstore/utils');
-const { BOT_TOKEN } = require('./nexstore/token');
+let localToken = {};
+try {
+  localToken = require('./nexstore/token');
+} catch (error) {
+  console.log(chalk.yellow('ℹ️ Local token file not found; using BOT_TOKEN from the deployment environment.'));
+}
+const BOT_TOKEN = process.env.BOT_TOKEN || localToken.BOT_TOKEN;
+if (!BOT_TOKEN) throw new Error('BOT_TOKEN is required to start the Telegram bot.');
 const { autoLoadPairs } = require('./autoload');
 
 const bot = new TelegramBot(BOT_TOKEN, { polling: true });

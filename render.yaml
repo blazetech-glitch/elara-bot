@@ -1,0 +1,17 @@
+services:
+  - type: worker
+    name: elara-bot
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ELARA_AUTO_START
+        value: "true"
+      - key: BOT_TOKEN
+        sync: false
+      - key: STARTUP_PASSWORD
+        sync: false

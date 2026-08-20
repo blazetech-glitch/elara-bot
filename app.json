@@ -1,0 +1,33 @@
+{
+  "name": "Elara",
+  "description": "A feature-rich WhatsApp bot with a refreshed feminine identity.",
+  "repository": "https://github.com/blazetech-glitch/elara-bot",
+  "keywords": ["whatsapp", "bot", "nodejs", "automation"],
+  "stack": "heroku-22",
+  "formation": {
+    "worker": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  },
+  "env": {
+    "NODE_ENV": {
+      "description": "Runtime environment.",
+      "value": "production"
+    },
+    "ELARA_AUTO_START": {
+      "description": "Skip the interactive startup prompt on hosted workers.",
+      "value": "true"
+    },
+    "BOT_TOKEN": {
+      "description": "Telegram bot token used by the pairing service.",
+      "required": true,
+      "value": ""
+    },
+    "STARTUP_PASSWORD": {
+      "description": "Optional startup password for interactive mode; keep it secret.",
+      "required": false,
+      "value": ""
+    }
+  }
+}

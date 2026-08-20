@@ -4,7 +4,14 @@ const path = require('path');
 const readline = require('readline');
 const chalk = require('chalk');
 const figlet = require('figlet');
-const { startupPassword } = require('./nexstore/token');
+let localToken = {};
+try {
+    localToken = require('./nexstore/token');
+} catch (error) {
+    console.log(chalk.yellow('ℹ️ Local token file not found; using deployment environment variables.'));
+}
+const startupPassword = process.env.STARTUP_PASSWORD || localToken.startupPassword;
+const AUTO_START = process.env.ELARA_AUTO_START === 'true';
 
 const AUTH_FILE = './auth.json';
 const PAIRING_DIR = './nexstore/pairing/';
@@ -83,10 +90,14 @@ const initializeBot = async () => {
 
     await autoLoadPairs();
 
-    if (isAuthenticated()) {
+    if (isAuthenticated() || AUTO_START) {
         console.log(chalk.green('✅ Welcome back! Skipping password...'));
         launchBot();
     } else {
+        if (!process.stdin.isTTY) {
+            console.log(chalk.red('❌ Non-interactive deployment requires STARTUP_PASSWORD or ELARA_AUTO_START=true.'));
+            process.exit(1);
+        }
         const rl = readline.createInterface({
             input: process.stdin,
             output: process.stdout
