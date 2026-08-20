@@ -60,6 +60,7 @@
 - [ ] Document the Render-only user flow and its session-isolation limitations before implementation.
 - [x] Remove the Manus portal redirect from the Render-facing page.
 - [ ] Add Render page inputs for WhatsApp number and Telegram token with pairing/status responses.
+- [x] Fix WhatsApp pairing loading and incorrect-error handling for valid country-code phone numbers.
 - [x] Reduce perceived pairing latency with immediate status updates and faster polling.
 - [x] Add a copy button that appears only when a WhatsApp pairing code is available.
 - [ ] Persist each Render connection under an isolated database-backed owner/session record and continue into normal Elara logic.

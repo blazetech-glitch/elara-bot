@@ -105,7 +105,9 @@ async function handle(req, res) {
     const existing = adapterSessions.get(key);
     const session = { ownerId, sessionRef, phoneNumber, status: existing?.status === 'connected' ? 'connected' : 'awaiting_pairing', code: null, expiresAt: null, lastError: null };
     adapterSessions.set(key, session);
-    getStartPairing()(phoneNumber, {
+    const pairing = getStartPairing();
+    if (pairing.disconnectSession) pairing.disconnectSession(phoneNumber);
+    pairing(phoneNumber, {
       onPairingCode: code => { session.code = code; session.expiresAt = new Date(Date.now() + 180000).toISOString(); },
       onConnectionUpdate: state => { session.status = state === 'open' ? 'connected' : 'awaiting_pairing'; }
     }).catch(error => { session.status = 'awaiting_pairing'; session.lastError = error.message; });
@@ -128,7 +130,9 @@ async function handle(req, res) {
       if (!/^\d{7,15}$/.test(number)) return json(res, 400, { error: 'Enter a valid phone number with country code.' });
       const session = { id: id(), type: 'whatsapp', number, status: 'pairing', createdAt: Date.now() };
       sessions.set(session.id, session);
-      getStartPairing()(number, { onPairingCode: code => { session.code = code; }, onConnectionUpdate: state => { session.status = state === 'open' ? 'connected' : 'disconnected'; } }).catch(error => { session.status = 'error'; session.error = error.message; });
+      const pairing = getStartPairing();
+      if (pairing.disconnectSession) pairing.disconnectSession(number);
+      pairing(number, { onPairingCode: code => { session.code = code; }, onConnectionUpdate: state => { session.status = state === 'open' ? 'connected' : 'disconnected'; } }).catch(error => { session.status = 'error'; session.error = error.message; });
       return json(res, 202, { sessionId: session.id, status: session.status });
     }
     const token = String(body.token || '').trim();
