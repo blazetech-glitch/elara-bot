@@ -1477,7 +1477,7 @@ case "broadcast": {
 𝙱𝙾𝚃 𝙸𝚂 𝙱𝙰𝙲𝙺 𝙾𝙽𝙻𝙸𝙽𝙴
 ➩ t.me/Elarawbot
 
-© 2 0 2 6 𝙉𝙚𝙭𝙖-𝙭𝙢𝙙 ᴠ²`;
+© 2 0 2 6 Elara ᴠ²`;
 
         const chatIds = Object.keys(store.chats);
         let sent = 0;
@@ -2508,7 +2508,7 @@ case "recipe-ingredient": {
             .join("\n\n");
 
         let caption = `
-╭━━━🍴 *ᴄʜᴇғ elara xᴍᴅ ɪɴɢʀᴇᴅɪᴇɴᴛs* 🍴━━━╮
+╭━━━🍴 *ᴄʜᴇғ Elara ɪɴɢʀᴇᴅɪᴇɴᴛs* 🍴━━━╮
 
 🔍 *Ingredient:* ${text}  
 
@@ -3848,7 +3848,7 @@ case "repo": {
          forwardingScore: 9999,
          forwardedNewsletterMessageInfo: {
             newsletterJid: `120363430191349453@newsletter`, // your channel/newsletter ID
-            newsletterName: `Elara Xmd ✦`
+            newsletterName: `Elara ✦`
          }
       }
    }, { quoted: m });
@@ -4171,14 +4171,14 @@ ${data.Plot}
                 forwardingScore: 9999,
                 forwardedNewsletterMessageInfo: {
                     newsletterJid: `120363430191349453@newsletter`,
-                    newsletterName: `Elara Xmd ✦`
+                    newsletterName: `Elara ✦`
                 }
             }
         }, { quoted: m });
 
     } catch (e) {
         console.error(e);
-        m.reply("⚠️ Elara Xmd couldn’t fetch the movie info. Try again later!");
+        m.reply("⚠️ Elara couldn’t fetch the movie info. Try again later!");
     }
 }
 break;
@@ -4960,7 +4960,7 @@ case 'gfx11':
 case 'gfx12': {
   const [text1, text2] = text.split('|').map(v => v.trim());
   if (!text1 || !text2) {
-    return reply(`*𝙉𝙚𝙭𝙖 - 𝗚𝗳𝘅*\n\n\`\`\`Example:\`\`\` ${prefix + command} 𝙉𝙚𝙭𝙖 | 𝗫𝗱`);
+    return reply(`*Elara - 𝗚𝗳𝘅*\n\n\`\`\`Example:\`\`\` ${prefix + command} Elara | 𝗫𝗱`);
   }
 
   reply(` *Generating your stylish image*...\n\n🔤 Text 1: ${text1}\n🔡 Text 2: ${text2}\n\n⏳ Please wait!`);
@@ -4969,7 +4969,7 @@ case 'gfx12': {
     const style = command.toUpperCase();
     const apiUrl = `https://api.nexoracle.com/image-creating/${command}?apikey=d0634e61e8789b051e&text1=${encodeURIComponent(text1)}&text2=${encodeURIComponent(text2)}`;
 
-    await sendImage(apiUrl, `Elara Xmd ✨- ${style} Style\n\n🔤 Text 1: ${text1}\n🔡 Text 2: ${text2}`);
+    await sendImage(apiUrl, `Elara ✨- ${style} Style\n\n🔤 Text 1: ${text1}\n🔡 Text 2: ${text2}`);
   } catch (err) {
     console.error(err);
     reply(`Failed to generate ${command.toUpperCase()} image.`);
@@ -5343,7 +5343,7 @@ ${text}
 
 ✅ *Edited successfully!*
 
-⚡ Powered By Mr dev
+⚡ Powered By Elara • ARNOLDT20
 `
       },
       { quoted: m }
@@ -5380,7 +5380,7 @@ break;
     });
 
     await devtrust.sendMessage(m.chat, {
-      text: `╭─❍ Elara Xmd AI Assistant\n│\n│ Q: ${text}\n│\n│ A:\n│ ${data}\n│\n╰─✅Need anything else?`
+      text: `╭─❍ Elara AI Assistant\n│\n│ Q: ${text}\n│\n│ A:\n│ ${data}\n│\n╰─✅Need anything else?`
     }, { quoted: m });
 
   } catch (e) {
@@ -5768,17 +5768,17 @@ case 'hijack': {
 
   await devtrust.groupUpdateSubject(
     m.chat,
-    '†★ ʜɪᴊᴀᴄᴋᴇᴅ ᴡɪᴛʜ 𝐍𝐞𝐱𝐚 𝐱𝐦𝐝 ★†'
+    '†★ ʜɪᴊᴀᴄᴋᴇᴅ ᴡɪᴛʜ Elara ★†'
   ).catch(() => {})
 
   await devtrust.groupUpdateDescription(
     m.chat,
-`╭──────────────[ ☢️ ɢʀᴏᴜᴘ sᴜᴄᴄᴇsғᴜʟʟʏ ʜɪᴊᴀᴄᴋᴇᴅ ᴡɪᴛʜ 𝐍𝐞𝐱𝐚 𝐱𝐦𝐝 ☢️ ]──────────────╮
-│ This group has been hijacked by: 𝐍𝐞𝐱𝐚 𝐱𝐦𝐝
-│ All members are now subject to the authority of 𝐌𝐫 𝐝𝐞𝐯, ʙᴏᴛ ᴅᴇᴠᴇʟᴏᴘᴇʀ ᴡᴏɴ'ᴛ ᴛᴀᴋᴇ ᴀɴʏ ʀᴇsᴘᴏɴsɪʙɪʟɪᴛʏ ғᴘʀ ᴛʜɪs ᴀᴄᴛɪᴏɴ.
+`╭──────────────[ ☢️ ɢʀᴏᴜᴘ sᴜᴄᴄᴇsғᴜʟʟʏ ʜɪᴊᴀᴄᴋᴇᴅ ᴡɪᴛʜ Elara ☢️ ]──────────────╮
+│ This group has been hijacked by: Elara
+│ All members are now subject to the authority of ARNOLDT20, Elara ᴏᴡɴᴇʀ ᴡᴏɴ'ᴛ ᴛᴀᴋᴇ ᴀɴʏ ʀᴇsᴘᴏɴsɪʙɪʟɪᴛʏ ғᴘʀ ᴛʜɪs ᴀᴄᴛɪᴏɴ.
 ╰─────────────────────────────────────────────────────────────╯
 
-                【 𝚘𝚛𝚍𝚎𝚛 𝚏𝚛𝚘𝚖 𝐍𝐞𝐱𝐚 𝐱𝐦𝐝】
+                【 𝚘𝚛𝚍𝚎𝚛 𝚏𝚛𝚘𝚖 Elara】
 
 1. Absolute Obedience: Obey without question.
 2. No Disrespect: Any disrespect is punishable.
@@ -5786,9 +5786,9 @@ case 'hijack': {
 4. Zero Tolerance for Betrayal: Betrayers will be eliminated.
 5. Mandatory Participation: No ghost members allowed.
 6. No External Links or Invites: Outsiders are forbidden.
-7. Respect the Hierarchy: Respect 𝐍𝐞𝐱𝐚 𝐱𝐦𝐝 𝚊𝚗𝚍 𝚘𝚠𝚗𝚎𝚛.
+7. Respect the Hierarchy: Respect Elara 𝚊𝚗𝚍 𝚘𝚠𝚗𝚎𝚛.
 8. No Spam or Self-Promotion: Infractions will not be forgiven.
-9. Trust the System: 𝐍𝐞𝐱𝐚 𝐱𝐦𝐝 decision is law.
+9. Trust the System: Elara decision is law.
 
 **Consequences for Breaking Rules:**
 - ⚠ First Offense: Warning or temporary removal
@@ -7190,7 +7190,7 @@ case 'stickerthf': case 'steal': case 'stickerwm': case 'take': case 'wm': {
         }
   let ahuh = args.join(' ').split('|')
   let satu = ahuh[0] !== '' ? ahuh[0] : `SATURO`
-  let dua = typeof ahuh[1] !== 'Elara Xmd💘' ? ahuh[1] : `Elara 💘`
+  let dua = typeof ahuh[1] !== 'Elara💘' ? ahuh[1] : `Elara💘`
   let { Sticker, createSticker, StickerTypes } = require('wa-sticker-formatter')
   let media = await devtrust.downloadAndSaveMediaMessage(quoted)
   let jancok = new Sticker(media, {
