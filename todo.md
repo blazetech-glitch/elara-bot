@@ -22,4 +22,10 @@
 - [x] Audit Telegram chat-mode forwarding and owner recipient configuration.
 - [x] Route all chat-mode messages exclusively to owner ID 255627417402.
 - [x] Add routing isolation smoke coverage and restart Elara.
-- [ ] Push the owner-routing update to GitHub.
+- [x] Push the owner-routing update to GitHub.
+- [x] Audit Telegram command coverage, membership checks, and existing menu assets.
+- [x] Expand the Telegram command menu with practical Elara commands matching the WhatsApp categories.
+- [x] Add a rotating menu image command with owner-safe remote assets and fallback handling.
+- [x] Require regular Telegram users to join @elarapairgc before command use while exempting owner 255627417402.
+- [x] Test membership gating, owner exemption, command responses, and menu rotation.
+- [x] Restart Elara and push the Telegram expansion to GitHub.
