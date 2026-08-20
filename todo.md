@@ -54,3 +54,4 @@
 - [x] Provide the shared-site deployment steps and required secrets.
 - [x] Repair the Render no-open-port failure so the Elara panel binds to the assigned PORT.
 - [ ] Redeploy the latest bot commit and verify the Render service remains Live.
+- [x] Remove the direct Render panel access-key prompt from the public panel UI while preserving private adapter authorization.
