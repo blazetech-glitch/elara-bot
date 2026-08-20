@@ -11,6 +11,10 @@ services:
         value: production
       - key: ELARA_AUTO_START
         value: "true"
+      - key: ELARA_PROVIDER
+        sync: false
+      - key: TELEGRAM_OFFICIAL_CHANNEL
+        value: "@elarapairgc"
       - key: BOT_TOKEN
         sync: false
       - key: WHATSAPP_NUMBER

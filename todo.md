@@ -34,3 +34,9 @@
 - [x] Locate and verify the preserved user-provided Elara artwork from the earlier branding assets.
 - [x] Remove external stock-image URLs from Telegram menu rotation and use only the provided artwork.
 - [x] Validate the asset-only rotation, restart Elara, and push the correction to GitHub.
+- [x] Audit startup prompts, WhatsApp pairing, Telegram token loading, and panel deployment files.
+- [x] Add a fresh-start prompt with WhatsApp and Telegram provider choices.
+- [x] Implement interactive WhatsApp number pairing with code display and continuation into normal bot logic.
+- [x] Implement interactive Telegram token setup with connection validation and official-channel membership enforcement.
+- [x] Add deployment documentation/configuration for panels and Katabump without committing credentials.
+- [x] Validate both provider paths, restart Elara, and push the deployment-ready update.

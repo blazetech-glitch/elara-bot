@@ -16,8 +16,23 @@
       "value": "production"
     },
     "ELARA_AUTO_START": {
-      "description": "Skip the interactive startup prompt on hosted workers.",
+      "description": "Enable hosted auto-start after the provider credentials are configured.",
       "value": "true"
+    },
+    "ELARA_PROVIDER": {
+      "description": "Connection mode: whatsapp, telegram, or both.",
+      "required": false,
+      "value": ""
+    },
+    "TELEGRAM_OFFICIAL_CHANNEL": {
+      "description": "Official Elara Telegram channel username.",
+      "required": false,
+      "value": "@elarapairgc"
+    },
+    "WHATSAPP_NUMBER": {
+      "description": "WhatsApp number with country code for non-interactive first pairing.",
+      "required": false,
+      "value": ""
     },
     "BOT_TOKEN": {
       "description": "Telegram bot token used by the pairing service.",
