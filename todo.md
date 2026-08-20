@@ -52,3 +52,5 @@
 - [x] Isolate WhatsApp session control per user; Telegram remains a shared official Elara bot protected by channel membership.
 - [x] Add concurrency, isolation, and deployment configuration tests.
 - [x] Provide the shared-site deployment steps and required secrets.
+- [x] Repair the Render no-open-port failure so the Elara panel binds to the assigned PORT.
+- [ ] Redeploy the latest bot commit and verify the Render service remains Live.

@@ -1,7 +1,11 @@
 const http = require('http');
 const crypto = require('crypto');
 const { fork } = require('child_process');
-const startpairing = require('./pair');
+let startpairing;
+function getStartPairing() {
+  if (!startpairing) startpairing = require('./pair');
+  return startpairing;
+}
 
 const PORT = Number(process.env.PORT || 3000);
 const PANEL_KEY = process.env.ELARA_PANEL_KEY || '';
@@ -87,7 +91,8 @@ async function handle(req, res) {
     const key = `${ownerId}:${sessionRef}`;
     if (url.pathname === '/disconnect') {
       const session = adapterSessions.get(key);
-      if (session && startpairing.disconnectSession) startpairing.disconnectSession(session.phoneNumber);
+      const pairing = getStartPairing();
+      if (session && pairing.disconnectSession) pairing.disconnectSession(session.phoneNumber);
       adapterSessions.set(key, { ...session, ownerId, sessionRef, phoneNumber: session?.phoneNumber || phoneNumber, status: 'disconnected' });
       return json(res, 200, { success: true, status: 'disconnected' });
     }
@@ -95,7 +100,7 @@ async function handle(req, res) {
     const existing = adapterSessions.get(key);
     const session = { ownerId, sessionRef, phoneNumber, status: existing?.status === 'connected' ? 'connected' : 'awaiting_pairing', code: null, expiresAt: null, lastError: null };
     adapterSessions.set(key, session);
-    startpairing(phoneNumber, {
+    getStartPairing()(phoneNumber, {
       onPairingCode: code => { session.code = code; session.expiresAt = new Date(Date.now() + 180000).toISOString(); },
       onConnectionUpdate: state => { session.status = state === 'open' ? 'connected' : 'awaiting_pairing'; }
     }).catch(error => { session.status = 'awaiting_pairing'; session.lastError = error.message; });
@@ -118,7 +123,7 @@ async function handle(req, res) {
       if (!/^\d{7,15}$/.test(number)) return json(res, 400, { error: 'Enter a valid phone number with country code.' });
       const session = { id: id(), type: 'whatsapp', number, status: 'pairing', createdAt: Date.now() };
       sessions.set(session.id, session);
-      startpairing(number, { onPairingCode: code => { session.code = code; }, onConnectionUpdate: state => { session.status = state === 'open' ? 'connected' : 'disconnected'; } }).catch(error => { session.status = 'error'; session.error = error.message; });
+      getStartPairing()(number, { onPairingCode: code => { session.code = code; }, onConnectionUpdate: state => { session.status = state === 'open' ? 'connected' : 'disconnected'; } }).catch(error => { session.status = 'error'; session.error = error.message; });
       return json(res, 202, { sessionId: session.id, status: session.status });
     }
     const token = String(body.token || '').trim();

@@ -4,7 +4,7 @@
   "description": "Elara WhatsApp bot",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node render-entry.js",
     "dev": "nodemon index.js",
     "bot": "node bot.js",
     "test": "node --check index.js && node --check bot.js && node --check pair.js"
