@@ -118,7 +118,21 @@ const owner = JSON.parse(fs.readFileSync('./allfunc/owner.json'))
 const Premium = JSON.parse(fs.readFileSync('./allfunc/premium.json'))
 const isCmd = body.startsWith(prefix);
 const args = body.slice(prefix.length).trim().split(/ +/); // everything after the dot
-const command = args.shift().toLowerCase(); // first word is the command
+const rawCommand = args.shift().toLowerCase(); // first word is the command
+const commandAliases = {
+  openai: 'elaraai',
+  iconai: 'elaraai',
+  nexaai: 'elaraai',
+  papt: 'paptt',
+  save: 'savestatus',
+  sticker: 'stickerthf',
+  tosticker: 'stickerthf',
+  self: 'mode',
+  link: 'stickerthf',
+  antilinkkick: 'antilink',
+  furbrat: 'stickerthf'
+};
+const command = commandAliases[rawCommand] || rawCommand;
 const text = args.join(" ")
 const botNumber = await devtrust.decodeJid(devtrust.user.id)
 const isCreator = [botNumber, ...owner].map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender)
@@ -129,7 +143,7 @@ const isPremium = [botNumber, ...Premium].map(v => v.replace(/[^0-9]/g, '') + '@
 const qtext = q = args.join(" ")
 const tempMailData = {};
 const quoted = m.quoted ? m.quoted : m
-const from = mek.key.remoteJid
+const from = m.key.remoteJid
 const { spawn: spawn, exec } = require('child_process')
 const sender = m.isGroup ? (m.key.participant ? m.key.participant : m.participant) : m.key.remoteJid
 const groupMetadata = m.isGroup ? await devtrust.groupMetadata(from).catch(e => {}) : ''
@@ -1051,7 +1065,7 @@ case 'menu':{
 │➤ ${prefix}𝐦𝐞𝐭𝐚𝐛𝐜𝐧-𝐚𝐢
 │➤ ${prefix}𝐠𝐫𝐨𝐯𝐧𝐧𝐤-𝐚𝐢
 │➤ ${prefix}𝐝𝐞𝐞𝐩𝐬𝐣𝐟𝐤𝐞𝐞𝐤
-│➤ ${prefix}𝐧𝐞𝐱𝐚𝐚𝐢
+│➤ ${prefix}𝐞𝐥𝐚𝐫𝐚𝐚𝐢
 │➤ ${prefix}𝐧𝐚𝐧𝐨𝐛𝐚𝐧𝐚𝐧𝐚
 │➤ ${prefix}𝐩𝐡𝐨𝐭𝐨𝐚𝐢
 │➤ ${prefix}𝐬𝐭𝐨𝐫𝐲𝐚𝐢
@@ -5625,7 +5639,7 @@ case 'jid':{
             reply(from)
            }
           break;
-case 'bass': case 'blown': case 'deep': case 'earrape': case 'fast': case 'fat': case 'nightcore': case 'reverse': case 'robot': case 'slow': case 'smooth': case 'squirrel':
+case 'bass': case 'blown': case 'deep': case 'earrape': case 'fast': case 'fat': case 'nightcore': case 'reverse': case 'robot': case 'slow': case 'smooth': case 'squirrel': case 'echo': case 'chipmunk': case 'normal':
     try {
         let set;
         if (/bass/.test(command)) set = '-af equalizer=f=54:width_type=o:width=2:g=20';
@@ -5640,6 +5654,9 @@ case 'bass': case 'blown': case 'deep': case 'earrape': case 'fast': case 'fat':
         else if (/slow/.test(command)) set = '-filter:a "atempo=0.7,asetrate=44100"';
         else if (/smooth/.test(command)) set = '-filter:v "minterpolate=\'mi_mode=mci:mc_mode=aobmc:vsbmc=1:fps=120\'"';
         else if (/squirrel/.test(command)) set = '-filter:a "atempo=0.5,asetrate=65100"';
+        else if (/echo/.test(command)) set = '-af aecho=0.8:0.9:70:0.3';
+        else if (/chipmunk/.test(command)) set = '-filter:a "atempo=1.35,asetrate=60000"';
+        else if (/normal/.test(command)) set = '-c:a libmp3lame';
         if (set) {
             if (/audio/.test(mime)) {
                 let media = await devtrust.downloadAndSaveMediaMessage(quoted);
@@ -8033,9 +8050,134 @@ case "grovnnk-ai": {
     }
 }
 break;
+}
 
 // --- COMMAND HANDLER ---
 switch (command) {
+
+    case 'promoteall': {
+      if (!m.isGroup) return reply('❌ This command only works in groups.');
+      if (!isAdmins && !isCreator) return reply('❌ Admin only.');
+      if (!isBotAdmins) return reply('❌ Elara must be a group admin.');
+      const promoteTargets = participants.filter(member => !groupAdmins.includes(member.id)).map(member => member.id);
+      if (!promoteTargets.length) return reply('✅ Everyone is already an admin.');
+      await devtrust.groupParticipantsUpdate(m.chat, promoteTargets, 'promote');
+      return reply(`✅ Promoted ${promoteTargets.length} member(s).`);
+    }
+    break;
+
+    case 'join': {
+      if (!isCreator) return reply('❌ Owner only.');
+      const inviteLink = text || 'https://chat.whatsapp.com/HxCDA2s89LMEZMyixnTSy5';
+      const joined = await autoJoinGroup(devtrust, inviteLink);
+      return reply(joined ? '✅ Elara joined the requested group.' : '❌ Elara could not join that group. Check the invite link.');
+    }
+    break;
+
+    case 'bird':
+    case 'koala': {
+      try {
+        const response = await axios.get(`https://some-random-api.com/img/${command}`);
+        const imageUrl = response.data?.link || response.data?.url;
+        if (!imageUrl) throw new Error('No image returned');
+        return devtrust.sendMessage(m.chat, { image: { url: imageUrl }, caption: `🐾 ${command} image by Elara` }, { quoted: m });
+      } catch (error) {
+        return reply(`❌ Could not fetch a ${command} image right now.`);
+      }
+    }
+    break;
+
+    case 'animeavatar': {
+      try {
+        const response = await axios.get('https://api.waifu.pics/sfw/waifu');
+        return devtrust.sendMessage(m.chat, { image: { url: response.data.url }, caption: '🌸 Anime avatar by Elara' }, { quoted: m });
+      } catch (error) {
+        return reply('❌ Could not fetch an anime avatar right now.');
+      }
+    }
+    break;
+
+    case 'time': {
+      return reply(`🕒 Current Lagos time: ${formatLagosTime()}`);
+    }
+    break;
+
+    case 'horoscope': {
+      const sign = (args[0] || 'aries').toLowerCase();
+      try {
+        const response = await axios.get(`https://horoscope-app-api.vercel.app/api/v1/get-horoscope/daily?sign=${encodeURIComponent(sign)}&day=TODAY`);
+        const data = response.data?.data;
+        return reply(`♈ ${sign.toUpperCase()} horoscope\\n\\n${data?.horoscope || 'No horoscope returned today.'}`);
+      } catch (error) {
+        return reply('❌ Horoscope service is unavailable right now.');
+      }
+    }
+    break;
+
+    case 'inspire': {
+      try {
+        const response = await axios.get('https://zenquotes.io/api/random');
+        const quote = response.data?.[0];
+        return reply(`✨ ${quote?.q || 'Keep moving forward.'}\\n— ${quote?.a || 'Elara'}`);
+      } catch (error) {
+        return reply('✨ Keep moving forward.');
+      }
+    }
+    break;
+
+    case 'quotememe': {
+      try {
+        const response = await axios.get('https://meme-api.com/gimme');
+        const meme = response.data;
+        return devtrust.sendMessage(m.chat, { image: { url: meme.url }, caption: `🖼️ ${meme.title || 'Quote meme'}\\n${meme.postLink || ''}` }, { quoted: m });
+      } catch (error) {
+        return reply('❌ Quote meme service is unavailable right now.');
+      }
+    }
+    break;
+
+    case 'download': {
+      if (!m.quoted) return reply('❌ Reply to an image, video, audio, or document to download it.');
+      try {
+        const media = await devtrust.downloadMediaMessage(m.quoted);
+        const mimeType = m.quoted.mimetype || 'application/octet-stream';
+        return devtrust.sendMessage(m.chat, { document: media, mimetype: mimeType, fileName: `elara-download-${Date.now()}` }, { quoted: m });
+      } catch (error) {
+        return reply('❌ I could not download that quoted media.');
+      }
+    }
+    break;
+
+    case 'setwelcome':
+    case 'setgoodbye': {
+      if (!m.isGroup) return reply('❌ This command only works in groups.');
+      if (!isAdmins && !isCreator) return reply('❌ Admin only.');
+      const settingKey = command === 'setwelcome' ? 'welcomeText' : 'goodbyeText';
+      if (!text) return reply(`❌ Provide the ${command === 'setwelcome' ? 'welcome' : 'goodbye'} message text.`);
+      setSetting(m.chat, settingKey, text);
+      return reply(`✅ ${command === 'setwelcome' ? 'Welcome' : 'Goodbye'} message saved for this group.`);
+    }
+    break;
+
+    case 'welcome':
+    case 'goodbye': {
+      if (!m.isGroup) return reply('❌ This command only works in groups.');
+      const settingKey = command === 'welcome' ? 'welcomeText' : 'goodbyeText';
+      const savedText = getSetting(m.chat, settingKey, 'Not configured');
+      return reply(`📌 ${command}: ${savedText}`);
+    }
+    break;
+
+    case 'antidelete':
+    case 'anticallblock':
+    case 'antispam':
+    case 'autotyping': {
+      if (!isCreator && !isAdmins) return reply('❌ Admin only.');
+      const enabled = !getSetting(m.chat, command, false);
+      setSetting(m.chat, command, enabled);
+      return reply(`✅ ${command} ${enabled ? 'enabled' : 'disabled'} for this chat.`);
+    }
+    break;
 
     case 'delay': {
         if (!args[0]) 
@@ -8094,8 +8236,6 @@ switch (command) {
         }
     }
     break; // ✅ BREAK HERE
-
-}
 
 // --- IosTravas function ---
 async function IosTravas(sock, X) {

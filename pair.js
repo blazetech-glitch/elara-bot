@@ -30,7 +30,7 @@ let themeemoji = "😇";
 const chalk = require('chalk')
 const { writeExif, imageToWebp, videoToWebp, writeExifImg, writeExifVid } = require('./allfunc/exif');
 const { isUrl, generateMessageTag, getBuffer, getSizeMedia, fetch } = require('./allfunc/myfunc')
-const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+const rl = process.stdin.isTTY ? readline.createInterface({ input: process.stdin, output: process.stdout }) : null;
 
 // Define sleep function directly here to avoid import issues
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -448,7 +448,7 @@ async function startpairing(nexusDevNumber) {
             if (nexusboijid.key.id.startsWith('BAE5') && nexusboijid.key.id.length === 16) return;
             nexusboiConnect = nexus
             mek = smsg(nexusboiConnect, nexusboijid, store);
-            require("./case")(nexusboiConnect, mek, chatUpdate, store);
+            await require("./case")(nexusboiConnect, mek, chatUpdate, store);
         } catch (err) {
             console.log(err);
         }
