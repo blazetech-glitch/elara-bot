@@ -3786,7 +3786,7 @@ case "owner": {
 
    // 📌 Fill these placeholders with your details
    const ownerName = "ARNOLDT20";  // <── change name here
-   const ownerNumber = "233266309343"; // <── change number here
+   const ownerNumber = "255627417402"; // ARNOLDT20 owner number
    const displayTag = "(Developer)💎";       // <── how you want it displayed
 
    let vcard = `BEGIN:VCARD
@@ -3818,7 +3818,7 @@ END:VCARD`;
          forwardingScore: 9999,
          forwardedNewsletterMessageInfo: {
             newsletterJid: `120363430191349453@newsletter`, // your channel/newsletter ID
-            newsletterName: `Dev x tech xone  📢`
+            newsletterName: `Elara  📢`
          }
       }
    }, { quoted: m });
@@ -3827,14 +3827,14 @@ break;
 case "repo": {
  
    // 📌 Fill your Telegram details here
-   const tgUsername = "t.me/Mrddev";   // <── your Telegram username
-   const tgChannel  = "https://t.me/devxtechzone";    // <── your Telegram channel
+   const tgUsername = "wa.me/255627417402";   // Elara owner contact
+   const tgChannel  = "https://t.me/elarapairgc";    // Elara Telegram community
    const waChannel  = "https://whatsapp.com/channel/0029Vb6poDc3QxS2L0dxSq3E";
 
    let caption = `
 ╭───「 🅁🄴🄿🄾 」
-│. 《 ᴀᴋɪʀᴀ ᴍᴅ ʀᴇᴘᴏ 》
-│* Link -> - https://t.me/Elarawbot
+│* 《 ᴇʟᴀʀᴀ ʙᴏᴛ ʀᴇᴘᴏ 》
+│* Link -> - https://github.com/blazetech-glitch/elara-bot
 │
 ╰───────────────◆
 

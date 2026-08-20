@@ -27,28 +27,24 @@ let userIDs = new Set();
 
 const REQUIRED_GROUP = '@elarapairgc';
 const REQUIRED_CHANNELS = [
-  '@devxtechzone',
-  '@Lordempiretech',
-  '@empireTechBackup',
-  '@devil_shop_hack'
+  '@elarapairgc'
 ];
 
 
 const SOCIAL_LINKS = {
   whatsapp: 'https://whatsapp.com/channel/0029Vb6poDc3QxS2L0dxSq3E',
   telegram_channels: [
-    'https://t.me/devxtechzone',
-    'https://t.me/devil_shop_hack',
+    'https://t.me/elarapairgc',
   ],
   telegram_group: '@elarapairgc',
-  channel1: 'https://t.me/devxtechzone',
-  channel2: 'https://t.me/Lordempiretech',
-  channel3: 'https://t.me/empireTechBackup',
-  channel4: 'https://t.me/devil_shop_hack',
+  channel1: 'https://t.me/elarapairgc',
+  channel2: 'https://t.me/elarapairgc',
+  channel3: 'https://t.me/elarapairgc',
+  channel4: 'https://t.me/elarapairgc',
   group1: 'https://t.me/elarachatzone',
   group2: 'https://t.me/elarapairgc',
   group3: 'https://t.me/elarapairgc',
-  developer: 'https://t.me/Mrddev',
+  developer: 'https://wa.me/255627417402',
 };
 
 
@@ -62,7 +58,7 @@ const exists = async (filePath) => {
 };
 
 const loadAdminIDs = async () => {
-  const ownerID = '6170894121';
+  const ownerID = process.env.TELEGRAM_OWNER_ID || '255627417402';
   const defaultAdmins = [ownerID];
 
   if (!(await exists(adminFilePath))) {
@@ -347,7 +343,7 @@ bot.on('callback_query', async (query) => {
     const captionText = `
 \`\`\`
 ━━「 𝐁𝐎𝐓 𝐈𝐍𝐅𝐎 」━━╼
-➺ 𝐁𝐨𝐭 𝐍𝐚𝐦𝐞 : ɴᴇxᴀ xᴍᴅ ᴠ2
+➺ 𝐁𝐨𝐭 𝐍𝐚𝐦𝐞 : Elara ᴠ2
 ➺ 𝐃𝐞𝐯       : ARNOLDT20
 ➺ 𝐒𝐭𝐚𝐭𝐮𝐬    : ᴏɴʟɪɴᴇ & sᴛᴀʙʟᴇ
 ┗━━━━━━━━━━━━━━━╼
@@ -370,8 +366,8 @@ bot.on('callback_query', async (query) => {
         reply_markup: {
           inline_keyboard: [
             [
-              { text: "❃ OWNER ❃", url: "https://t.me/Mrddev" },
-              { text: "📢 DEV CHANNEL", url: "https://t.me/devxtechzone" }
+              { text: "❃ OWNER ❃", url: "https://wa.me/255627417402" },
+              { text: "📢 DEV CHANNEL", url: "https://t.me/elarapairgc" }
             ],
             [
               { text: "🔙 BACK", callback_data: "start_bot" }
@@ -387,8 +383,8 @@ bot.on('callback_query', async (query) => {
         reply_markup: {
           inline_keyboard: [
             [
-              { text: "❃ OWNER ❃", url: "https://t.me/Mrddev" },
-              { text: "📢 DEV CHANNEL", url: "https://t.me/devxtechzone" }
+              { text: "❃ OWNER ❃", url: "https://wa.me/255627417402" },
+              { text: "📢 DEV CHANNEL", url: "https://t.me/elarapairgc" }
             ],
             [
               { text: "🔙 BACK", callback_data: "start_bot" }
@@ -406,7 +402,7 @@ bot.on('callback_query', async (query) => {
     try {
       
       await bot.sendPoll(chatId,
-        "🌹 ɴᴇxᴀ-xᴍᴅ ᴍᴇɴᴜ — sᴇʟᴇᴄᴛ ᴏᴘᴛɪᴏɴ",
+        "🌹 Elara ᴍᴇɴᴜ — sᴇʟᴇᴄᴛ ᴏᴘᴛɪᴏɴ",
         [
           "🔗 ᴘᴀɪʀ ᴅᴇᴠɪᴄᴇ (/pair)",
           "🗑️ ᴅᴇʟᴇᴛᴇ ᴘᴀɪʀ (/delpair)",
@@ -464,7 +460,7 @@ bot.on('callback_query', async (query) => {
   if (data === 'start_bot') {
     try {
       await bot.sendMessage(chatId, `
-🌹 *ɴᴇxᴀ-xᴍᴅ ᴠ²*  
+🌹 *Elara ᴠ²*
 
 ᴄʜᴏᴏsᴇ ʏᴏᴜʀ ᴘʀᴇғᴇʀʀᴇᴅ ᴍᴇɴᴜ sᴛʏʟᴇ:
 `, {
@@ -554,7 +550,7 @@ bot.onText(/\/pair (.+)/, requireMembership(async (msg, match) => {
     const pairedCount = files.filter(file => file.endsWith('@s.whatsapp.net')).length;
     
     if (pairedCount >= 30) {
-      return bot.sendMessage(chatId, "Pairing limit reached. Try again later or inform my owner t.me/Mrddev .",
+      return bot.sendMessage(chatId, "Pairing limit reached. Try again later or inform my owner wa.me/255627417402 .",
             { 
       parse_mode: 'Markdown',
       reply_markup: {
@@ -839,7 +835,7 @@ bot.onText(/\/help/, async (msg) => {
   const helpText = `
 \`\`\`
 ╭──────────────────────────────╮
-        🌄 ɴᴇxᴀ-xᴍᴅ ʜᴇʟᴘ 🌄
+        🌄 Elara ʜᴇʟᴘ 🌄
 ╰──────────────────────────────╯
 
 🆘 ʜᴇʟᴘ / ᴄᴏᴍᴍᴀɴᴅs
@@ -852,8 +848,8 @@ bot.onText(/\/help/, async (msg) => {
 
 ──────────────────────────────
 
-📖 ᴀʙᴏᴜᴛ ɴᴇxᴀ-xᴍᴅ
-ɴᴇxᴀ-xᴍᴅ ᴠ² ɪs ᴀ sᴍᴀʀᴛ ᴀssɪsᴛᴀɴᴛ ʙᴏᴛ
+📖 ᴀʙᴏᴜᴛ Elara
+Elara ᴠ² ɪs ᴀ sᴍᴀʀᴛ ᴀssɪsᴛᴀɴᴛ ʙᴏᴛ
 ᴅᴇsɪɢɴᴇᴅ ᴛᴏ ʜᴇʟᴘ ʏᴏᴜ ᴘᴀɪʀ ᴀɴᴅ ᴍᴀɴᴀɢᴇ
 ᴡʜᴀᴛsᴀᴘᴘ ᴅᴇᴠɪᴄᴇs ᴇᴀsɪʟʏ ᴜsɪɴɢ sɪᴍᴘʟᴇ
 ᴄᴏᴍᴍᴀɴᴅs. 
@@ -878,7 +874,7 @@ bot.onText(/\/help/, async (msg) => {
 ──────────────────────────────
 
 ⚡ sʏsᴛᴇᴍ ɪɴꜰᴏ
-ᴘᴏᴡᴇʀᴇᴅ ʙʏ ɴᴇxᴀ-xᴍᴅ • ᴅᴇᴠx ᴛᴇᴄʜ ᴢᴏɴᴇ
+ᴘᴏᴡᴇʀᴇᴅ ʙʏ Elara • ARNOLDT20
 \`\`\`
 `;
 
@@ -887,8 +883,8 @@ bot.onText(/\/help/, async (msg) => {
     reply_markup: {
       inline_keyboard: [
         [
-          { text: "❃ OWNER ❃", url: "https://t.me/Mrddev" },
-          { text: "📢 DEV CHANNEL", url: "https://t.me/devxtechzone" }
+          { text: "❃ OWNER ❃", url: "https://wa.me/255627417402" },
+          { text: "📢 DEV CHANNEL", url: "https://t.me/elarapairgc" }
         ],
         [
           { text: "🔙 BACK", callback_data: "start_bot" }
@@ -899,7 +895,7 @@ bot.onText(/\/help/, async (msg) => {
 });
 
 const activeChats = {}; 
-const ownerId = 6170894121; 
+const ownerId = Number(process.env.TELEGRAM_OWNER_ID || '255627417402');
 
 
 bot.onText(/\/chat/, async (msg) => {
@@ -907,7 +903,7 @@ bot.onText(/\/chat/, async (msg) => {
   activeChats[chatId] = true;
 
   await bot.sendMessage(chatId, `
-🌹 *ɴᴇxᴀ-xᴍᴅ ᴄʜᴀᴛ ᴍᴏᴅᴇ* 🌹
+🌹 *Elara ᴄʜᴀᴛ ᴍᴏᴅᴇ* 🌹
 
 Yᴏᴜ ᴄᴀɴ ɴᴏᴡ sᴇɴᴅ ᴍᴇ ᴀ ᴍᴇssᴀɢᴇ dɪʀᴇᴄᴛʟʏ.
 Aʟʟ ᴍᴇssᴀɢᴇs ᴡɪʟʟ ʙᴇ ꜰᴏʀᴡᴀʀᴅᴇᴅ ᴛᴏ ᴛʜᴇ ᴏᴡɴᴇʀ.

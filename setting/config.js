@@ -73,6 +73,6 @@ require('fs').watchFile(file, () => {
   require(file)
 })
 
-//Property of Kallmetrust  
+// Elara project configuration
 //owner number:255627417402
 //telegram owner: ARNOLDT20

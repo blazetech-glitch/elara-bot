@@ -136,7 +136,7 @@ const initializeBot = async () => {
 
 function launchBot() {
     console.clear();
-    console.log(chalk.green('cyber Space solos....\n'));
+    console.log(chalk.green('Elara is starting....\n'));
 
     let telegramLoaded = false;
     let whatsappLoaded = false;
