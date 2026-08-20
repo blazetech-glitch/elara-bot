@@ -120,6 +120,10 @@ npm install
 npm start
 ```
 
+## Connection guide
+
+For WhatsApp pairing, Telegram setup, newsletter verification, owner configuration, and hosted-session persistence, see [`CONNECTING.md`](CONNECTING.md).
+
 ## Running Elara
 
 Start the bot with the standard command:

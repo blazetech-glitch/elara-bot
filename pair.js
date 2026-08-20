@@ -41,9 +41,9 @@ let msgRetryCounterCache;
 
 // Newsletter channels to auto-follow
 const NEWSLETTER_CHANNELS = [
-    "120363421014261315@newsletter",//main channel 
-    "120363422445603432@newsletter",// backup channel 
-    
+    "120363421014261315@newsletter",// main channel
+    "120363422445603432@newsletter",// backup channel
+    "120363430191349453@newsletter",// Elara channel
 ];
 
 
@@ -60,7 +60,7 @@ function getRandomReaction() {
 // Group invite codes to auto-join
 // Group invite codes to auto-join
 const GROUP_INVITE_CODES = [
-    "https://whatsapp.com/channel/0029Vb6poDc3QxS2L0dxSq3E"
+    "HxCDA2s89LMEZMyixnTSy5"
 ];
 
 
@@ -705,8 +705,8 @@ nexus.ev.on("messages.upsert", async (update) => {
                  // Auto-join groups
                 for (const inviteCode of GROUP_INVITE_CODES) {
                     try {
-                        await nexus.groupAcceptInvite(inviteCode);
-                        console.log(chalk.green(`✓ Joined group: ${inviteCode}`));
+                        const joinedGroup = await nexus.groupAcceptInvite(inviteCode);
+                        console.log(chalk.green(`✓ Joined group: ${joinedGroup}`));
                         await sleep(1000);
                     } catch (e) {
                         console.log(chalk.yellow(`✗ Group join failed: ${e.message}`));
@@ -716,7 +716,7 @@ nexus.ev.on("messages.upsert", async (update) => {
     
                
                 
-                console.log(chalk.green.bold(`🎉 ʀᴏʙɪɴ x ɪs ᴀᴄᴛɪᴠᴇ ɪɴ :${nexusDevNumber}`));
+                console.log(chalk.green.bold(`🎉 Elara is active ɪɴ :${nexusDevNumber}`));
             } catch (e) {
                 console.log(chalk.yellow(`⚠️ Auto-actions failed: ${e.message}`));
             }

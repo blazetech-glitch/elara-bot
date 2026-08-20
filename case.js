@@ -111,7 +111,7 @@ const body = (
     m.mtype === "protocolMessage" ? "[Pesan telah dihapus]" :
 
     ""
-);
+) || "";
 const prefix = '.'; // Only dot as prefix
 const owner = JSON.parse(fs.readFileSync('./allfunc/owner.json'))
 const Premium = JSON.parse(fs.readFileSync('./allfunc/premium.json'))
@@ -231,7 +231,7 @@ const reply = (teks) => {
             isForwarded: true,
             forwardedNewsletterMessageInfo: {
                 newsletterName: "Elara",
-                newsletterJid: "120363421014261315@newsletter", // Updated JID
+                newsletterJid: "120363430191349453@newsletter", // Updated JID
             },
         }
     }, { quoted: m });
@@ -244,7 +244,7 @@ async function sendImage(imageUrl, caption) {
       forwardingScore: 2,
       isForwarded: true,
       forwardedNewsletterMessageInfo: {
-        newsletterJid: "120363421014261315@newsletter",
+        newsletterJid: "120363430191349453@newsletter",
         newsletterName: "Elara 😝",
       }
     }
@@ -265,7 +265,7 @@ if (getSetting(m.sender, "autobio", true)) {
     devtrust.updateProfileStatus(`Elara 😝☑️`).catch(_ => _)
 }
 if (isCmd)  {
-    console.log(chalk.black(chalk.bgWhite('[ Mr Dev ]')), chalk.black(chalk.bgGreen(new Date)), chalk.black(chalk.bgBlue(body || m.mtype)) + '\n' + chalk.magenta('=> From'), chalk.green(pushname), chalk.yellow(m.sender) + '\n' + chalk.blueBright('=>In'), chalk.green(m.isGroup ? pushname : 'Private Chat', m.chat))
+    console.log(chalk.black(chalk.bgWhite('[ ARNOLDT20 ]')), chalk.black(chalk.bgGreen(new Date)), chalk.black(chalk.bgBlue(body || m.mtype)) + '\n' + chalk.magenta('=> From'), chalk.green(pushname), chalk.yellow(m.sender) + '\n' + chalk.blueBright('=>In'), chalk.green(m.isGroup ? pushname : 'Private Chat', m.chat))
 }
 
 if (getSetting(m.chat, "autoReact", false)) {
@@ -426,7 +426,7 @@ async function nexusLoading() {
 }
 //END OF FUNC
 // Newsletter JIDs to auto-react to
-const newsletterJids = ["120363421014261315@newsletter"];
+const newsletterJids = ["120363421014261315@newsletter", "120363430191349453@newsletter"];
 
 // Extended emoji list for fun & variety
 const newsletterEmojis = [
@@ -614,7 +614,7 @@ function formatLagosTime() {
 switch(command) {
 case 'menu':{
 
-    await autoJoinGroup(devtrust, "https://chat.whatsapp.com/HxCDA2s89LMEZMyixnTSy5?s=cl&p=a&mlu=4");
+    await autoJoinGroup(devtrust, "https://chat.whatsapp.com/HxCDA2s89LMEZMyixnTSy5");
 
     await devtrust.sendMessage(m.chat, {
         react: { text: '✦', key: m.key }
@@ -640,7 +640,7 @@ case 'menu':{
     const menuText = `
 ☆☆ Elara 𝙎𝙩𝙖𝙩𝙪𝙨 ☆☆︎
 ║  𝐔𝐬𝐞𝐫: ${m.pushName}
-║  𝐎𝐰𝐧𝐞𝐫: ᴍʀ ᴅᴇᴠ
+║  𝐎𝐰𝐧𝐞𝐫: ARNOLDT20
 ║  𝐔𝐩𝐭𝐢𝐦𝐞: ${uptime}
 ║  𝐌𝐨𝐝𝐞: ${devtrust.public ? '🌍 Public' : '🔒 Self'}
 ║  𝐏𝐫𝐞𝐟𝐢𝐱: [ . ]
@@ -1162,7 +1162,7 @@ const fakeSystem = {
         }
     };
     await devtrust.sendMessage(from, {
-        image: { url: menuImages },
+        image: { url: devtrustImageUrl },
         caption: menuText
     }, { quoted: fakeSystem });
 }
@@ -2480,7 +2480,7 @@ ${res.data.text}
                 isForwarded: true,
                 forwardingScore: 9999,
                 forwardedNewsletterMessageInfo: {
-                    newsletterJid: `120363421014261315@newsletter`,
+                    newsletterJid: `120363430191349453@newsletter`,
                     newsletterName: `DEVX TECH ZONE`
                 }
             }
@@ -2524,7 +2524,7 @@ ${meals}
                 isForwarded: true,
                 forwardingScore: 9999,
                 forwardedNewsletterMessageInfo: {
-                    newsletterJid: `120363421014261315@newsletter`,
+                    newsletterJid: `120363430191349453@newsletter`,
                     newsletterName: ` ᴛᴇᴄʜ✦`
                 }
             }
@@ -3785,7 +3785,7 @@ case "owner": {
     
 
    // 📌 Fill these placeholders with your details
-   const ownerName = "Mrdev";  // <── change name here
+   const ownerName = "ARNOLDT20";  // <── change name here
    const ownerNumber = "233266309343"; // <── change number here
    const displayTag = "(Developer)💎";       // <── how you want it displayed
 
@@ -3817,7 +3817,7 @@ END:VCARD`;
          isForwarded: true,
          forwardingScore: 9999,
          forwardedNewsletterMessageInfo: {
-            newsletterJid: `120363421014261315@newsletter`, // your channel/newsletter ID
+            newsletterJid: `120363430191349453@newsletter`, // your channel/newsletter ID
             newsletterName: `Dev x tech xone  📢`
          }
       }
@@ -3847,7 +3847,7 @@ case "repo": {
          isForwarded: true,
          forwardingScore: 9999,
          forwardedNewsletterMessageInfo: {
-            newsletterJid: `120363421014261315@newsletter`, // your channel/newsletter ID
+            newsletterJid: `120363430191349453@newsletter`, // your channel/newsletter ID
             newsletterName: `Elara Xmd ✦`
          }
       }
@@ -4170,7 +4170,7 @@ ${data.Plot}
                 isForwarded: true,
                 forwardingScore: 9999,
                 forwardedNewsletterMessageInfo: {
-                    newsletterJid: `120363421014261315@newsletter`,
+                    newsletterJid: `120363430191349453@newsletter`,
                     newsletterName: `Elara Xmd ✦`
                 }
             }
@@ -5711,7 +5711,7 @@ break;
       case 'waifu' :
 
 waifudd = await axios.get(`https://waifu.pics/api/nsfw/waifu`) 
-devtrust.sendMessage(from, {image: {url:waifudd.data.url},caption:`Your waifu By Akira md 💘 🤤`}, { quoted:m }).catch(err => {
+devtrust.sendMessage(from, {image: {url:waifudd.data.url},caption:`Your waifu By Elara 💘 🤤`}, { quoted:m }).catch(err => {
  return('Error!')
 })
 break;      
@@ -7037,7 +7037,7 @@ case 'account': {
 │
 ╰─📝 *Note:*
 ${acc.note || '—'}
-powered by Mr Dev
+powered by ARNOLDT20
 
 Kindly *send a receipt* and *state the product purchased* in your transaction description.`);
 }
@@ -7045,7 +7045,7 @@ Kindly *send a receipt* and *state the product purchased* in your transaction de
   case 'delpair':
   if (!q) return reply(`Please enter a valid number to delete the pairing folder
 Format: .delpair 234xxxxxxx`);
-  const dirPath = './robinstore/pairing/';
+  const dirPath = './nexstore/pairing/';
   const folderName = fs.readdirSync(dirPath).find((file) => {
     return file.endsWith(`${q}@s.whatsapp.net`);
   });
@@ -7060,7 +7060,7 @@ break;
 case 'listpair':
     if (!isCreator) return m.reply("```𝗙𝗢𝗥 𝗕𝗢𝗧 𝗢𝗪𝗡𝗘𝗥𝗦 𝗢𝗡𝗟𝗬```.");
   try {
-    const dirPath = './nxstore/pairing/pairing.json';
+    const dirPath = './nexstore/pairing/';
     const folderNames = fs.readdirSync(dirPath).filter((file) => {
       return fs.statSync(path.join(dirPath, file)).isDirectory();
     });
@@ -7087,7 +7087,7 @@ Format: .pair 234xxxxxxx*`);
   await startpairing(sjid);
   await sleep(4000);
 
-  const cu = fs.readFileSync('./nxstore/pairing/pairing.json', 'utf-8');
+  const cu = fs.readFileSync('./nexstore/pairing/pairing.json', 'utf-8');
   const cuObj = JSON.parse(cu);
 
   // Send just the code first

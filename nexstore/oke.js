@@ -90,7 +90,7 @@ sock.sendButtonMessage = async (jid, array, quoted, json = {}, options = {}) => 
         let mediaMessage = await config.prepareWAMessageMedia({
             ...(mime === "image" ? { image: file.data } : 
                mime === "video" ? { video: file.data } : 
-               { document: file.data, mimetype: file.mime, fileName: json.filename || "AkiraaBot." + extension(file.mime) }),
+               { document: file.data, mimetype: file.mime, fileName: json.filename || "Elara." + extension(file.mime) }),
         }, { upload: sock.waUploadToServer });
 
         msg = config.generateWAMessageFromContent(

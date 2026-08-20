@@ -10,3 +10,4 @@ nexstore/pairing/
 
 # Generated runtime databases
 runtimeUsage.json
+setting.json

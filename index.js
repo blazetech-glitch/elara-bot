@@ -78,14 +78,14 @@ const autoLoadPairs = async () => {
 
 const initializeBot = async () => {
     console.clear();
-    console.log(chalk.cyan(figlet.textSync('ʀᴏʙɪɴ x ʙᴏᴛ ᴀᴄᴛɪᴠᴇ', {
+    console.log(chalk.cyan(figlet.textSync('ELARA BOT ACTIVE', {
         font: 'Standard',
         horizontalLayout: 'default',
         verticalLayout: 'default'
     })));
     
     console.log(chalk.yellow('\n⚄︎══════════════════════⚄︎'));
-    console.log(chalk.green('Dev md v1'));
+    console.log(chalk.green('Elara v1'));
     console.log(chalk.yellow('⚄︎═════════════════════⚄︎\n'));
 
     await autoLoadPairs();
@@ -142,7 +142,7 @@ function launchBot() {
             console.log(chalk.blue('📱 Loading Telegram pairing system...'));
             require('./bot');
             telegramLoaded = true;
-            console.log(chalk.green('✅ Dev md ᴀᴄᴛɪᴠᴇ'));
+            console.log(chalk.green('✅ Elara ᴀᴄᴛɪᴠᴇ'));
         } catch (error) {
             console.log(chalk.red('❌ Failed to load Telegram bot (bot.js):'));
             console.log(chalk.red('   Error:', error.message));
@@ -187,14 +187,14 @@ function launchBot() {
     console.log(chalk.cyan('\n⚄︎═══════════════════════════════⚄︎'));
     console.log(chalk.bold.white('  ʙᴏᴛ ɪɴɪᴛɪᴀʟɪᴢᴀᴛɪᴏɴ sᴜᴍᴍᴀʀʀʏ        '));
     console.log(chalk.cyan('⚄︎════════════════════════════════⚄︎'));
-    console.log(telegramLoaded ? chalk.green( 'Dev md : ᴀᴄᴛɪᴠᴇ ✅') : chalk.red('❌ Dev x tech zone 2025'));
+    console.log(telegramLoaded ? chalk.green( 'Elara : ᴀᴄᴛɪᴠᴇ ✅') : chalk.red('❌ Elara'));
     console.log(whatsappLoaded ? chalk.green('✅ ᴡʜᴀᴛsᴀᴘᴘ ᴄᴏᴍᴍᴀɴᴅs: ᴀᴄᴛɪᴠᴇ') : chalk.red('❌ ᴡʜᴀᴛsᴀᴘᴘ ᴄᴏᴍᴍᴀᴍᴅs : ɪɴᴀᴄʏɪᴠᴇ'));
     console.log(chalk.cyan('⚄︎════════════════════════════════⚄︎\n'));
 
     if (!telegramLoaded && !whatsappLoaded) {
         console.log(chalk.red('⚠️  Warning: No bot systems loaded! Check your files.\n'));
     } else {
-        console.log(chalk.green('✅ Akira md is ᴀᴄᴛɪᴠᴇ!\n'));
+        console.log(chalk.green('✅ Elara is ᴀᴄᴛɪᴠᴇ!\n'));
     }
 
     // Error handlers

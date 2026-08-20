@@ -1,37 +1,37 @@
 const fs = require('fs')
 
-global.owner = "234" //owner number
-global.footer = "Mrdev" //footer section
+global.owner = "255627417402" //owner number
+global.footer = "ARNOLDT20" //footer section
 global.status = false //"self/public" section of the bot
 global.prefa = ['','!','.',',','🐤','🗿']
-global.owner = ['62']
+global.owner = ['255627417402']
 global.xprefix = '.'
 global.gambar = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/zmQIDKfnOheZyGkQ.jpeg"
-global.OWNER_NAME = "@Mrddev" //
-global.DEVELOPER = ["233266309343"] //
-global.BOT_NAME = "elara"
-global.bankowner = "Mrdev"
-global.creatorName = "Mrdev"
-global.ownernumber = '233266309343'  //creator number
+global.OWNER_NAME = "ARNOLDT20" //
+global.DEVELOPER = ["255627417402"] //
+global.BOT_NAME = "Elara"
+global.bankowner = "ARNOLDT20"
+global.creatorName = "ARNOLDT20"
+global.ownernumber = '255627417402'  //creator number
 global.location = "Nigeria,kwara"
 global.prefa = ['','!','.','#','&']
 //================DO NOT CHANGE OR YOU'LL GET AN ERROR=============\
-global.footer = "elara" //footer section
+global.footer = "Elara" //footer section
 global.link = "https://whatsapp.com/channel/0029Vb6poDc3QxS2L0dxSq3E"
 global.autobio = true//auto update bio
-global.botName = "elara"
+global.botName = "Elara"
 global.version = "1.0.1"
-global.botname = "elara"
-global.author = "Mrdev "
+global.botname = "Elara"
+global.author = "ARNOLDT20"
 global.themeemoji = "🥷"
 global.wagc = 'https://whatsapp.com/channel/0029Vb6poDc3QxS2L0dxSq3E'
 global.thumbnail = 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/zmQIDKfnOheZyGkQ.jpeg'
 global.richpp = ' '
-global.packname = "Sticker By elara"
-global.author = "Mrdev "
-global.creator = "233266309343@s.whatsapp.net"
-global.ownername = 'Mrdev ' 
-global.onlyowner = `Only Mrdev  can use this Command 💜🥷`
+global.packname = "Sticker By Elara"
+global.author = "ARNOLDT20"
+global.creator = "255627417402@s.whatsapp.net"
+global.ownername = 'ARNOLDT20'
+global.onlyowner = `Only ARNOLDT20 can use this Command 💜`
   // reply 
 global.database = `*To Exist In The Database Contact The Owner of this bot*`
   global.mess = {
@@ -74,5 +74,5 @@ require('fs').watchFile(file, () => {
 })
 
 //Property of Kallmetrust  
-//owner number:+234902009026
-//telegram :@Rfxdx
+//owner number:255627417402
+//telegram owner: ARNOLDT20
