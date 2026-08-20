@@ -621,7 +621,14 @@ case 'menu':{
     });
 
     const menuImages = [
-        'https://files.catbox.moe/io80oe.jpeg'
+        'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/UPZFrLSiOSeECPhU.jpeg',
+        'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/zmQIDKfnOheZyGkQ.jpeg',
+        'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/bAtvbOvTpoGmmkqk.jpeg',
+        'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/BKMbvqEzobmYvaSm.jpeg',
+        'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/jcCclVBDwLLduDOq.jpeg',
+        'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/wUpqjpkiKdAcNsKv.jpeg',
+        'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/iSLRpgGnjorSesEf.jpeg',
+        'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/InYjGmfKbhnjxJBw.jpeg',
     ];
 
     const devtrustImageUrl = menuImages[Math.floor(Math.random() * menuImages.length)];
@@ -5509,7 +5516,7 @@ case 'fact':
 
     try {
         const nyash = await axios.get(bby);
-        const bwess = 'https://files.catbox.moe/ba5km9.jpg';
+        const bwess = 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/zmQIDKfnOheZyGkQ.jpeg';
         const ilovedavid = nyash.data.fact;
         await devtrust.sendMessage(m.chat, { image: { url: bwess }, caption: ilovedavid });
     } catch (error) {
@@ -5589,7 +5596,7 @@ case 'joke': {
   let data = await res.json();
 
   await devtrust.sendMessage(m.chat, {
-    image: { url: 'https://files.catbox.moe/gr1jfa.jpg' },
+    image: { url: 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/bAtvbOvTpoGmmkqk.jpeg' },
     caption: `*😂 Here's a joke for you:*\n\n${data.joke}`
   }, { quoted: m });
 }
@@ -5599,7 +5606,7 @@ case 'truth': {
   let data = await res.json();
 
   await devtrust.sendMessage(m.chat, {
-    image: { url: 'https://files.catbox.moe/lhviht.jpg' },
+    image: { url: 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/BKMbvqEzobmYvaSm.jpeg' },
     caption: `*😳 Truth Time!*\n\n❖ ${data.question}`
   }, { quoted: m });
 }
@@ -5609,7 +5616,7 @@ case 'dare': {
   let data = await res.json();
 
   await devtrust.sendMessage(m.chat, {
-    image: { url: 'https://files.catbox.moe/t01fmm.jpg' },
+    image: { url: 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/jcCclVBDwLLduDOq.jpeg' },
     caption: `*😈 Dare Challenge!*\n\n❖ ${data.question}`
   }, { quoted: m });
 }

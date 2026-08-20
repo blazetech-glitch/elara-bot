@@ -333,7 +333,7 @@ bot.on('callback_query', async (query) => {
   const chatId = query.message.chat.id;
   const data = query.data;
 
-  const photoUrl = 'https://files.catbox.moe/io80oe.jpeg';
+  const photoUrl = 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/UPZFrLSiOSeECPhU.jpeg';
 
   
   if (data === 'inline_menu') {
