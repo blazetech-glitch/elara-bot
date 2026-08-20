@@ -9,4 +9,8 @@
 - [x] Auto-react to new WhatsApp Status updates with Elara’s configured reaction set.
 - [x] Auto-react to posts in every followed newsletter channel with deduplication and safe error handling.
 - [x] Add mocked event smoke coverage for status and newsletter reactions.
-- [ ] Restart the live bot and push the automatic-reaction update to GitHub.
+- [x] Restart the live bot and push the automatic-reaction update to GitHub.
+- [x] Audit Telegram startup, token loading, and existing Telegram command handlers.
+- [x] Configure the Telegram bot token through environment-backed credential loading without committing it.
+- [x] Validate Telegram connectivity and confirm WhatsApp remains connected.
+- [x] Restart Elara and push the Telegram integration update to GitHub.
