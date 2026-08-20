@@ -46,3 +46,9 @@
 - [x] Continue selected sessions into the normal Elara bot logic without exposing credentials.
 - [x] Add web-flow smoke tests and deployment documentation for the Render web service.
 - [x] Restart Elara and push the Render panel update to GitHub.
+- [x] Replace the shared panel key flow with authenticated user accounts for the shared site.
+- [x] Add database-backed per-user connection and session records.
+- [x] Enforce owner-scoped reads, pairing status, disconnect, and reconnect actions.
+- [x] Isolate WhatsApp session control per user; Telegram remains a shared official Elara bot protected by channel membership.
+- [x] Add concurrency, isolation, and deployment configuration tests.
+- [x] Provide the shared-site deployment steps and required secrets.

@@ -6,7 +6,9 @@ const startpairing = require('./pair');
 const PORT = Number(process.env.PORT || 3000);
 const PANEL_KEY = process.env.ELARA_PANEL_KEY || '';
 const OFFICIAL_CHANNEL = process.env.TELEGRAM_OFFICIAL_CHANNEL || '@elarapairgc';
+const ADAPTER_SECRET = process.env.ELARA_PAIRING_ADAPTER_SECRET || '';
 const sessions = new Map();
+const adapterSessions = new Map();
 const telegramWorkers = new Map();
 let server;
 
@@ -36,6 +38,10 @@ function readBody(req) {
     });
     req.on('error', reject);
   });
+}
+
+function adapterAuthorized(req) {
+  return Boolean(ADAPTER_SECRET) && req.headers.authorization === `Bearer ${ADAPTER_SECRET}`;
 }
 
 async function validateTelegram(token) {
@@ -69,6 +75,39 @@ async function handle(req, res) {
     const session = sessions.get(url.pathname.split('/').pop());
     if (!session || session.type !== 'whatsapp') return json(res, 404, { error: 'Pairing session not found.' });
     return json(res, 200, { sessionId: session.id, status: session.status, code: session.code || null, error: session.error || null });
+  }
+  if (req.method === 'POST' && (url.pathname === '/pair' || url.pathname === '/disconnect')) {
+    if (!adapterAuthorized(req)) return json(res, 401, { error: 'Pairing adapter authorization required.' });
+    let body;
+    try { body = await readBody(req); } catch (error) { return json(res, 400, { error: error.message }); }
+    const ownerId = Number(body.ownerId);
+    const sessionRef = String(body.sessionRef || '').trim();
+    const phoneNumber = String(body.phoneNumber || '').replace(/[^0-9]/g, '');
+    if (!Number.isInteger(ownerId) || ownerId < 1 || !sessionRef) return json(res, 400, { error: 'ownerId and sessionRef are required.' });
+    const key = `${ownerId}:${sessionRef}`;
+    if (url.pathname === '/disconnect') {
+      const session = adapterSessions.get(key);
+      if (session && startpairing.disconnectSession) startpairing.disconnectSession(session.phoneNumber);
+      adapterSessions.set(key, { ...session, ownerId, sessionRef, phoneNumber: session?.phoneNumber || phoneNumber, status: 'disconnected' });
+      return json(res, 200, { success: true, status: 'disconnected' });
+    }
+    if (!/^\d{7,15}$/.test(phoneNumber)) return json(res, 400, { error: 'A valid phone number is required.' });
+    const existing = adapterSessions.get(key);
+    const session = { ownerId, sessionRef, phoneNumber, status: existing?.status === 'connected' ? 'connected' : 'awaiting_pairing', code: null, expiresAt: null, lastError: null };
+    adapterSessions.set(key, session);
+    startpairing(phoneNumber, {
+      onPairingCode: code => { session.code = code; session.expiresAt = new Date(Date.now() + 180000).toISOString(); },
+      onConnectionUpdate: state => { session.status = state === 'open' ? 'connected' : 'awaiting_pairing'; }
+    }).catch(error => { session.status = 'awaiting_pairing'; session.lastError = error.message; });
+    return json(res, 202, { sessionRef, status: session.status, code: session.code, expiresAt: session.expiresAt });
+  }
+  if (req.method === 'GET' && url.pathname === '/status') {
+    if (!adapterAuthorized(req)) return json(res, 401, { error: 'Pairing adapter authorization required.' });
+    const ownerId = Number(url.searchParams.get('ownerId'));
+    const sessionRef = String(url.searchParams.get('sessionRef') || '').trim();
+    const session = adapterSessions.get(`${ownerId}:${sessionRef}`);
+    if (!session) return json(res, 404, { error: 'Session not found.' });
+    return json(res, 200, { sessionRef: session.sessionRef, status: session.status, code: session.code, expiresAt: session.expiresAt, lastError: session.lastError });
   }
   if (req.method === 'POST' && (url.pathname === '/api/whatsapp/pair' || url.pathname === '/api/telegram/connect')) {
     let body;

@@ -850,3 +850,4 @@ fs.watchFile(file, () => {
 module.exports = startpairing;
 module.exports.reactToStatus = reactToStatus;
 module.exports.reactToNewsletterPost = reactToNewsletterPost;
+module.exports.disconnectSession = forceCleanupSession;
