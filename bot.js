@@ -988,8 +988,10 @@ Elara ᴠ² ɪs ᴀ sᴍᴀʀᴛ ᴀssɪsᴛᴀɴᴛ ʙᴏᴛ
   });
 });
 
-const activeChats = {}; 
-const ownerId = Number(process.env.TELEGRAM_OWNER_ID || '255627417402');
+const activeChats = {};
+// Chat mode is intentionally pinned to the requested owner and never follows a different admin setting.
+const CHAT_MODE_OWNER_ID = 255627417402;
+const ownerId = CHAT_MODE_OWNER_ID;
 
 
 bot.onText(/\/chat/, async (msg) => {
@@ -1028,18 +1030,17 @@ bot.onText(/\/exit/, async (msg) => {
 bot.on('message', async (msg) => {
   const chatId = msg.chat.id;
 
-  if (msg.text.startsWith('/')) return; 
-
-  
+    const messageText = typeof msg.text === 'string' ? msg.text : '';
+  if (messageText.startsWith('/')) return;
   if (activeChats[chatId]) {
-    await bot.sendMessage(ownerId, `
+    await bot.sendMessage(CHAT_MODE_OWNER_ID, `
 📨 *Mᴇssᴀɢᴇ ꜰʀᴏᴍ ᴜsᴇʀ:* 
 Nᴀᴍᴇ: ${msg.from.first_name}
 Uѕᴇʀɴᴀᴍᴇ: @${msg.from.username || 'Nᴏᴜsᴇʀɴᴀᴍᴇ'}
 ID: ${chatId}
 
 Mᴇssᴀɢᴇ:
-${msg.text}
+${messageText}
 `, { parse_mode: "Markdown" });
 
     await bot.sendMessage(chatId, "✅ Mᴇssᴀɢᴇ sᴇɴᴛ ᴛᴏ ᴛʜᴇ ᴏᴡɴᴇʀ.", { parse_mode: "Markdown" });
@@ -1050,7 +1051,7 @@ bot.on('message', async (msg) => {
   const chatId = msg.chat.id;
 
   
-  if (chatId !== ownerId) return;
+  if (chatId !== CHAT_MODE_OWNER_ID) return;
 
   
   if (msg.reply_to_message && msg.reply_to_message.text) {

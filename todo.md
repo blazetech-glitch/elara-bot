@@ -18,4 +18,8 @@
 - [x] Add a secure owner-only publishing command for tech menu polls and questions.
 - [x] Add image-backed tech question posts and varied poll content without fake engagement claims.
 - [x] Validate Telegram API channel publishing and poll/media behavior.
-- [ ] Restart Elara and push the Telegram publishing update to GitHub.
+- [x] Restart Elara and push the Telegram publishing update to GitHub.
+- [x] Audit Telegram chat-mode forwarding and owner recipient configuration.
+- [x] Route all chat-mode messages exclusively to owner ID 255627417402.
+- [x] Add routing isolation smoke coverage and restart Elara.
+- [ ] Push the owner-routing update to GitHub.
