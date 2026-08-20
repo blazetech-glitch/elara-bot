@@ -7097,7 +7097,7 @@ Format: .pair 234xxxxxxx*`);
   const instructions = `
 *[🔗 Pairing Code Generated ✅]*
 
-🆔 Code:  NEXA-XMDD
+🆔 Elara code:  ELARA-PAIR
 
 Steps 📑
 ➔Open WhatsApp
