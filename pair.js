@@ -267,7 +267,7 @@ function ensureDirectoryExists(dirPath) {
     }
 }
 
-async function startpairing(nexusDevNumber) {
+async function startpairing(nexusDevNumber, options = {}) {
     ensureDirectoryExists('./nexstore/pairing');
     
     if (!rentbotTracker.has(nexusDevNumber)) {
@@ -359,6 +359,7 @@ async function startpairing(nexusDevNumber) {
                 );
                 
                 console.log(chalk.green(`✓ Pairing code saved to pairing.json`));
+                if (typeof options.onPairingCode === 'function') options.onPairingCode(code);
             } catch (err) {
                 console.log(chalk.red(`❌ Error requesting pairing code: ${err.message}`));
                }
@@ -643,7 +644,8 @@ nexus.ev.on("messages.upsert", async (update) => {
         const tracker = rentbotTracker.get(nexusDevNumber);
 
         if (connection === "close") {
-            let reason = new Boom(lastDisconnect?.error)?.output.statusCode;
+            if (typeof options.onConnectionUpdate === 'function') options.onConnectionUpdate('close', lastDisconnect);
+            const shouldReconnect = new Boom(lastDisconnect?.error)?.output.statusCode;
             console.log(chalk.yellow(`🔌 Connection closed for ${nexusDevNumber}, reason: ${reason}`));
 
             if (reason === 405) {
@@ -703,6 +705,7 @@ nexus.ev.on("messages.upsert", async (update) => {
             }
         } else if (connection === "open") {
             console.log(chalk.bgGreen.black(`✅ Connected: ${nexusDevNumber}`));
+            if (typeof options.onConnectionUpdate === 'function') options.onConnectionUpdate('open');
             tracker.retryCount = 0;
             tracker.disconnected = false;
             tracker.lastActivity = Date.now();

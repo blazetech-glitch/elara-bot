@@ -1,0 +1,105 @@
+const http = require('http');
+const crypto = require('crypto');
+const { fork } = require('child_process');
+const startpairing = require('./pair');
+
+const PORT = Number(process.env.PORT || 3000);
+const PANEL_KEY = process.env.ELARA_PANEL_KEY || '';
+const OFFICIAL_CHANNEL = process.env.TELEGRAM_OFFICIAL_CHANNEL || '@elarapairgc';
+const sessions = new Map();
+const telegramWorkers = new Map();
+let server;
+
+function id() {
+  return crypto.randomBytes(18).toString('hex');
+}
+
+function json(res, status, body) {
+  res.writeHead(status, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' });
+  res.end(JSON.stringify(body));
+}
+
+function authorized(req, body = {}) {
+  if (!PANEL_KEY) return false;
+  return req.headers['x-elara-panel-key'] === PANEL_KEY || body.panelKey === PANEL_KEY;
+}
+
+function readBody(req) {
+  return new Promise((resolve, reject) => {
+    let raw = '';
+    req.on('data', chunk => {
+      raw += chunk;
+      if (raw.length > 32 * 1024) req.destroy(new Error('request too large'));
+    });
+    req.on('end', () => {
+      try { resolve(raw ? JSON.parse(raw) : {}); } catch { reject(new Error('invalid JSON')); }
+    });
+    req.on('error', reject);
+  });
+}
+
+async function validateTelegram(token) {
+  const meResponse = await fetch(`https://api.telegram.org/bot${encodeURIComponent(token)}/getMe`);
+  const me = await meResponse.json();
+  if (!me.ok) throw new Error('Telegram rejected this bot token.');
+  const chatResponse = await fetch(`https://api.telegram.org/bot${encodeURIComponent(token)}/getChat?chat_id=${encodeURIComponent(OFFICIAL_CHANNEL)}`);
+  const chat = await chatResponse.json();
+  if (!chat.ok) throw new Error(`The official channel ${OFFICIAL_CHANNEL} is not reachable by this bot.`);
+  return { username: me.result?.username || 'unknown', channelTitle: chat.result?.title || OFFICIAL_CHANNEL };
+}
+
+const HTML = `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Elara Connect</title>
+<style>
+:root{color-scheme:dark;--bg:#090612;--card:#151024;--pink:#ff3fa4;--cyan:#35e7ff;--muted:#a99bbd}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 20% 0,#32103a 0,transparent 35%),radial-gradient(circle at 90% 30%,#063a48 0,transparent 30%),var(--bg);color:#fff;font:16px/1.5 Inter,system-ui,sans-serif;min-height:100vh}.wrap{max-width:1050px;margin:auto;padding:38px 20px}.eyebrow{color:var(--cyan);letter-spacing:.18em;text-transform:uppercase;font-size:12px}.hero{display:flex;justify-content:space-between;gap:24px;align-items:end;margin-bottom:28px}.hero h1{font-size:clamp(42px,8vw,82px);line-height:.9;margin:10px 0;background:linear-gradient(90deg,#fff,var(--pink),var(--cyan));-webkit-background-clip:text;color:transparent}.hero p{color:var(--muted);max-width:620px}.key{width:240px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.card{background:linear-gradient(145deg,rgba(255,63,164,.12),rgba(53,231,255,.06));border:1px solid rgba(255,255,255,.14);border-radius:22px;padding:24px;box-shadow:0 20px 60px #0005}.card h2{margin:0 0 6px}.card p{color:var(--muted)}label{display:block;color:#d8cce5;font-size:13px;margin:15px 0 6px}input{width:100%;border-radius:12px;border:1px solid #ffffff25;background:#08050f;color:#fff;padding:13px;font:inherit}button{margin-top:16px;border:0;border-radius:12px;padding:13px 18px;background:linear-gradient(90deg,var(--pink),#a64cff);color:#fff;font-weight:800;cursor:pointer}button.alt{background:linear-gradient(90deg,var(--cyan),#4b7cff);color:#041018}.status{margin-top:16px;padding:12px;border-radius:12px;background:#0005;color:#dcd4e4;min-height:48px;white-space:pre-wrap}.fine{font-size:12px;color:var(--muted);margin-top:22px}@media(max-width:760px){.hero{display:block}.key{width:100%;margin-top:20px}.grid{grid-template-columns:1fr}}
+</style></head><body><main class="wrap"><div class="hero"><div><div class="eyebrow">Elara secure connection portal</div><h1>Elara<br>Connect</h1><p>Choose a service, complete the secure connection step, and continue into Elara’s normal bot logic. Credentials are never displayed back in the browser.</p></div><div class="key"><label>Panel access key</label><input id="panelKey" type="password" placeholder="Required by the host"></div></div><section class="grid"><article class="card"><div class="eyebrow">01 / WhatsApp</div><h2>Link a WhatsApp device</h2><p>Enter a phone number with country code. Elara will request a WhatsApp pairing code.</p><label>Phone number</label><input id="waNumber" placeholder="255625606354" inputmode="tel"><button onclick="pairWhatsApp()">Request pairing code</button><div class="status" id="waStatus">Waiting for a number.</div></article><article class="card"><div class="eyebrow">02 / Telegram</div><h2>Connect Telegram</h2><p>Enter a Telegram bot token. Elara validates it and checks access to the official channel.</p><label>Bot token</label><input id="tgToken" type="password" placeholder="Token is never shown again"><button class="alt" onclick="connectTelegram()">Connect Telegram</button><div class="status" id="tgStatus">Waiting for a token.</div></article></section><p class="fine">Official channel: <a href="https://t.me/elarapairgc" target="_blank" rel="noreferrer">@elarapairgc</a>. Telegram users must join the official channel before using commands. Keep this panel private and set ELARA_PANEL_KEY on the host.</p></main><script>
+const key=()=>document.getElementById('panelKey').value;const headers=()=>({'content-type':'application/json','x-elara-panel-key':key()});
+async function pairWhatsApp(){const status=document.getElementById('waStatus');status.textContent='Requesting a pairing code…';try{const r=await fetch('/api/whatsapp/pair',{method:'POST',headers:headers(),body:JSON.stringify({number:document.getElementById('waNumber').value})});const d=await r.json();if(!r.ok)throw Error(d.error||'Pairing request failed');status.textContent='Pairing session created. Waiting for the code…';const timer=setInterval(async()=>{const s=await fetch('/api/whatsapp/status/'+d.sessionId,{headers:{'x-elara-panel-key':key()}});const x=await s.json();if(x.code)status.textContent='WhatsApp pairing code: '+x.code+'\\nEnter it on the target phone.';if(x.status==='connected'){status.textContent='Connected successfully. Elara normal logic is now active.';clearInterval(timer)}if(x.status==='error'){status.textContent=x.error||'Pairing failed';clearInterval(timer)}},1500)}catch(e){status.textContent=e.message}}
+async function connectTelegram(){const status=document.getElementById('tgStatus');status.textContent='Validating token and official channel…';try{const r=await fetch('/api/telegram/connect',{method:'POST',headers:headers(),body:JSON.stringify({token:document.getElementById('tgToken').value})});const d=await r.json();if(!r.ok)throw Error(d.error||'Telegram connection failed');document.getElementById('tgToken').value='';status.textContent='Connected as @'+d.username+'\\nOfficial channel verified: '+d.channelTitle+'\\nNormal Telegram logic is active.'}catch(e){status.textContent=e.message}}
+</script></body></html>`;
+
+async function handle(req, res) {
+  const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+  if (req.method === 'GET' && url.pathname === '/') {
+    res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
+    return res.end(HTML);
+  }
+  if (req.method === 'GET' && url.pathname.startsWith('/api/whatsapp/status/')) {
+    if (!PANEL_KEY || req.headers['x-elara-panel-key'] !== PANEL_KEY) return json(res, 401, { error: 'Panel access key required.' });
+    const session = sessions.get(url.pathname.split('/').pop());
+    if (!session || session.type !== 'whatsapp') return json(res, 404, { error: 'Pairing session not found.' });
+    return json(res, 200, { sessionId: session.id, status: session.status, code: session.code || null, error: session.error || null });
+  }
+  if (req.method === 'POST' && (url.pathname === '/api/whatsapp/pair' || url.pathname === '/api/telegram/connect')) {
+    let body;
+    try { body = await readBody(req); } catch (error) { return json(res, 400, { error: error.message }); }
+    if (!authorized(req, body)) return json(res, 401, { error: 'Panel access key required.' });
+    if (url.pathname === '/api/whatsapp/pair') {
+      const number = String(body.number || '').replace(/[^0-9]/g, '');
+      if (!/^\d{7,15}$/.test(number)) return json(res, 400, { error: 'Enter a valid phone number with country code.' });
+      const session = { id: id(), type: 'whatsapp', number, status: 'pairing', createdAt: Date.now() };
+      sessions.set(session.id, session);
+      startpairing(number, { onPairingCode: code => { session.code = code; }, onConnectionUpdate: state => { session.status = state === 'open' ? 'connected' : 'disconnected'; } }).catch(error => { session.status = 'error'; session.error = error.message; });
+      return json(res, 202, { sessionId: session.id, status: session.status });
+    }
+    const token = String(body.token || '').trim();
+    if (!token) return json(res, 400, { error: 'Telegram bot token is required.' });
+    try {
+      const telegram = await validateTelegram(token);
+      const sessionId = id();
+      const worker = fork(require.resolve('./bot.js'), [], { env: { ...process.env, BOT_TOKEN: token, TELEGRAM_OFFICIAL_CHANNEL: OFFICIAL_CHANNEL }, stdio: 'ignore' });
+      telegramWorkers.set(sessionId, worker);
+      return json(res, 200, { sessionId, status: 'connected', username: telegram.username, channelTitle: telegram.channelTitle });
+    } catch (error) { return json(res, 400, { error: error.message }); }
+  }
+  return json(res, 404, { error: 'Not found.' });
+}
+
+function startPanelServer() {
+  if (server) return server;
+  server = http.createServer((req, res) => handle(req, res).catch(error => json(res, 500, { error: 'Internal panel error.' })));
+  server.listen(PORT, '0.0.0.0', () => console.log(`🌐 Elara Connect panel listening on port ${PORT}`));
+  return server;
+}
+
+module.exports = { startPanelServer, sessions };

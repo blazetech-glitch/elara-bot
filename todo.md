@@ -40,3 +40,9 @@
 - [x] Implement interactive Telegram token setup with connection validation and official-channel membership enforcement.
 - [x] Add deployment documentation/configuration for panels and Katabump without committing credentials.
 - [x] Validate both provider paths, restart Elara, and push the deployment-ready update.
+- [x] Audit Render worker startup, pairing APIs, and persistent session state for web access.
+- [x] Add a Render-served HTML control panel with separate WhatsApp and Telegram sections.
+- [x] Add secure owner-scoped endpoints for WhatsApp pairing-code requests and Telegram token validation.
+- [x] Continue selected sessions into the normal Elara bot logic without exposing credentials.
+- [x] Add web-flow smoke tests and deployment documentation for the Render web service.
+- [x] Restart Elara and push the Render panel update to GitHub.

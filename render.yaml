@@ -1,14 +1,17 @@
 services:
-  - type: worker
+  - type: web
     name: elara-bot
     runtime: node
     plan: free
     buildCommand: npm install
     startCommand: npm start
     autoDeploy: true
+    healthCheckPath: /
     envVars:
       - key: NODE_ENV
         value: production
+      - key: ELARA_PANEL_MODE
+        value: "true"
       - key: ELARA_AUTO_START
         value: "true"
       - key: ELARA_PROVIDER
@@ -20,4 +23,6 @@ services:
       - key: WHATSAPP_NUMBER
         sync: false
       - key: STARTUP_PASSWORD
+        sync: false
+      - key: ELARA_PANEL_KEY
         sync: false

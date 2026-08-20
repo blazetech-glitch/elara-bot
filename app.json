@@ -5,7 +5,7 @@
   "keywords": ["whatsapp", "bot", "nodejs", "automation"],
   "stack": "heroku-22",
   "formation": {
-    "worker": {
+    "web": {
       "quantity": 1,
       "size": "basic"
     }
@@ -14,6 +14,15 @@
     "NODE_ENV": {
       "description": "Runtime environment.",
       "value": "production"
+    },
+    "ELARA_PANEL_MODE": {
+      "description": "Keep the Render/Heroku web panel available for browser-based connections.",
+      "value": "true"
+    },
+    "ELARA_PANEL_KEY": {
+      "description": "Private key required by the web connection endpoints.",
+      "required": true,
+      "value": ""
     },
     "ELARA_AUTO_START": {
       "description": "Enable hosted auto-start after the provider credentials are configured.",
@@ -35,8 +44,8 @@
       "value": ""
     },
     "BOT_TOKEN": {
-      "description": "Telegram bot token used by the pairing service.",
-      "required": true,
+      "description": "Optional Telegram bot token used by the Telegram connection card.",
+      "required": false,
       "value": ""
     },
     "STARTUP_PASSWORD": {

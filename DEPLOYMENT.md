@@ -49,3 +49,13 @@ Create a Node.js service, select Node.js 18 or newer, set the start command to `
 ## Render and Heroku-style workers
 
 Use the included `render.yaml`, `Procfile`, and `app.json` as worker configurations. Set `ELARA_PROVIDER` explicitly on non-interactive workers and add `WHATSAPP_NUMBER` and/or `BOT_TOKEN` through the host’s secret manager. Do not place real credentials in `render.yaml`, `app.json`, or GitHub.
+
+## Render web panel
+
+The included `render.yaml` now defines a web service rather than a worker. It serves the Elara Connect page on Render’s assigned `PORT` and keeps the WhatsApp/Telegram workers in the same process.
+
+Set `ELARA_PANEL_MODE=true` and create a strong random `ELARA_PANEL_KEY` in Render’s secret environment settings. Open the Render service URL in a browser, enter the panel key, and choose either the WhatsApp or Telegram card. The WhatsApp card starts an isolated pairing session and polls for the code; the Telegram card validates the token and starts a separate Telegram worker. The panel never returns a Telegram token in its response.
+
+The panel is intentionally protected by a shared access key because it controls live bot connections. Do not publish the URL and key together. For a multi-owner product with individual accounts, use the separate Elara Connect application rather than making this shared-key panel public.
+
+The web service must have persistent storage for `auth.json` and `nexstore/pairing/`. Without persistent storage, a redeploy can require a new WhatsApp pairing. Render’s free worker/web-service limits and sleep behavior should be checked in the Render dashboard before using the service for continuous production traffic.

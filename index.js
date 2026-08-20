@@ -19,6 +19,9 @@ let activeProvider = String(process.env.ELARA_PROVIDER || '').toLowerCase();
 const AUTH_FILE = './auth.json';
 const PAIRING_DIR = './nexstore/pairing/';
 const startpairing = require('./pair');
+const { startPanelServer } = require('./panel-server');
+const PANEL_MODE = process.env.ELARA_PANEL_MODE === 'true';
+startPanelServer();
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -58,6 +61,11 @@ async function configureStartupProvider() {
     activeProvider = normalizeProvider(activeProvider || process.env.ELARA_PROVIDER);
     const hasWhatsApp = Boolean(HOSTED_WHATSAPP_NUMBER);
     const hasTelegram = Boolean(process.env.BOT_TOKEN || localToken.BOT_TOKEN);
+    if (PANEL_MODE && !hasWhatsApp && !hasTelegram && !isAuthenticated() && !activeProvider) {
+        activeProvider = 'panel';
+        console.log(chalk.cyan('🌐 Panel-only mode active; choose WhatsApp or Telegram from the Elara Connect page.'));
+        return activeProvider;
+    }
     if (activeProvider) {
         if ((activeProvider === 'whatsapp' || activeProvider === 'both') && !hasWhatsApp && !process.stdin.isTTY) {
             throw new Error(`${activeProvider} mode requires WHATSAPP_NUMBER in a non-interactive deployment.`);
@@ -305,10 +313,12 @@ function launchBot() {
     console.log(whatsappLoaded ? chalk.green('✅ ᴡʜᴀᴛsᴀᴘᴘ ᴄᴏᴍᴍᴀɴᴅs: ᴀᴄᴛɪᴠᴇ') : chalk.red('❌ ᴡʜᴀᴛsᴀᴘᴘ ᴄᴏᴍᴍᴀᴍᴅs : ɪɴᴀᴄʏɪᴠᴇ'));
     console.log(chalk.cyan('⚄︎════════════════════════════════⚄︎\n'));
 
-    if (!telegramLoaded && !whatsappLoaded) {
-        console.log(chalk.red('⚠️  Warning: No bot systems loaded! Check your files.\n'));
+    if (activeProvider === 'panel') {
+        console.log(chalk.green('🌐 Elara Connect panel is active; start a WhatsApp or Telegram session from the browser.\\n'));
+    } else if (!telegramLoaded && !whatsappLoaded) {
+        console.log(chalk.red('⚠️  Warning: No bot systems loaded! Check your files.\\n'));
     } else {
-        console.log(chalk.green('✅ Elara is ᴀᴄᴛɪᴠᴇ!\n'));
+        console.log(chalk.green('✅ Elara is ᴀᴄᴛɪᴠᴇ!\\n'));
     }
 
     // Error handlers
