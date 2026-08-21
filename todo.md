@@ -71,6 +71,8 @@
 - [x] Require membership in both @elarapairgc and @devxtechzone before protected Telegram commands.
 - [x] Verify why the deployed Telegram bot is not showing the latest commit and command menu.
 - [x] Add a new distinct set of functional Telegram commands and expose them in the menus.
+- [x] Make every WhatsApp command react immediately and return a specific error when its plugin handler fails.
+- [x] Audit every WhatsApp plugin entry point for dispatcher compatibility and error coverage.
 - [ ] Diagnose Render sleep/crash/disconnect causes and add a 24/7 uptime strategy with automatic recovery.
 - [x] Verify the local Elara process is reachable and Telegram polling is genuinely responding.
 - [x] Fix local Telegram connection retry/error handling after TLS timeouts.

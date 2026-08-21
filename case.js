@@ -283,7 +283,8 @@ if (isCmd)  {
     console.log(chalk.black(chalk.bgWhite('[ ARNOLDT20 ]')), chalk.black(chalk.bgGreen(new Date)), chalk.black(chalk.bgBlue(body || m.mtype)) + '\n' + chalk.magenta('=> From'), chalk.green(pushname), chalk.yellow(m.sender) + '\n' + chalk.blueBright('=>In'), chalk.green(m.isGroup ? pushname : 'Private Chat', m.chat))
 }
 
-if (getSetting(m.chat, "autoReact", false)) {
+// Every parsed WhatsApp command receives an immediate reaction; the chat setting remains supported for non-command messages.
+if (isCmd || getSetting(m.chat, "autoReact", false)) {
     const emojis = [
         "😁", "😂", "🤣", "😃", "😄", "😅", "😆", "😉", "😊",
         "😍", "😘", "😎", "🤩", "🤔", "😏", "😣", "😥", "😮", "🤐",
@@ -9275,7 +9276,20 @@ if (stdout) return m.reply(stdout)
 }
 }
 } catch (err) {
-console.log(require("util").format(err));
+console.error(`[Elara command failure] .${command || 'unknown'}`, err);
+if (isCmd) {
+  const rawMessage = err?.message || String(err || 'Unknown error');
+  const reason = /ENOTFOUND|ECONN|ETIMEDOUT|timeout|network/i.test(rawMessage)
+    ? 'An external service or network request failed.'
+    : /401|403|permission|forbidden|unauthorized/i.test(rawMessage)
+      ? 'Elara was not authorized to complete this action.'
+      : /404|not found/i.test(rawMessage)
+        ? 'The requested resource was not found.'
+        : rawMessage.replace(/\s+/g, ' ').slice(0, 240);
+  await devtrust.sendMessage(m.chat, {
+    text: `❌ Elara could not complete .${command}.\nReason: ${reason}\nTry the command again or use .help for usage.`
+  }, { quoted: m }).catch(sendError => console.error('Unable to send command error:', sendError.message));
+}
 }
 }
 let file = require.resolve(__filename)
