@@ -63,6 +63,7 @@
 - [x] Fix WhatsApp pairing loading and incorrect-error handling for valid country-code phone numbers.
 - [ ] Diagnose why live Render WhatsApp pairing remains pending and never completes.
 - [ ] Verify a real pairing-code/status transition before declaring the Render flow complete.
+- [x] Fix Telegram /pair command routing and WhatsApp pairing response handling.
 - [ ] Diagnose Render sleep/crash/disconnect causes and add a 24/7 uptime strategy with automatic recovery.
 - [x] Verify the local Elara process is reachable and Telegram polling is genuinely responding.
 - [x] Fix local Telegram connection retry/error handling after TLS timeouts.
@@ -70,6 +71,7 @@
 - [x] Restore provider-first startup: choose WhatsApp or Telegram, collect only the selected credential, verify Telegram channel membership, and continue normal logic.
 - [x] Add provider-choice controls to the Render page and reveal only the selected credential form.
 - [x] Keep Telegram running independently when a WhatsApp connection is selected.
+- [ ] Configure the user-provided official Telegram token only as a private Render runtime secret and verify its bot identity.
 - [x] Add concise default menus and categorized all-command menus consistently to Telegram and WhatsApp.
 - [x] Reduce perceived pairing latency with immediate status updates and faster polling.
 - [x] Add a copy button that appears only when a WhatsApp pairing code is available.

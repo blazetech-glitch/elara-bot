@@ -689,6 +689,12 @@ bot.on('callback_query', async (query) => {
   }
 });  
 
+bot.onText(/^\/pair\s*$/, requireMembership(async (msg) => {
+  await bot.sendMessage(msg.chat.id, '🔗 Please provide the WhatsApp number with country code.\n\nUsage: /pair 255625606354', {
+    reply_markup: { inline_keyboard: [[{ text: 'ʜᴇʟᴘ', callback_data: 'help_msg' }]] }
+  });
+}));
+
 bot.onText(/\/pair (.+)/, requireMembership(async (msg, match) => {
   const chatId = msg.chat.id;
   const text = match[1].trim();
@@ -867,7 +873,7 @@ bot.onText(/\/pair (.+)/, requireMembership(async (msg, match) => {
   
   } catch (error) {
     console.error('❌ Connection error:', error);
-    bot.sendMessage(chatId, '┃◈ ᴄᴏɴɴᴇᴄᴛɪᴏɴ ғᴀɪʟᴇᴅ , error.message');
+    bot.sendMessage(chatId, `┃◈ ᴄᴏɴɴᴇᴄᴛɪᴏɴ ғᴀɪʟᴇᴅ\n\n${error.message || 'Unknown pairing error'}`);
   }
 },
  ));
