@@ -69,6 +69,8 @@
 - [x] Add more functional Telegram utility, identity, links, rules, health, and membership commands.
 - [x] Add functional funny commands and safe media-download commands to Telegram with usage validation and failure handling.
 - [x] Require membership in both @elarapairgc and @devxtechzone before protected Telegram commands.
+- [x] Verify why the deployed Telegram bot is not showing the latest commit and command menu.
+- [x] Add a new distinct set of functional Telegram commands and expose them in the menus.
 - [ ] Diagnose Render sleep/crash/disconnect causes and add a 24/7 uptime strategy with automatic recovery.
 - [x] Verify the local Elara process is reachable and Telegram polling is genuinely responding.
 - [x] Fix local Telegram connection retry/error handling after TLS timeouts.

@@ -42,6 +42,27 @@ function extractDownloadUrl(result) {
 }
 
 const bot = new TelegramBot(BOT_TOKEN, { polling: { interval: 1000, autoStart: true, params: { timeout: 30 } } });
+
+const TELEGRAM_COMMANDS = [
+  { command: 'start', description: 'Open Elara start menu' },
+  { command: 'menu', description: 'Show quick categorized menu' },
+  { command: 'allcommands', description: 'Show all categorized commands' },
+  { command: 'pair', description: 'Pair a WhatsApp number' },
+  { command: 'status', description: 'Show connection status' },
+  { command: 'health', description: 'Check Elara health' },
+  { command: 'joke', description: 'Get a tech joke' },
+  { command: 'quote', description: 'Get a coding quote' },
+  { command: 'tiktok', description: 'Download a TikTok video' },
+  { command: 'calc', description: 'Calculate a simple expression' },
+  { command: 'poll', description: 'Create a Telegram poll' },
+  { command: 'choose', description: 'Choose between options' },
+  { command: 'reverse', description: 'Reverse text' },
+  { command: 'caps', description: 'Convert text to uppercase' },
+  { command: 'count', description: 'Count text characters' },
+  { command: 'links', description: 'Show Elara links' },
+  { command: 'checkchannel', description: 'Check channel membership' }
+];
+bot.setMyCommands(TELEGRAM_COMMANDS).then(() => console.log('✅ Telegram command menu registered.')).catch(error => console.error('⚠️ Telegram command menu registration failed:', error.message));
 bot.on('polling_error', error => {
   console.error(`⚠️ Telegram polling connection error: ${error.code || 'NETWORK'} ${error.message}`);
 });
@@ -177,6 +198,12 @@ async function sendRotatingMenu(chatId, full = false) {
 ➺ /joke        ─ ʀᴀɴᴅᴏᴍ ᴛᴇᴄʜ ᴊᴏᴋᴇ
 ➺ /quote       ─ ᴠɪᴇᴡ ᴄᴏᴅɪɴɢ ǫᴜᴏᴛᴇ
 ➺ /tiktok      ─ ᴅᴏᴡɴʟᴏᴀᴅ ᴛɪᴋᴛᴏᴋ ᴠɪᴅᴇᴏ
+➺ /calc        ─ ᴄᴀʟᴄᴜʟᴀᴛᴇ sɪᴍᴘʟᴇ ᴇxᴘʀᴇssɪᴏɴ
+➺ /poll        ─ ᴄʀᴇᴀᴛᴇ ᴀ ᴛᴇʟᴇɢʀᴀᴍ ᴘᴏʟʟ
+➺ /choose      ─ ᴄʜᴏᴏsᴇ ᴀɴ ᴏᴘᴛɪᴏɴ
+➺ /reverse     ─ ʀᴇᴠᴇʀsᴇ ᴛᴇxᴛ
+➺ /caps        ─ ᴜᴘᴘᴇʀᴄᴀsᴇ ᴛᴇxᴛ
+➺ /count       ─ ᴄᴏᴜɴᴛ ᴄʜᴀʀᴀᴄᴛᴇʀs
 ➺ /chat        ─ sᴇɴᴅ ᴍᴇssᴀɢᴇ ᴛᴏ ᴏᴡɴᴇʀ
 ╚══════════════════☤
 \`\`\`
@@ -591,6 +618,47 @@ bot.onText(/^\/quote$/, requireMembership(async (msg) => {
   return bot.sendMessage(msg.chat.id, '💡 “Small steps, clean code, and a backup before every risky change.” — Elara');
 }));
 
+bot.onText(/^\/reverse(?:\\s+(.+))?$/, requireMembership(async (msg, match) => {
+  const text = (match?.[1] || '').trim();
+  return bot.sendMessage(msg.chat.id, text ? `🔁 ${[...text].reverse().join('')}` : 'Usage: /reverse text');
+}));
+
+bot.onText(/^\/caps(?:\\s+(.+))?$/, requireMembership(async (msg, match) => {
+  const text = (match?.[1] || '').trim();
+  return bot.sendMessage(msg.chat.id, text ? `🔠 ${text.toUpperCase()}` : 'Usage: /caps text');
+}));
+
+bot.onText(/^\/count(?:\\s+(.+))?$/, requireMembership(async (msg, match) => {
+  const text = (match?.[1] || '').trim();
+  return bot.sendMessage(msg.chat.id, text ? `🔢 Characters: ${[...text].length}\\nWords: ${text.split(/\\s+/).length}` : 'Usage: /count text');
+}));
+
+bot.onText(/^\/choose(?:\\s+(.+))?$/, requireMembership(async (msg, match) => {
+  const options = (match?.[1] || '').split('|').map(item => item.trim()).filter(Boolean);
+  if (options.length < 2) return bot.sendMessage(msg.chat.id, 'Usage: /choose red | blue | green');
+  return bot.sendMessage(msg.chat.id, `🎯 Elara chooses: ${options[Math.floor(Math.random() * options.length)]}`);
+}));
+
+bot.onText(/^\/calc(?:\\s+(.+))?$/, requireMembership(async (msg, match) => {
+  const expression = (match?.[1] || '').replace(/\\s+/g, '');
+  if (!expression || !/^[0-9+*\\/.%()\\-]+$/.test(expression)) return bot.sendMessage(msg.chat.id, 'Usage: /calc 12 * (3 + 2)');
+  try {
+    const result = Function(`"use strict"; return (${expression})`)();
+    if (!Number.isFinite(result)) throw new Error('non-finite result');
+    return bot.sendMessage(msg.chat.id, `🧮 ${expression} = ${result}`);
+  } catch {
+    return bot.sendMessage(msg.chat.id, '⚠️ Could not calculate that expression.');
+  }
+}));
+
+bot.onText(/^\/poll(?:\\s+(.+))?$/, requireMembership(async (msg, match) => {
+  const parts = (match?.[1] || '').split('|').map(item => item.trim()).filter(Boolean);
+  if (parts.length < 3) return bot.sendMessage(msg.chat.id, 'Usage: /poll question | option 1 | option 2');
+  const [question, ...options] = parts;
+  if (options.length > 10) return bot.sendMessage(msg.chat.id, '⚠️ A Telegram poll supports up to 10 options.');
+  return bot.sendPoll(msg.chat.id, question, options, { is_anonymous: false });
+}));
+
 bot.onText(/^(?:\/tiktok|\/tt)(?:\\s+(.+))?$/, requireMembership(async (msg, match) => {
   const input = (match?.[1] || '').trim();
   if (!input) return bot.sendMessage(msg.chat.id, '🎬 Usage: /tiktok https://www.tiktok.com/@user/video/123');
@@ -681,6 +749,12 @@ bot.on('callback_query', async (query) => {
 ➺ /joke        ─ ʀᴀɴᴅᴏᴍ ᴛᴇᴄʜ ᴊᴏᴋᴇ
 ➺ /quote       ─ ᴠɪᴇᴡ ᴄᴏᴅɪɴɢ ǫᴜᴏᴛᴇ
 ➺ /tiktok      ─ ᴅᴏᴡɴʟᴏᴀᴅ ᴛɪᴋᴛᴏᴋ ᴠɪᴅᴇᴏ
+➺ /calc        ─ ᴄᴀʟᴄᴜʟᴀᴛᴇ sɪᴍᴘʟᴇ ᴇxᴘʀᴇssɪᴏɴ
+➺ /poll        ─ ᴄʀᴇᴀᴛᴇ ᴀ ᴛᴇʟᴇɢʀᴀᴍ ᴘᴏʟʟ
+➺ /choose      ─ ᴄʜᴏᴏsᴇ ᴀɴ ᴏᴘᴛɪᴏɴ
+➺ /reverse     ─ ʀᴇᴠᴇʀsᴇ ᴛᴇxᴛ
+➺ /caps        ─ ᴜᴘᴘᴇʀᴄᴀsᴇ ᴛᴇxᴛ
+➺ /count       ─ ᴄᴏᴜɴᴛ ᴄʜᴀʀᴀᴄᴛᴇʀs
 	➺ /chat        ─ sᴇɴᴅ ᴍᴇssᴀɢᴇ ᴛᴏ ᴏᴡɴᴇʀ
 	➺ /about       ─ ᴀʙᴏᴜᴛ ᴇʟᴀʀᴀ
 	➺ /pairhelp    ─ ᴘᴀɪʀɪɴɢ ɢᴜɪᴅᴇ
