@@ -61,6 +61,20 @@ const hangmanVisual = [
 const { getSetting, setSetting } = require("./setting/Settings.js")
 const groupCache = new Map(); // Cache group metadata
 
+async function fetchMediaBuffer(url, options = {}) {
+  if (!/^https?:\/\//i.test(url)) throw new Error('The media provider returned an invalid URL.');
+  const response = await axios.get(url, {
+    responseType: 'arraybuffer',
+    timeout: options.timeout || 45000,
+    maxContentLength: options.maxBytes || 60 * 1024 * 1024,
+    maxBodyLength: options.maxBytes || 60 * 1024 * 1024,
+    headers: { 'User-Agent': 'Mozilla/5.0', ...(options.headers || {}) }
+  });
+  const buffer = Buffer.from(response.data);
+  if (!buffer.length) throw new Error('The media provider returned an empty file.');
+  return buffer;
+}
+
 module.exports = devtrust = async (devtrust, m, chatUpdate, store) => {
 const { from } = m
 try {
@@ -3931,39 +3945,26 @@ case 'tourl': {
 }
 break;
 case 'tiktok':
-case 'tt':
-    {
-        if (!text) {
-            return reply(`Example: ${prefix + command} link`);
-        }
-        if (!text.includes('tiktok.com')) {
-            return reply(`Link Invalid!! Please provide a valid TikTok link.`);
-        }
-        
-        m.reply("*Initializing....*");
-    
-        const tiktokApiUrl = `https://api.bk9.dev/download/tiktok?url=${encodeURIComponent(text)}`;
-
-        fetch(tiktokApiUrl)
-            .then(response => response.json())
-            .then(data => {
-                if (!data.status || !data.BK9 || !data.BK9.BK9) {
-                    return reply('Failed to get a valid download link from the API.');
-                }
-                
-                const videoUrl = data.BK9.BK9;
-                
-                devtrust.sendMessage(m.chat, {
-                    caption: "*Approved ✅*",
-                    video: { url: videoUrl }
-                }, { quoted: m });
-            })
-            .catch(err => {
-                console.error(err);
-                reply("An error occurred while fetching the video. Please check your network or try a different link.");
-            });
-    }
-    break;
+case 'tt': {
+  if (!text) return reply(`❌ Example: ${prefix + command} https://www.tiktok.com/@user/video/123`);
+  if (!/tiktok\.com/i.test(text)) return reply('❌ Link invalid. Please provide a valid TikTok URL.');
+  await devtrust.sendMessage(m.chat, { react: { text: '⏳', key: m.key } });
+  try {
+    const response = await fetch(`https://api.bk9.dev/download/tiktok?url=${encodeURIComponent(text)}`);
+    if (!response.ok) throw new Error(`TikTok provider returned HTTP ${response.status}.`);
+    const data = await response.json();
+    const videoUrl = data?.BK9?.BK9 || data?.result?.video || data?.data?.video;
+    if (!videoUrl) throw new Error('TikTok provider returned no video URL.');
+    const video = await fetchMediaBuffer(videoUrl);
+    await devtrust.sendMessage(m.chat, { video, mimetype: 'video/mp4', caption: '✅ TikTok video downloaded by Elara.' }, { quoted: m });
+    await devtrust.sendMessage(m.chat, { react: { text: '✅', key: m.key } });
+  } catch (error) {
+    console.error('TikTok media error:', error);
+    await devtrust.sendMessage(m.chat, { react: { text: '❌', key: m.key } });
+    return reply(`❌ TikTok download failed: ${error.message}`);
+  }
+}
+break;
 case 'apk':
 case 'apkdl': {
   if (!text) {
@@ -3994,8 +3995,9 @@ case 'apkdl': {
 _Sending file, please wait..._`
     }, { quoted: m });
 
+    const apkBuffer = await fetchMediaBuffer(dllink, { maxBytes: 100 * 1024 * 1024 });
     await devtrust.sendMessage(m.chat, {
-      document: { url: dllink },
+      document: apkBuffer,
       fileName: `${name}.apk`,
       mimetype: 'application/vnd.android.package-archive'
     }, { quoted: m });
@@ -6693,13 +6695,13 @@ break;
 // ban function for creator only
 case 'git': case 'gitclone':
 if (!args[0]) return reply(`Where is the link?\nExample :\n${prefix}${command} https://github.com`)
-if (!isUrl(args[0]) && !args[0].includes('github.com')) return replynano(`Link invalid!!`)
+if (!isUrl(args[0]) && !args[0].includes('github.com')) return reply(`❌ Link invalid. Please provide a valid URL.`)
 let regex1 = /(?:https|git)(?::\/\/|@)github\.com[\/:]([^\/:]+)\/(.+)/i
     let [, user, repo] = args[0].match(regex1) || []
     repo = repo.replace(/.git$/, '')
     let url = `https://api.github.com/repos/${user}/${repo}/zipball`
     let filename = (await fetch(url, {method: 'HEAD'})).headers.get('content-disposition').match(/attachment; filename=(.*)/)[1]
-    devtrust.sendMessage(m.chat, { document: { url: url }, fileName: filename+'.zip', mimetype: 'application/zip' }, { quoted: m }).catch((err) => replynano(mess.error))
+    devtrust.sendMessage(m.chat, { document: { url: url }, fileName: filename+'.zip', mimetype: 'application/zip' }, { quoted: m }).catch((err) => reply(`❌ Document download failed: ${err.message || 'unknown error'}`))
 break; 
 case 'coffee': case 'kopi': {
 devtrust.sendMessage(m.chat, {caption: m.success, image: { url: 'https://coffee.alexflipnote.dev/random' }}, { quoted: m })
@@ -8527,7 +8529,7 @@ case 'facebook':
 
           if (!data || data.status !== 200 || !data.facebook || !data.facebook.sdVideo) {
             await devtrust.sendMessage(m.chat, { react: { text: '❌', key: m.key } }); // Send error reaction
-            return replynano("Sorry, the API didn't respond correctly. Please try again later!");
+            return reply("❌ Facebook provider returned no downloadable video. Please try another public link.");
           }
 
           const fbvid = data.facebook.sdVideo;
@@ -8574,8 +8576,9 @@ case 'facebook':
           // Send success reaction before sending video
           await devtrust.sendMessage(m.chat, { react: { text: '✅', key: m.key } });
 
+          const videoBuffer = fs.readFileSync(tempFile);
           await devtrust.sendMessage(m.chat, {
-            video: { url: tempFile },
+            video: videoBuffer,
             mimetype: "video/mp4",
             caption: `By Elara 💘 ✅`
           }, { quoted: m });
@@ -8610,15 +8613,18 @@ case 'ig': {
     }
 
     for (const media of json.data) {
+      if (!media?.url) continue;
+      const mediaBuffer = await fetchMediaBuffer(media.url);
       if (media.type === "video") {
         await devtrust.sendMessage(m.chat, {
-          video: { url: media.url },
-          caption: `Url: ${text}\nInstagram Image Retrieved ✅`
+          video: mediaBuffer,
+          mimetype: 'video/mp4',
+          caption: `Url: ${text}\nInstagram video retrieved ✅`
         }, { quoted: m });
       } else if (media.type === "image") {
         await devtrust.sendMessage(m.chat, {
-          image: { url: media.url },
-          caption: `Url: ${text}\nInstagram Image Retrieved ✅`
+          image: mediaBuffer,
+          caption: `Url: ${text}\nInstagram image retrieved ✅`
         }, { quoted: m });
       }
     }

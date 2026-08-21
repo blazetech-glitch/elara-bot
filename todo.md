@@ -72,6 +72,8 @@
 - [x] Verify why the deployed Telegram bot is not showing the latest commit and command menu.
 - [x] Add a new distinct set of functional Telegram commands and expose them in the menus.
 - [x] Make every WhatsApp command react immediately and return a specific error when its plugin handler fails.
+- [x] Extend reaction and specific-error coverage to every WhatsApp command path, including secondary dispatchers.
+- [x] Repair non-working WhatsApp media commands and validate their download/send flows.
 - [x] Audit every WhatsApp plugin entry point for dispatcher compatibility and error coverage.
 - [ ] Diagnose Render sleep/crash/disconnect causes and add a 24/7 uptime strategy with automatic recovery.
 - [x] Verify the local Elara process is reachable and Telegram polling is genuinely responding.
