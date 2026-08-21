@@ -66,6 +66,7 @@
 - [x] Fix Telegram /pair command routing and WhatsApp pairing response handling.
 - [x] Update Telegram owner display/link to @StarboyT20 and https://t.me/StarboyT20.
 - [x] Add and test additional functional Telegram commands without changing WhatsApp flow.
+- [x] Add more functional Telegram utility, identity, links, rules, health, and membership commands.
 - [ ] Diagnose Render sleep/crash/disconnect causes and add a 24/7 uptime strategy with automatic recovery.
 - [x] Verify the local Elara process is reachable and Telegram polling is genuinely responding.
 - [x] Fix local Telegram connection retry/error handling after TLS timeouts.

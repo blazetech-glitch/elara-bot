@@ -147,6 +147,10 @@ async function sendRotatingMenu(chatId, full = false) {
 ➺ /tech        ─ ᴛᴇᴄʜ ᴘᴜʙʟɪsʜɪɴɢ ɪɴꜰᴏ
 ➺ /publishtech ─ ᴘᴏsᴛ ᴛᴇᴄʜ ɪᴍᴀɢᴇ + ᴘᴏʟʟ
 ➺ /help        ─ ᴠɪᴇᴡ ᴅᴇsᴄʀɪᴘᴛɪᴏɴ
+➺ /health      ─ ᴄʜᴇᴄᴋ ᴇʟᴀʀᴀ ʜᴇᴀʟᴛʜ
+➺ /version     ─ ᴠɪᴇᴡ ʙᴏᴛ ᴠᴇʀsɪᴏɴ
+➺ /time        ─ ᴠɪᴇᴡ sᴇʀᴠᴇʀ ᴛɪᴍᴇ
+➺ /whoami      ─ ᴠɪᴇᴡ ʏᴏᴜʀ ᴛᴇʟᴇɢʀᴀᴍ ɪᴅ
 ➺ /chat        ─ sᴇɴᴅ ᴍᴇssᴀɢᴇ ᴛᴏ ᴏᴡɴᴇʀ
 ╚══════════════════☤
 \`\`\`
@@ -172,6 +176,9 @@ async function sendRotatingMenu(chatId, full = false) {
 ➺ /support  ─ sᴜᴘᴘᴏʀᴛ ᴄᴏɴᴛᴀᴄᴛ
 ➺ /group    ─ ᴡʜᴀᴛsᴀᴘᴘ ɢʀᴏᴜᴘ
 ➺ /channel  ─ ᴏғғɪᴄɪᴀʟ ᴄʜᴀɴɴᴇʟ
+➺ /links    ─ ᴇʟᴀʀᴀ ʟɪɴᴋs
+➺ /rules    ─ ᴄᴏᴍᴍᴜɴɪᴛʏ ʀᴜʟᴇs
+➺ /checkchannel ─ ᴠᴇʀɪғʏ ᴍᴇᴍʙᴇʀsʜɪᴘ
 ➺ /allmenu  ─ ᴠɪᴇᴡ ᴀʟʟ ᴄᴀᴛᴇɢᴏʀɪᴇs
 ╚══════════════╝`;
   const caption = full ? fullCaption : conciseCaption;
@@ -515,6 +522,36 @@ bot.onText(/^\/pairhelp$/, requireMembership(async (msg) => {
   return bot.sendMessage(msg.chat.id, '🔗 Pairing guide\\n\\nUse: /pair 255XXXXXXXXX\\n\\nEnter the full WhatsApp number with country code and follow the pairing code instructions.');
 }));
 
+bot.onText(/^\/health$/, requireMembership(async (msg) => {
+  return bot.sendMessage(msg.chat.id, `💚 Elara health: OK\\nTelegram polling: active\\nUptime: ${runtime(process.uptime())}`);
+}));
+
+bot.onText(/^\/version$/, requireMembership(async (msg) => {
+  return bot.sendMessage(msg.chat.id, '🌹 Elara v2\\nOwner: ARNOLDT20 (@StarboyT20)\\nBuild: Render provider-first release');
+}));
+
+bot.onText(/^\/time$/, requireMembership(async (msg) => {
+  return bot.sendMessage(msg.chat.id, `🕒 Server time: ${new Date().toISOString()}`);
+}));
+
+bot.onText(/^\/whoami$/, requireMembership(async (msg) => {
+  const user = msg.from || {};
+  return bot.sendMessage(msg.chat.id, `👤 Telegram identity\\nID: ${user.id || 'unknown'}\\nUsername: ${user.username ? '@' + user.username : 'not set'}\\nName: ${user.first_name || ''} ${user.last_name || ''}`.trim());
+}));
+
+bot.onText(/^\/links$/, requireMembership(async (msg) => {
+  return bot.sendMessage(msg.chat.id, `🔗 Elara links\\nOfficial channel: ${SOCIAL_LINKS.channel1}\\nOwner: ${SOCIAL_LINKS.developer}\\nWhatsApp group: ${SOCIAL_LINKS.whatsappGroup}`);
+}));
+
+bot.onText(/^\/rules$/, requireMembership(async (msg) => {
+  return bot.sendMessage(msg.chat.id, '📜 Elara community rules\\n1. Respect members.\\n2. Do not spam or share harmful content.\\n3. Keep credentials and private data confidential.\\n4. Follow the official channel instructions.');
+}));
+
+bot.onText(/^\/checkchannel$/, async (msg) => {
+  const result = await checkMembership(msg.from.id);
+  return bot.sendMessage(msg.chat.id, result.hasJoinedAll ? '✅ Your Elara channel membership is verified.' : '⚠️ Please join the official Elara channel and group, then try again.');
+});
+
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
   const userId = msg.from.id;
@@ -577,6 +614,10 @@ bot.on('callback_query', async (query) => {
 	➺ /tech        ─ ᴛᴇᴄʜ ᴘᴜʙʟɪsʜɪɴɢ ɪɴꜰᴏ
 	➺ /publishtech ─ ᴘᴏsᴛ ᴛᴇᴄʜ ɪᴍᴀɢᴇ + ᴘᴏʟʟ
 	➺ /help        ─ ᴠɪᴇᴡ ᴅᴇsᴄʀɪᴘᴛɪᴏɴ
+➺ /health      ─ ᴄʜᴇᴄᴋ ᴇʟᴀʀᴀ ʜᴇᴀʟᴛʜ
+➺ /version     ─ ᴠɪᴇᴡ ʙᴏᴛ ᴠᴇʀsɪᴏɴ
+➺ /time        ─ ᴠɪᴇᴡ sᴇʀᴠᴇʀ ᴛɪᴍᴇ
+➺ /whoami      ─ ᴠɪᴇᴡ ʏᴏᴜʀ ᴛᴇʟᴇɢʀᴀᴍ ɪᴅ
 	➺ /chat        ─ sᴇɴᴅ ᴍᴇssᴀɢᴇ ᴛᴏ ᴏᴡɴᴇʀ
 	➺ /about       ─ ᴀʙᴏᴜᴛ ᴇʟᴀʀᴀ
 	➺ /pairhelp    ─ ᴘᴀɪʀɪɴɢ ɢᴜɪᴅᴇ
