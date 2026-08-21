@@ -17,6 +17,29 @@ try {
 const BOT_TOKEN = process.env.BOT_TOKEN || localToken.BOT_TOKEN;
 if (!BOT_TOKEN) throw new Error('BOT_TOKEN is required to start the Telegram bot.');
 const { autoLoadPairs } = require('./autoload');
+const { tiklydown } = require('./allfunc/tiktok');
+
+const FUNNY_LINES = [
+  'Why did the bot go to school? To improve its byte-sized knowledge.',
+  'Elara tried to tell a UDP joke, but nobody knows if it arrived.',
+  'My code and I had a disagreement. It said it was a feature.',
+  'The cloud is just someone else’s computer with excellent marketing.'
+];
+
+function extractDownloadUrl(result) {
+  const candidates = [
+    result?.video?.noWatermark,
+    result?.video?.no_watermark,
+    result?.video?.downloadAddr,
+    result?.video?.download,
+    result?.data?.video?.noWatermark,
+    result?.data?.video?.downloadAddr,
+    result?.video,
+    result?.nowm,
+    result?.download
+  ];
+  return candidates.find(value => typeof value === 'string' && /^https?:\/\//i.test(value));
+}
 
 const bot = new TelegramBot(BOT_TOKEN, { polling: { interval: 1000, autoStart: true, params: { timeout: 30 } } });
 bot.on('polling_error', error => {
@@ -151,6 +174,9 @@ async function sendRotatingMenu(chatId, full = false) {
 ➺ /version     ─ ᴠɪᴇᴡ ʙᴏᴛ ᴠᴇʀsɪᴏɴ
 ➺ /time        ─ ᴠɪᴇᴡ sᴇʀᴠᴇʀ ᴛɪᴍᴇ
 ➺ /whoami      ─ ᴠɪᴇᴡ ʏᴏᴜʀ ᴛᴇʟᴇɢʀᴀᴍ ɪᴅ
+➺ /joke        ─ ʀᴀɴᴅᴏᴍ ᴛᴇᴄʜ ᴊᴏᴋᴇ
+➺ /quote       ─ ᴠɪᴇᴡ ᴄᴏᴅɪɴɢ ǫᴜᴏᴛᴇ
+➺ /tiktok      ─ ᴅᴏᴡɴʟᴏᴀᴅ ᴛɪᴋᴛᴏᴋ ᴠɪᴅᴇᴏ
 ➺ /chat        ─ sᴇɴᴅ ᴍᴇssᴀɢᴇ ᴛᴏ ᴏᴡɴᴇʀ
 ╚══════════════════☤
 \`\`\`
@@ -552,6 +578,36 @@ bot.onText(/^\/checkchannel$/, async (msg) => {
   return bot.sendMessage(msg.chat.id, result.hasJoinedAll ? '✅ Your Elara channel membership is verified.' : '⚠️ Please join the official Elara channel and group, then try again.');
 });
 
+bot.onText(/^(?:\/joke|\/funny)$/, requireMembership(async (msg) => {
+  const line = FUNNY_LINES[Math.floor(Math.random() * FUNNY_LINES.length)];
+  return bot.sendMessage(msg.chat.id, `😂 ${line}`);
+}));
+
+bot.onText(/^\/quote$/, requireMembership(async (msg) => {
+  return bot.sendMessage(msg.chat.id, '💡 “Small steps, clean code, and a backup before every risky change.” — Elara');
+}));
+
+bot.onText(/^(?:\/tiktok|\/tt)(?:\\s+(.+))?$/, requireMembership(async (msg, match) => {
+  const input = (match?.[1] || '').trim();
+  if (!input) return bot.sendMessage(msg.chat.id, '🎬 Usage: /tiktok https://www.tiktok.com/@user/video/123');
+  let parsed;
+  try { parsed = new URL(input); } catch { return bot.sendMessage(msg.chat.id, '⚠️ Please send a valid TikTok URL.'); }
+  if (!/(^|\.)tiktok\.com$/i.test(parsed.hostname) && !/(^|\.)vm\.tiktok\.com$/i.test(parsed.hostname)) {
+    return bot.sendMessage(msg.chat.id, '⚠️ Only TikTok links are supported by this command.');
+  }
+  const status = await bot.sendMessage(msg.chat.id, '⏳ Fetching the TikTok media…');
+  try {
+    await bot.sendChatAction(msg.chat.id, 'upload_video');
+    const result = await tiklydown(input);
+    const mediaUrl = extractDownloadUrl(result);
+    if (!mediaUrl) throw new Error('No downloadable video was returned.');
+    await bot.sendVideo(msg.chat.id, mediaUrl, { caption: '🎬 Downloaded by Elara' });
+    await bot.deleteMessage(msg.chat.id, status.message_id).catch(() => {});
+  } catch (error) {
+    await bot.editMessageText(`❌ Download failed: ${error.message || 'provider unavailable'}`, { chat_id: msg.chat.id, message_id: status.message_id });
+  }
+}));
+
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
   const userId = msg.from.id;
@@ -618,6 +674,9 @@ bot.on('callback_query', async (query) => {
 ➺ /version     ─ ᴠɪᴇᴡ ʙᴏᴛ ᴠᴇʀsɪᴏɴ
 ➺ /time        ─ ᴠɪᴇᴡ sᴇʀᴠᴇʀ ᴛɪᴍᴇ
 ➺ /whoami      ─ ᴠɪᴇᴡ ʏᴏᴜʀ ᴛᴇʟᴇɢʀᴀᴍ ɪᴅ
+➺ /joke        ─ ʀᴀɴᴅᴏᴍ ᴛᴇᴄʜ ᴊᴏᴋᴇ
+➺ /quote       ─ ᴠɪᴇᴡ ᴄᴏᴅɪɴɢ ǫᴜᴏᴛᴇ
+➺ /tiktok      ─ ᴅᴏᴡɴʟᴏᴀᴅ ᴛɪᴋᴛᴏᴋ ᴠɪᴅᴇᴏ
 	➺ /chat        ─ sᴇɴᴅ ᴍᴇssᴀɢᴇ ᴛᴏ ᴏᴡɴᴇʀ
 	➺ /about       ─ ᴀʙᴏᴜᴛ ᴇʟᴀʀᴀ
 	➺ /pairhelp    ─ ᴘᴀɪʀɪɴɢ ɢᴜɪᴅᴇ
