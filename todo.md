@@ -64,6 +64,8 @@
 - [ ] Diagnose why live Render WhatsApp pairing remains pending and never completes.
 - [ ] Verify a real pairing-code/status transition before declaring the Render flow complete.
 - [x] Fix Telegram /pair command routing and WhatsApp pairing response handling.
+- [x] Update Telegram owner display/link to @StarboyT20 and https://t.me/StarboyT20.
+- [x] Add and test additional functional Telegram commands without changing WhatsApp flow.
 - [ ] Diagnose Render sleep/crash/disconnect causes and add a 24/7 uptime strategy with automatic recovery.
 - [x] Verify the local Elara process is reachable and Telegram polling is genuinely responding.
 - [x] Fix local Telegram connection retry/error handling after TLS timeouts.

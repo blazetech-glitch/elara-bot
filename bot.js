@@ -135,11 +135,14 @@ async function sendRotatingMenu(chatId, full = false) {
 ➺ /pair        ─ ᴘᴀɪʀ ᴡʜᴀᴛsᴀᴘᴘ
 ➺ /delpair     ─ ʀᴇᴍᴏᴠᴇ ᴘᴀɪʀ
 ➺ /runtime     ─ ʙᴏᴛ ᴜᴘᴛɪᴍᴇ
+➺ /status      ─ ᴄᴏɴɴᴇᴄᴛɪᴏɴ sᴛᴀᴛᴜs
 ➺ /listpair    ─ ᴠɪᴇᴡ ᴀʟʟ ᴘᴀɪʀs
 ➺ /menu        ─ ʀᴏᴛᴀᴛɪɴɢ ᴍᴇɴᴜ ɪᴍᴀɢᴇ
 ➺ /ping        ─ ᴄʜᴇᴄᴋ ʀᴇsᴘᴏɴsᴇ sᴘᴇᴇᴅ
 ➺ /jid         ─ sʜᴏᴡ ᴄʜᴀᴛ ɪᴅ
 ➺ /owner       ─ ᴠɪᴇᴡ ᴏᴡɴᴇʀ ᴄᴏɴᴛᴀᴄᴛ
+➺ /support     ─ ᴄᴏɴᴛᴀᴄᴛ sᴜᴘᴘᴏʀᴛ
+➺ /group       ─ ᴏᴘᴇɴ ᴡʜᴀᴛsᴀᴘᴘ ɢʀᴏᴜᴘ
 ➺ /channel     ─ ᴏᴘᴇɴ ᴏꜰꜰɪᴄɪᴀʟ ᴄʜᴀɴɴᴇʟ
 ➺ /tech        ─ ᴛᴇᴄʜ ᴘᴜʙʟɪsʜɪɴɢ ɪɴꜰᴏ
 ➺ /publishtech ─ ᴘᴏsᴛ ᴛᴇᴄʜ ɪᴍᴀɢᴇ + ᴘᴏʟʟ
@@ -160,11 +163,14 @@ async function sendRotatingMenu(chatId, full = false) {
 ╔══「 𝐈𝐍𝐅𝐎 」══╗
 ➺ /ping     ─ ᴄʜᴇᴄᴋ sᴘᴇᴇᴅ
 ➺ /runtime  ─ ᴜᴘᴛɪᴍᴇ
+➺ /status   ─ ᴄᴏɴɴᴇᴄᴛɪᴏɴ sᴛᴀᴛᴜs
 ➺ /help     ─ ᴠɪᴇᴡ ʜᴇʟᴘ
 ╚══════════════╝
 
 ╔══「 𝐒𝐔𝐏𝐏𝐎𝐑𝐓 」══╗
 ➺ /owner    ─ ᴏᴡɴᴇʀ ᴄᴏɴᴛᴀᴄᴛ
+➺ /support  ─ sᴜᴘᴘᴏʀᴛ ᴄᴏɴᴛᴀᴄᴛ
+➺ /group    ─ ᴡʜᴀᴛsᴀᴘᴘ ɢʀᴏᴜᴘ
 ➺ /channel  ─ ᴏғғɪᴄɪᴀʟ ᴄʜᴀɴɴᴇʟ
 ➺ /allmenu  ─ ᴠɪᴇᴡ ᴀʟʟ ᴄᴀᴛᴇɢᴏʀɪᴇs
 ╚══════════════╝`;
@@ -190,7 +196,8 @@ const SOCIAL_LINKS = {
   group1: 'https://t.me/elarachatzone',
   group2: 'https://t.me/elarapairgc',
   group3: 'https://t.me/elarapairgc',
-  developer: 'https://wa.me/255627417402',
+  developer: 'https://t.me/StarboyT20',
+  whatsappGroup: 'https://chat.whatsapp.com/HxCDA2s89LMEZMyixnTSy5?s=cl&p=a&mlu=4',
 };
 
 
@@ -469,8 +476,8 @@ const btn = (text, url, callback) => {
   return null;
 };
 
-bot.onText(/^\/(?:menu|elaramenu|allmenu)$/, requireMembership(async (msg) => {
-  await sendRotatingMenu(msg.chat.id, /^\/allmenu\b/i.test(msg.text || ''));
+bot.onText(/^\/(?:menu|elaramenu|commands|allmenu|allcommands)$/, requireMembership(async (msg) => {
+  await sendRotatingMenu(msg.chat.id, /^\/(?:allmenu|allcommands)\b/i.test(msg.text || ''));
 }));
 
 bot.onText(/^\/ping$/, requireMembership(async (msg) => {
@@ -480,12 +487,20 @@ bot.onText(/^\/ping$/, requireMembership(async (msg) => {
   return bot.editMessageText(`🏓 *Elara pong*\\nLatency: ${latency} ms\\nStatus: online ✅`, { chat_id: msg.chat.id, message_id: sent.message_id, parse_mode: 'Markdown' });
 }));
 
-bot.onText(/^\/jid$/, requireMembership(async (msg) => {
+bot.onText(/^(?:\/jid|\/id)$/, requireMembership(async (msg) => {
   return bot.sendMessage(msg.chat.id, '🆔 Chat ID: ' + msg.chat.id);
 }));
 
 bot.onText(/^\/owner$/, requireMembership(async (msg) => {
-  return bot.sendMessage(msg.chat.id, '👑 Elara owner: ARNOLDT20\\nWhatsApp: wa.me/255627417402');
+  return bot.sendMessage(msg.chat.id, '👑 Elara owner: ARNOLDT20\nTelegram: https://t.me/StarboyT20');
+}));
+
+bot.onText(/^\/support$/, requireMembership(async (msg) => {
+  return bot.sendMessage(msg.chat.id, '🛟 Elara support: https://t.me/StarboyT20');
+}));
+
+bot.onText(/^(?:\/group|\/community)$/, requireMembership(async (msg) => {
+  return bot.sendMessage(msg.chat.id, '👥 Elara WhatsApp community:\n' + SOCIAL_LINKS.whatsappGroup);
 }));
 
 bot.onText(/^\/channel$/, requireMembership(async (msg) => {
@@ -550,11 +565,14 @@ bot.on('callback_query', async (query) => {
 	➺ /pair        ─ ᴘᴀɪʀ ᴡʜᴀᴛsᴀᴘᴘ
 	➺ /delpair     ─ ʀᴇᴍᴏᴠᴇ ᴘᴀɪʀ
 	➺ /runtime     ─ ʙᴏᴛ ᴜᴘᴛɪᴍᴇ
+➺ /status      ─ ᴄᴏɴɴᴇᴄᴛɪᴏɴ sᴛᴀᴛᴜs
 	➺ /listpair    ─ ᴠɪᴇᴡ ᴀʟʟ ᴘᴀɪʀs
 	➺ /menu        ─ ʀᴏᴛᴀᴛɪɴɢ ᴍᴇɴᴜ ɪᴍᴀɢᴇ
 	➺ /ping        ─ ᴄʜᴇᴄᴋ ʀᴇsᴘᴏɴsᴇ sᴘᴇᴇᴅ
 	➺ /jid         ─ sʜᴏᴡ ᴄʜᴀᴛ ɪᴅ
 	➺ /owner       ─ ᴠɪᴇᴡ ᴏᴡɴᴇʀ ᴄᴏɴᴛᴀᴄᴛ
+➺ /support     ─ ᴄᴏɴᴛᴀᴄᴛ sᴜᴘᴘᴏʀᴛ
+➺ /group       ─ ᴏᴘᴇɴ ᴡʜᴀᴛsᴀᴘᴘ ɢʀᴏᴜᴘ
 	➺ /channel     ─ ᴏᴘᴇɴ ᴏꜰꜰɪᴄɪᴀʟ ᴄʜᴀɴɴᴇʟ
 	➺ /tech        ─ ᴛᴇᴄʜ ᴘᴜʙʟɪsʜɪɴɢ ɪɴꜰᴏ
 	➺ /publishtech ─ ᴘᴏsᴛ ᴛᴇᴄʜ ɪᴍᴀɢᴇ + ᴘᴏʟʟ
@@ -573,7 +591,7 @@ bot.on('callback_query', async (query) => {
         reply_markup: {
           inline_keyboard: [
             [
-              { text: "❃ OWNER ❃", url: "https://wa.me/255627417402" },
+              { text: "❃ OWNER ❃", url: "https://t.me/StarboyT20" },
               { text: "📢 DEV CHANNEL", url: "https://t.me/elarapairgc" }
             ],
             [
@@ -590,7 +608,7 @@ bot.on('callback_query', async (query) => {
         reply_markup: {
           inline_keyboard: [
             [
-              { text: "❃ OWNER ❃", url: "https://wa.me/255627417402" },
+              { text: "❃ OWNER ❃", url: "https://t.me/StarboyT20" },
               { text: "📢 DEV CHANNEL", url: "https://t.me/elarapairgc" }
             ],
             [
@@ -1021,7 +1039,7 @@ bot.onText(/^\/techschedule$/, async (msg) => {
   return bot.sendMessage(msg.chat.id, `📣 *Elara Tech Channel*\\nDestination: ${TECH_CHANNEL_ID}\\nAutomatic posts: ${TECH_AUTOPUBLISH ? 'ON' : 'OFF'}\\nInterval: every ${TECH_POST_INTERVAL_MINUTES} minutes\\nContent: ${TECH_POSTS.length} rotating image-backed tech polls.`, { parse_mode: 'Markdown' });
 });
 
-bot.onText(/\/runtime/, async (msg) => {
+bot.onText(/^(?:\/runtime|\/uptime|\/status)\b/, async (msg) => {
   if (!(await ensureOfficialChannelMembership(msg))) return;
   const chatId = msg.chat.id;
 
@@ -1063,7 +1081,7 @@ bot.onText(/\/runtime/, async (msg) => {
   }
 });
 
-bot.onText(/\/help/, async (msg) => {
+bot.onText(/^(?:\/help|\/commands)\b/, async (msg) => {
   if (!(await ensureOfficialChannelMembership(msg))) return;
   const chatId = msg.chat.id;
 
@@ -1129,7 +1147,7 @@ Elara ᴠ² ɪs ᴀ sᴍᴀʀᴛ ᴀssɪsᴛᴀɴᴛ ʙᴏᴛ
     reply_markup: {
       inline_keyboard: [
         [
-          { text: "❃ OWNER ❃", url: "https://wa.me/255627417402" },
+          { text: "❃ OWNER ❃", url: "https://t.me/StarboyT20" },
           { text: "📢 DEV CHANNEL", url: "https://t.me/elarapairgc" }
         ],
         [
