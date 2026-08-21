@@ -59,7 +59,7 @@ let userIDs = new Set();
 const OFFICIAL_ELARA_CHANNEL = process.env.TELEGRAM_OFFICIAL_CHANNEL || '@elarapairgc';
 const REQUIRED_GROUP = OFFICIAL_ELARA_CHANNEL;
 const REQUIRED_CHANNELS = [
-  OFFICIAL_ELARA_CHANNEL
+  '@devxtechzone'
 ];
 const TECH_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID || '@elarapairgc';
 const TECH_AUTOPUBLISH = process.env.ELARA_CHANNEL_AUTOPUBLISH !== 'false';
@@ -223,6 +223,7 @@ const SOCIAL_LINKS = {
   ],
   telegram_group: '@elarapairgc',
   channel1: 'https://t.me/elarapairgc',
+  devChannel: 'https://t.me/devxtechzone',
   channel2: 'https://t.me/elarapairgc',
   channel3: 'https://t.me/elarapairgc',
   channel4: 'https://t.me/elarapairgc',
@@ -369,7 +370,10 @@ const sendJoinRequirement = (chatId) => {
     {
       reply_markup: {
         inline_keyboard: [
-          [{ text: 'ᴄʜᴀɴɴᴇʟ 1', url: SOCIAL_LINKS.channel1 }],
+          [
+            { text: 'ᴇʟᴀʀᴀ ᴄʜᴀɴɴᴇʟ', url: SOCIAL_LINKS.channel1 },
+            { text: 'ᴅᴇᴠ ᴛᴇᴄʜ ᴄʜᴀɴɴᴇʟ', url: SOCIAL_LINKS.devChannel }
+          ],
           [
             { text: 'ᴄʜᴀɴɴᴇʟ 2', url: SOCIAL_LINKS.channel2 },
             { text: 'ɢʀᴏᴜᴘ 1', url: SOCIAL_LINKS.group1 }
@@ -575,7 +579,7 @@ bot.onText(/^\/rules$/, requireMembership(async (msg) => {
 
 bot.onText(/^\/checkchannel$/, async (msg) => {
   const result = await checkMembership(msg.from.id);
-  return bot.sendMessage(msg.chat.id, result.hasJoinedAll ? '✅ Your Elara channel membership is verified.' : '⚠️ Please join the official Elara channel and group, then try again.');
+  return bot.sendMessage(msg.chat.id, result.hasJoinedAll ? '✅ Your Elara channel membership is verified.' : '⚠️ Please join both official Elara channels (@elarapairgc and @devxtechzone), then try again.');
 });
 
 bot.onText(/^(?:\/joke|\/funny)$/, requireMembership(async (msg) => {
@@ -1233,7 +1237,7 @@ Elara ᴠ² ɪs ᴀ sᴍᴀʀᴛ ᴀssɪsᴛᴀɴᴛ ʙᴏᴛ
 2. sᴇɴᴅ ᴀɴʏ ᴍᴇssᴀɢᴇ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ʀᴇᴀᴄʜ ᴛʜᴇ ᴏᴡɴᴇʀ
 3. ᴛʏᴘᴇ /ᴇxɪᴛ ᴛᴏ ʟᴇᴀᴠᴇ ᴄʜᴀᴛ ᴍᴏᴅᴇ
 4. ᴏᴡɴᴇʀ ᴄᴀɴ ʀᴇᴘʟʏ ᴅɪʀᴇᴄᴛʟʏ ᴛʜʀᴏᴜɢʜ ᴛʜᴇ ʙᴏᴛ
-5. ʀᴇɢᴜʟᴀʀ ᴜsᴇʀs ᴍᴜsᴛ ᴊᴏɪɴ https://t.me/elarapairgc ᴛᴏ ᴜsᴇ ᴄᴏᴍᴍᴀɴᴅs
+5. ʀᴇɢᴜʟᴀʀ ᴜsᴇʀs ᴍᴜsᴛ ᴊᴏɪɴ https://t.me/elarapairgc ᴀɴᴅ https://t.me/devxtechzone ᴛᴏ ᴜsᴇ ᴄᴏᴍᴍᴀɴᴅs
 
 ──────────────────────────────
 
