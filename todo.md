@@ -131,3 +131,7 @@
 - [x] Add a one-tap copy button to Telegram WhatsApp pairing-code responses.
 - [x] Handle the copy callback with the exact pairing code and clear feedback.
 - [x] Validate, restart, and push the Telegram pairing copy-button update.
+
+- [x] Send a polished Telegram confirmation after WhatsApp login reaches the open state.
+- [x] Include the connected number, successful status, session isolation, and normal-logic activation details.
+- [x] Validate, restart, and push the post-login notification update.

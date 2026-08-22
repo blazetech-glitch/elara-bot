@@ -805,8 +805,23 @@ bot.on('callback_query', async (query) => {
     }
   }
 
-  const photoUrl = ROTATING_MENU_IMAGES[0];
-
+    const photoUrl = ROTATING_MENU_IMAGES[0];
+  if (data === 'pair_list') {
+    await sendPairList({ chat: { id: chatId }, from: query.from }, isTelegramAdmin(query.from));
+    return bot.answerCallbackQuery(query.id, { text: 'Pair list loaded.' });
+  }
+  if (data.startsWith('pair_status:')) {
+    const requested = data.slice('pair_status:'.length).replace(/[^0-9]/g, '');
+    const owned = await getOwnedPairNumbers(query.from.id);
+    if (!owned.includes(requested) && !isTelegramAdmin(query.from)) {
+      await bot.answerCallbackQuery(query.id, { text: 'That pairing is not owned by your Telegram account.', show_alert: true });
+      return;
+    }
+    const row = await readPairStatus(requested);
+    const state = row.status === 'connected' ? '🟢 connected' : row.status === 'awaiting_pairing' ? '🟡 awaiting pairing' : row.status === 'connecting' ? '🔵 connecting' : row.status === 'disconnected' ? '⚪ disconnected' : `🔴 ${row.status}`;
+    await bot.sendMessage(chatId, `📡 *Elara pairing status*\n\n📱 Number: +${row.number}\nStatus: ${state}${row.updatedAt ? `\nUpdated: ${row.updatedAt}` : ''}${row.lastError ? `\nError: ${row.lastError}` : ''}`, { parse_mode: 'Markdown' });
+    return bot.answerCallbackQuery(query.id, { text: 'Status loaded.' });
+  }
   if (data === 'all_commands') {
     await sendRotatingMenu(chatId, true);
     return bot.answerCallbackQuery(query.id);
@@ -1072,6 +1087,24 @@ bot.onText(/\/pair (.+)/, requireMembership(async (msg, match) => {
     const Xreturn = senderNumber + "@s.whatsapp.net";
     const cuObj = await new Promise((resolve, reject) => {
       let settled = false;
+      let connectedNoticeSent = false;
+      const sendConnectedNotice = async () => {
+        if (connectedNoticeSent) return;
+        connectedNoticeSent = true;
+        try {
+          await bot.sendMessage(chatId, `✅ *Elara connected successfully*\n\n📱 Number: \`${senderNumber}\`\n🟢 Status: Online and stable\n🔒 Session: Isolated from other connected devices\n⚙️ Normal Elara bot logic is now active.\n\nUse /pairstatus ${senderNumber} to check this session or /listpair to view your permitted pair list.`, {
+            parse_mode: 'Markdown',
+            reply_markup: {
+              inline_keyboard: [
+                [{ text: '📊 ᴘᴀɪʀ sᴛᴀᴛᴜs', callback_data: `pair_status:${senderNumber}` }],
+                [{ text: '📋 ʟɪsᴛ ᴘᴀɪʀs', callback_data: 'pair_list' }, { text: '📢 ᴇʟᴀʀᴀ ᴄʜᴀɴɴᴇʟ', url: SOCIAL_LINKS.channel1 }]
+              ]
+            }
+          });
+        } catch (noticeError) {
+          console.error(`⚠️ Connected notification failed for ${senderNumber}:`, noticeError.message);
+        }
+      };
       const timer = setTimeout(() => {
         if (!settled) {
           settled = true;
@@ -1090,6 +1123,9 @@ bot.onText(/\/pair (.+)/, requireMembership(async (msg, match) => {
           settled = true;
           clearTimeout(timer);
           reject(error);
+        },
+        onConnectionUpdate: state => {
+          if (state === 'open') void sendConnectedNotice();
         }
       }).catch(error => {
         if (settled) return;
@@ -1135,7 +1171,7 @@ bot.onText(/\/pair (.+)/, requireMembership(async (msg, match) => {
       
       bot.sendMessage(chatId, 
         `
-╭━━━〔 ✅ 𝐂𝐎𝐍𝐍𝐄𝐂𝐓𝐄𝐃 〕━━━╮
+╭━━━〔 🔐 𝐏𝐀𝐈𝐑𝐈𝐍𝐆 𝐂𝐎𝐃𝐄 𝐑𝐄𝐀𝐃𝐘 〕━━━╮
 
 📱 𝐍𝐮𝐦𝐛𝐞𝐫
 ➤ ${senderNumber}
@@ -1165,7 +1201,7 @@ bot.onText(/\/pair (.+)/, requireMembership(async (msg, match) => {
       
       bot.sendMessage(chatId, 
        `
-╭━━━〔 ✅ 𝐂𝐎𝐍𝐍𝐄𝐂𝐓𝐄𝐃 〕━━━╮
+╭━━━〔 🔐 𝐏𝐀𝐈𝐑𝐈𝐍𝐆 𝐂𝐎𝐃𝐄 𝐑𝐄𝐀𝐃𝐘 〕━━━╮
 
 📱 𝐍𝐮𝐦𝐛𝐞𝐫
 ➤ ${senderNumber}
