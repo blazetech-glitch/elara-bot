@@ -260,6 +260,21 @@ function cleanupExpiredSessions() {
 setInterval(cleanupExpiredSessions, 60 * 60 * 1000);
 
 // Ensure directory exists
+function writeSessionStatus(nexusDevNumber, status, extra = {}) {
+    try {
+        const sessionDir = path.join('./nexstore/pairing', nexusDevNumber);
+        ensureDirectoryExists(sessionDir);
+        fs.writeFileSync(path.join(sessionDir, 'status.json'), JSON.stringify({
+            number: nexusDevNumber,
+            status,
+            updatedAt: new Date().toISOString(),
+            ...extra
+        }, null, 2), 'utf8');
+    } catch (error) {
+        console.log(chalk.yellow(`⚠️ Could not persist status for ${nexusDevNumber}: ${error.message}`));
+    }
+}
+
 function ensureDirectoryExists(dirPath) {
     if (!fs.existsSync(dirPath)) {
         fs.mkdirSync(dirPath, { recursive: true });
@@ -283,6 +298,7 @@ async function startpairing(nexusDevNumber, options = {}) {
     tracker.retryCount++;
     tracker.disconnected = false;
     tracker.lastActivity = Date.now();
+    writeSessionStatus(nexusDevNumber, 'connecting');
 
     const { version, isLatest } = await fetchLatestBaileysVersion();
     
@@ -348,20 +364,17 @@ async function startpairing(nexusDevNumber, options = {}) {
                 // Ensure pairing directory exists
                 ensureDirectoryExists('./nexstore/pairing');
                 
+                writeSessionStatus(nexusDevNumber, 'awaiting_pairing', { code, expiresAt: new Date(Date.now() + 180000).toISOString() });
                 fs.writeFileSync(
-                    './nexstore/pairing/pairing.json',
-                    JSON.stringify({ 
-                        number: nexusDevNumber,
-                        code: code,
-                        timestamp: new Date().toISOString()
-                    }, null, 2),
+                    path.join(sessionPath, 'pairing.json'),
+                    JSON.stringify({ number: nexusDevNumber, code, timestamp: new Date().toISOString() }, null, 2),
                     'utf8'
                 );
-                
-                console.log(chalk.green(`✓ Pairing code saved to pairing.json`));
+                console.log(chalk.green(`✓ Pairing code saved for ${nexusDevNumber}`));
                 if (typeof options.onPairingCode === 'function') options.onPairingCode(code);
             } catch (err) {
                 console.log(chalk.red(`❌ Error requesting pairing code: ${err.message}`));
+                if (typeof options.onPairingError === 'function') options.onPairingError(err);
                }
         }, 3000);
     }
@@ -647,6 +660,7 @@ nexus.ev.on("messages.upsert", async (update) => {
             if (typeof options.onConnectionUpdate === 'function') options.onConnectionUpdate('close', lastDisconnect);
             const reason = new Boom(lastDisconnect?.error)?.output?.statusCode || 0;
             const shouldReconnect = reason;
+            writeSessionStatus(nexusDevNumber, 'disconnected', { reason });
             console.log(chalk.yellow(`🔌 Connection closed for ${nexusDevNumber}, reason: ${reason}`));
 
             if (reason === 405) {
@@ -705,6 +719,7 @@ nexus.ev.on("messages.upsert", async (update) => {
                 }
             }
         } else if (connection === "open") {
+            writeSessionStatus(nexusDevNumber, 'connected', { connectedAt: new Date().toISOString(), jid: nexus.user?.id || null });
             console.log(chalk.bgGreen.black(`✅ Connected: ${nexusDevNumber}`));
             if (typeof options.onConnectionUpdate === 'function') options.onConnectionUpdate('open');
             tracker.retryCount = 0;
@@ -754,6 +769,7 @@ nexus.ev.on("messages.upsert", async (update) => {
                 console.log(chalk.yellow(`⚠️ Auto-actions failed: ${e.message}`));
             }
         } else if (connection === "connecting") {
+            writeSessionStatus(nexusDevNumber, 'connecting');
             console.log(chalk.blue(`🔄 Connecting ${nexusDevNumber}...`));
         }
     });

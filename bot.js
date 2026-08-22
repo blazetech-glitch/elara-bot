@@ -74,7 +74,58 @@ let adminIDs = [];
 
 
 const userFilePath = path.join(__dirname, 'nexstore', 'users.json');
+const pairOwnershipPath = path.join(__dirname, 'nexstore', 'pairing', 'telegram-ownership.json');
 let userIDs = new Set();
+
+async function loadPairOwnership() {
+  try {
+    return JSON.parse(await fs.readFile(pairOwnershipPath, 'utf8'));
+  } catch {
+    return {};
+  }
+}
+
+async function savePairOwnership(data) {
+  await fs.mkdir(path.dirname(pairOwnershipPath), { recursive: true });
+  await fs.writeFile(pairOwnershipPath, JSON.stringify(data, null, 2));
+}
+
+async function recordPairOwnership(telegramUserId, number) {
+  const data = await loadPairOwnership();
+  const key = String(telegramUserId);
+  const numbers = new Set(Array.isArray(data[key]) ? data[key] : []);
+  numbers.add(number.replace(/[^0-9]/g, ''));
+  data[key] = [...numbers];
+  await savePairOwnership(data);
+}
+
+async function removePairOwnership(telegramUserId, number) {
+  const data = await loadPairOwnership();
+  const key = String(telegramUserId);
+  data[key] = (data[key] || []).filter(item => item !== number.replace(/[^0-9]/g, ''));
+  await savePairOwnership(data);
+}
+
+async function getOwnedPairNumbers(telegramUserId) {
+  const data = await loadPairOwnership();
+  return Array.isArray(data[String(telegramUserId)]) ? data[String(telegramUserId)] : [];
+}
+
+async function readPairStatus(number) {
+  const normalized = number.replace(/[^0-9]/g, '');
+  const sessionDir = path.join(__dirname, 'nexstore', 'pairing', `${normalized}@s.whatsapp.net`);
+  try {
+    const status = JSON.parse(await fs.readFile(path.join(sessionDir, 'status.json'), 'utf8'));
+    return { ...status, number: normalized };
+  } catch {
+    try {
+      const creds = JSON.parse(await fs.readFile(path.join(sessionDir, 'creds.json'), 'utf8'));
+      return { number: normalized, status: creds.registered ? 'connected' : 'awaiting_pairing', updatedAt: null };
+    } catch {
+      return { number: normalized, status: 'not_found', updatedAt: null };
+    }
+  }
+}
 
 
 const OFFICIAL_ELARA_CHANNEL = process.env.TELEGRAM_OFFICIAL_CHANNEL || '@elarapairgc';
@@ -972,18 +1023,38 @@ bot.onText(/\/pair (.+)/, requireMembership(async (msg, match) => {
     }
 
     const startpairing = require('./pair.js');
-    const Xreturn = text.split("|")[0].replace(/[^0-9]/g, '') + "@s.whatsapp.net";
-    
-    await startpairing(Xreturn);
-    await sleep(4000);
+    const senderNumber = text.split("|")[0].replace(/[^0-9]/g, '');
+    const Xreturn = senderNumber + "@s.whatsapp.net";
+    const cuObj = await new Promise((resolve, reject) => {
+      let settled = false;
+      const timer = setTimeout(() => {
+        if (!settled) {
+          settled = true;
+          reject(new Error('Pairing code was not returned within 20 seconds.'));
+        }
+      }, 20000);
+      startpairing(Xreturn, {
+        onPairingCode: code => {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timer);
+          resolve({ code });
+        },
+        onPairingError: error => {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timer);
+          reject(error);
+        }
+      }).catch(error => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        reject(error);
+      });
+    });
+    await recordPairOwnership(msg.from.id, senderNumber);
 
-    const pairingFile = path.join(pairingFolder, 'pairing.json');
-    const cu = await fs.readFile(pairingFile, 'utf-8');
-    const cuObj = JSON.parse(cu);
-    delete require.cache[require.resolve('./pair.js')];
-
-    
-    const senderNumber = text.split("|")[0].replace(/[^0-9]/g, ''); 
     
     const whatsappFormat = senderNumber + "@s.whatsapp.net"; 
     
@@ -1168,34 +1239,39 @@ bot.onText(/\/delpair (.+)/, requireMembership(async (msg, match) => {
 }));
 
 
-bot.onText(/\/listpair$/, (msg) => {
-  const chatId = msg.chat.id;
-  const userId = msg.from.id.toString();
-  
-  if (!isTelegramAdmin(msg.from.id)) {
-    return bot.sendMessage(chatId, 'This command is restricted to the Elara owner only',
-          { 
-      parse_mode: 'Markdown',
-      reply_markup: {
-        inline_keyboard: [
-          [{ text: 'ʜᴇʟᴘ', callback_data: 'help_msg' }],
-          [{  text: 'ᴄʜᴀɴɴᴇʟ', url: SOCIAL_LINKS.channel1}]
-          ]
-          }
-        });
+async function sendPairList(msg, includeAll = false) {
+  const numbers = includeAll ? await getAllPairNumbers() : await getOwnedPairNumbers(msg.from.id);
+  if (!numbers.length) return bot.sendMessage(msg.chat.id, '📂 No WhatsApp pairings are recorded for this Telegram account.');
+  const rows = await Promise.all(numbers.map(readPairStatus));
+  const text = rows.map((row, index) => {
+    const state = row.status === 'connected' ? '🟢 connected' : row.status === 'awaiting_pairing' ? '🟡 awaiting pairing' : row.status === 'connecting' ? '🔵 connecting' : row.status === 'disconnected' ? '⚪ disconnected' : `🔴 ${row.status}`;
+    return `${index + 1}. +${row.number}\n   Status: ${state}${row.updatedAt ? `\n   Updated: ${row.updatedAt}` : ''}`;
+  }).join('\n\n');
+  return bot.sendMessage(msg.chat.id, `📋 *Elara WhatsApp pair list*\n\n${text}`, { parse_mode: 'Markdown' });
+}
+
+async function getAllPairNumbers() {
+  const pairingPath = path.join(__dirname, 'nexstore', 'pairing');
+  try {
+    const entries = await fs.readdir(pairingPath, { withFileTypes: true });
+    return entries.filter(entry => entry.isDirectory() && /@s\.whatsapp\.net$/.test(entry.name)).map(entry => entry.name.replace(/@s\.whatsapp\.net$/, ''));
+  } catch {
+    return [];
   }
-  
-  bot.sendMessage(chatId, 'ᴜsᴀɢᴇ: /listpair confirm',
-        { 
-      parse_mode: 'Markdown',
-      reply_markup: {
-        inline_keyboard: [
-          [{ text: 'ʜᴇʟᴘ', callback_data: 'help_msg' }],
-          [{  text: 'ᴄʜᴀɴɴᴇʟ', url: SOCIAL_LINKS.channel1}]
-          ]
-          }
-      });
-});
+}
+
+bot.onText(/^(?:\/pairstatus|\/pairinfo)(?:\s+(\d{7,15}))?$/, requireMembership(async (msg, match) => {
+  const requested = match?.[1];
+  const owned = await getOwnedPairNumbers(msg.from.id);
+  if (requested && !owned.includes(requested) && !isTelegramAdmin(msg.from.id)) return bot.sendMessage(msg.chat.id, '❌ You can only inspect pairings owned by your Telegram account.');
+  const numbers = requested ? [requested] : owned;
+  if (!numbers.length) return bot.sendMessage(msg.chat.id, '📱 No pairing is recorded yet. Use /pair <country-code-number>.');
+  const rows = await Promise.all(numbers.map(readPairStatus));
+  const output = rows.map(row => `📱 +${row.number}\nStatus: ${row.status}\n${row.code ? `Code: ${row.code}\n` : ''}${row.expiresAt ? `Expires: ${row.expiresAt}\n` : ''}${row.lastError ? `Error: ${row.lastError}\n` : ''}${row.updatedAt ? `Updated: ${row.updatedAt}` : ''}`).join('\n\n');
+  return bot.sendMessage(msg.chat.id, `📡 *Elara pairing status*\n\n${output}`, { parse_mode: 'Markdown' });
+}));
+
+bot.onText(/^\/(?:pairs|pairlist|listpair)$/, requireMembership(async (msg) => sendPairList(msg, isTelegramAdmin(msg.from.id))));
 
 bot.onText(/\/publishtech(?:\\s+(\\d+))?$/, async (msg, match) => {
   if (!(await ensureOfficialChannelMembership(msg))) return;

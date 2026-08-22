@@ -74,6 +74,8 @@
 - [x] Make every WhatsApp command react immediately and return a specific error when its plugin handler fails.
 - [x] Extend reaction and specific-error coverage to every WhatsApp command path, including secondary dispatchers.
 - [x] Repair non-working WhatsApp media commands and validate their download/send flows.
+- [ ] Add Telegram commands to show pairing status and the owner’s isolated pair list.
+- [ ] Support multiple WhatsApp pairings through Telegram without cross-session interference.
 - [x] Audit every WhatsApp plugin entry point for dispatcher compatibility and error coverage.
 - [ ] Diagnose Render sleep/crash/disconnect causes and add a 24/7 uptime strategy with automatic recovery.
 - [x] Verify the local Elara process is reachable and Telegram polling is genuinely responding.
@@ -91,3 +93,14 @@
 - [ ] Prepare a Supabase-compatible schema and Render database setup for the Render-only connection service.
 - [ ] Document Supabase provisioning and private Render environment-variable wiring steps.
 - [x] Remove the direct Render panel access-key prompt from the public panel UI while preserving private adapter authorization.
+
+- [x] Add owner-scoped Telegram pairing status and pair-list commands.
+- [x] Support multiple Telegram-initiated WhatsApp pairing codes without a shared global pairing file.
+- [x] Persist per-session WhatsApp connection status for live inspection.
+- [x] Run syntax and command smoke tests, restart Elara, and push the multi-pairing update to GitHub.
+- [ ] Verify real WhatsApp pairing transitions on the deployed service.
+- [ ] Investigate Render sleep/crash/disconnect causes and choose an uptime strategy.
+- [ ] Complete persistent database-backed ownership metadata for Render-hosted sessions.
+- [ ] Configure the user-provided Telegram token only as a private Render runtime secret and verify its bot identity.
+
+> Note: the live pairing transition and Render uptime/database items remain operational follow-ups requiring deployment credentials and real device testing.
