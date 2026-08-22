@@ -1,5 +1,7 @@
 const http = require('http');
 const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
 const { fork } = require('child_process');
 let startpairing;
 function getStartPairing() {
@@ -87,6 +89,16 @@ async function connectTelegram(){const status=document.getElementById('tgStatus'
 
 async function handle(req, res) {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+  if (req.method === 'GET' && url.pathname === '/privacy') {
+    try {
+      const policy = fs.readFileSync(path.join(__dirname, 'PRIVACY.md'), 'utf8');
+      res.writeHead(200, { 'content-type': 'text/plain; charset=utf-8' });
+      return res.end(policy);
+    } catch (error) {
+      res.writeHead(500, { 'content-type': 'text/plain; charset=utf-8' });
+      return res.end('Privacy policy temporarily unavailable.');
+    }
+  }
   if (req.method === 'GET' && url.pathname === '/') {
     const existing = /(?:^|;\s*)elara_session=([^;]+)/.exec(req.headers.cookie || '');
     const headers = { 'content-type': 'text/html; charset=utf-8' };

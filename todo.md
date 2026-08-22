@@ -122,3 +122,8 @@
 - [x] Remove incorrect WhatsApp owner-link redirects from Telegram-visible owner/support/profile messages.
 - [x] Ensure all Telegram owner buttons and text use only https://t.me/StarboyT20.
 - [x] Start Elara fresh, validate routing and startup health, and push the fix.
+
+- [x] Add a branded image-backed Telegram description/about response using Elara artwork.
+- [x] Add a clear privacy policy document and Telegram /privacy command/link.
+- [x] Include the privacy command in Telegram menus and profile description.
+- [x] Validate, restart, and push the privacy and description-picture update.

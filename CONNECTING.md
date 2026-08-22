@@ -90,3 +90,6 @@ Elara registers its command menu for private chats, group chats, and group admin
 For a Telegram channel, add Elara as an administrator with permission to post messages and photos. Informational `/about`, `/help`, and `/menu` channel posts are handled when the bot has channel posting permission. Start WhatsApp pairing from a private Telegram chat, not a public channel, so the phone number and pairing code are not exposed to channel members.
 
 Elara sends a styled welcome message when members join a group and a goodbye message when members leave. If group commands are not visible, review the bot privacy setting with BotFather and ensure the bot is allowed to receive the relevant group updates. Keep the Telegram token private and never paste it into a group or channel.
+
+## Privacy policy
+Use `/privacy` in Telegram to read Elara’s privacy summary. The full working policy is publicly available at [queen-elara.onrender.com/privacy](https://queen-elara.onrender.com/privacy). It explains the Telegram information needed to answer commands, WhatsApp pairing and session files, third-party media services, retention, security responsibilities, and deletion requests.

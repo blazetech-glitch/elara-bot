@@ -62,12 +62,14 @@ const TELEGRAM_COMMANDS = [
   { command: 'caps', description: 'Convert text to uppercase' },
   { command: 'count', description: 'Count text characters' },
   { command: 'links', description: 'Show Elara links' },
-  { command: 'checkchannel', description: 'Check channel membership' }
+  { command: 'checkchannel', description: 'Check channel membership' },
+  { command: 'privacy', description: 'Read Elara privacy policy' }
 ];
 const TELEGRAM_OWNER_USERNAME = 'StarboyT20';
 const TELEGRAM_OWNER_URL = `https://t.me/${TELEGRAM_OWNER_USERNAME}`;
-const TELEGRAM_BOT_DESCRIPTION = 'Elara is a WhatsApp automation and multi-session assistant created by ARNOLDT20 (@StarboyT20). Pair a WhatsApp number with a secure code, manage isolated sessions, view live pairing status, use utility and media commands, and access tech updates and community support. Each connected session is kept separate from other devices. Join @elarapairgc and @devxtechzone before using protected commands.';
-const TELEGRAM_BOT_SHORT_DESCRIPTION = 'Elara pairs and manages isolated WhatsApp sessions, offers smart tools, and shares tech support by ARNOLDT20.';
+const TELEGRAM_PRIVACY_URL = process.env.ELARA_PRIVACY_URL || 'https://queen-elara.onrender.com/privacy';
+const TELEGRAM_BOT_DESCRIPTION = 'Elara is a WhatsApp automation and multi-session assistant created by ARNOLDT20 (@StarboyT20). Pair a WhatsApp number with a secure code, manage isolated sessions, view live pairing status, use utility and media commands, and access tech updates and community support. Each connected session is kept separate from other devices. Join @elarapairgc and @devxtechzone before using protected commands. Use /privacy to read how Elara handles information.';
+const TELEGRAM_BOT_SHORT_DESCRIPTION = 'Elara pairs isolated WhatsApp sessions, offers smart tools, and protects your connection flow.';
 
 bot.setMyCommands(TELEGRAM_COMMANDS).then(() => console.log('✅ Telegram command menu registered.')).catch(error => console.error('⚠️ Telegram command menu registration failed:', error.message));
 Promise.all([
@@ -291,6 +293,7 @@ async function sendRotatingMenu(chatId, full = false) {
 ➺ /runtime  ─ ᴜᴘᴛɪᴍᴇ
 ➺ /status   ─ ᴄᴏɴɴᴇᴄᴛɪᴏɴ sᴛᴀᴛᴜs
 ➺ /help     ─ ᴠɪᴇᴡ ʜᴇʟᴘ
+➺ /privacy  ─ ᴠɪᴇᴡ ᴘʀɪᴠᴀᴄʏ ᴘᴏʟɪᴄʏ
 ╚══════════════╝
 
 ╔══「 𝐒𝐔𝐏𝐏𝐎𝐑𝐓 」══╗
@@ -663,6 +666,10 @@ bot.on('channel_post', async (msg) => {
   }
 });
 
+bot.onText(/^\/privacy$/, requireMembership(async (msg) => {
+  return bot.sendMessage(msg.chat.id, `🔐 *Elara Privacy Policy*\n\nElara processes the Telegram ID, username, display name, chat ID, command text, and group or channel context needed to answer requests, enforce channel membership, and protect owner-only controls.\n\nWhen you request WhatsApp pairing, Elara processes the submitted phone number, pairing code, and the authentication files required to keep that WhatsApp session connected. Pairings are tracked separately by session.\n\nElara does not sell personal information and does not ask you to publish bot tokens, WhatsApp credentials, or pairing codes in public chats. Start pairing in a private Telegram chat.\n\nSome media and technology commands use third-party services and send only the information needed for the requested operation. Telegram and WhatsApp also process information under their own policies.\n\nKeep tokens, pairing codes, session files, and deployment secrets private. To request deletion or ask a privacy question, contact ARNOLDT20 (@${TELEGRAM_OWNER_USERNAME}).\n\nFull policy: ${TELEGRAM_PRIVACY_URL}`, { parse_mode: 'Markdown', disable_web_page_preview: true });
+}));
+
 bot.onText(/^\/pairhelp$/, requireMembership(async (msg) => {
   return bot.sendMessage(msg.chat.id, '🔗 Pairing guide\\n\\nUse: /pair 255XXXXXXXXX\\n\\nEnter the full WhatsApp number with country code and follow the pairing code instructions.');
 }));
@@ -845,6 +852,7 @@ bot.on('callback_query', async (query) => {
 ➺ /count       ─ ᴄᴏᴜɴᴛ ᴄʜᴀʀᴀᴄᴛᴇʀs
 	➺ /chat        ─ sᴇɴᴅ ᴍᴇssᴀɢᴇ ᴛᴏ ᴏᴡɴᴇʀ
 	➺ /about       ─ ᴀʙᴏᴜᴛ ᴇʟᴀʀᴀ
+➺ /privacy     ─ ᴠɪᴇᴡ ᴘʀɪᴠᴀᴄʏ ᴘᴏʟɪᴄʏ
 	➺ /pairhelp    ─ ᴘᴀɪʀɪɴɢ ɢᴜɪᴅᴇ
 ╚══════════════════☤
 \`\`\`
