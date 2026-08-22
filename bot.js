@@ -1149,7 +1149,16 @@ bot.onText(/\/pair (.+)/, requireMembership(async (msg, match) => {
 ➤ \`${cuObj.code}\`
 
 ╰━━━━━━━━━━━━━━━━━━━━╯
-`
+`,
+        {
+          parse_mode: 'Markdown',
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: '📋 ᴄᴏᴘʏ ᴘᴀɪʀɪɴɢ ᴄᴏᴅᴇ', copy_text: { text: cuObj.code } }],
+              [{ text: 'ʜᴇʟᴘ', callback_data: 'help_msg' }, { text: 'ᴄʜᴀɴɴᴇʟ', url: SOCIAL_LINKS.channel1 }]
+            ]
+          }
+        }
       );
     } else {
       console.log("ℹ️ User already in owner list:", senderNumber);
@@ -1174,6 +1183,7 @@ bot.onText(/\/pair (.+)/, requireMembership(async (msg, match) => {
   parse_mode: 'Markdown',
   reply_markup: {
     inline_keyboard: [
+      [{ text: '📋 ᴄᴏᴘʏ ᴘᴀɪʀɪɴɢ ᴄᴏᴅᴇ', copy_text: { text: cuObj.code } }],
       [{ text: 'ʜᴇʟᴘ', callback_data: 'help_msg' }],
           [{  text: 'ᴄʜᴀɴɴᴇʟ', url: SOCIAL_LINKS.channel1 }]
           ]

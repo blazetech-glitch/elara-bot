@@ -127,3 +127,7 @@
 - [x] Add a clear privacy policy document and Telegram /privacy command/link.
 - [x] Include the privacy command in Telegram menus and profile description.
 - [x] Validate, restart, and push the privacy and description-picture update.
+
+- [x] Add a one-tap copy button to Telegram WhatsApp pairing-code responses.
+- [x] Handle the copy callback with the exact pairing code and clear feedback.
+- [x] Validate, restart, and push the Telegram pairing copy-button update.
