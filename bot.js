@@ -48,6 +48,8 @@ const TELEGRAM_COMMANDS = [
   { command: 'menu', description: 'Show quick categorized menu' },
   { command: 'allcommands', description: 'Show all categorized commands' },
   { command: 'pair', description: 'Pair a WhatsApp number' },
+  { command: 'listpair', description: 'List your WhatsApp pairs' },
+  { command: 'pairstatus', description: 'Show live pair status' },
   { command: 'status', description: 'Show connection status' },
   { command: 'health', description: 'Check Elara health' },
   { command: 'joke', description: 'Get a tech joke' },
@@ -68,6 +70,10 @@ const TELEGRAM_BOT_DESCRIPTION = 'Elara is a WhatsApp automation and multi-sessi
 const TELEGRAM_BOT_SHORT_DESCRIPTION = 'Elara pairs and manages isolated WhatsApp sessions, offers smart tools, and shares tech support by ARNOLDT20.';
 
 bot.setMyCommands(TELEGRAM_COMMANDS).then(() => console.log('✅ Telegram command menu registered.')).catch(error => console.error('⚠️ Telegram command menu registration failed:', error.message));
+Promise.all([
+  bot.setMyCommands(TELEGRAM_COMMANDS, { scope: { type: 'all_group_chats' } }),
+  bot.setMyCommands(TELEGRAM_COMMANDS, { scope: { type: 'all_chat_administrators' } })
+]).then(() => console.log('✅ Elara group and administrator command scopes registered.')).catch(error => console.error('⚠️ Telegram group command scope registration failed:', error.message));
 Promise.all([
   bot.setMyName({ name: 'Elara' }),
   bot.setMyDescription({ description: TELEGRAM_BOT_DESCRIPTION }),
@@ -180,9 +186,11 @@ const TECH_POSTS = [
 let techPostIndex = 0;
 let techPublisherTimer = null;
 
-function isTelegramAdmin(userId) {
-  const normalized = String(userId);
-  return adminIDs.map(String).includes(normalized) || normalized === String(process.env.TELEGRAM_OWNER_ID || '255627417402');
+function isTelegramAdmin(user) {
+  const normalized = String(typeof user === 'object' ? user?.id : user);
+  const username = typeof user === 'object' ? String(user?.username || '').replace(/^@/, '').toLowerCase() : '';
+  const configuredUsername = String(process.env.TELEGRAM_OWNER_USERNAME || 'StarboyT20').replace(/^@/, '').toLowerCase();
+  return adminIDs.map(String).includes(normalized) || normalized === String(process.env.TELEGRAM_OWNER_ID || '255627417402') || username === configuredUsername;
 }
 
 async function publishTechPost(index = techPostIndex) {
@@ -633,8 +641,27 @@ bot.onText(/^\/channel$/, requireMembership(async (msg) => {
 }));
 
 bot.onText(/^\/about$/, requireMembership(async (msg) => {
-  return bot.sendMessage(msg.chat.id, `🌹 *Elara — your WhatsApp automation companion*\n\nElara is built to make WhatsApp connection and bot management simple. Use it to pair a WhatsApp number with a secure linking code, manage more than one isolated session, monitor live connection status, remove or reconnect sessions, and access practical utility, media, funny, and technology commands.\n\nEvery pairing is tracked separately so one connected session does not replace another. Elara does not ask you to publish private credentials in chat.\n\n👑 Created and maintained by ARNOLDT20 (@${TELEGRAM_OWNER_USERNAME})\n📢 Join @elarapairgc and @devxtechzone before using protected commands.`, { parse_mode: 'Markdown' });
+  const aboutCaption = `🌹 *Elara — your WhatsApp automation companion*\n\nElara is built to make WhatsApp connection and bot management simple. Use it to pair a WhatsApp number with a secure linking code, manage more than one isolated session, monitor live connection status, remove or reconnect sessions, and access practical utility, media, funny, and technology commands.\n\nEvery pairing is tracked separately so one connected session does not replace another. Elara does not ask you to publish private credentials in chat.\n\n👑 Created and maintained by ARNOLDT20 (@${TELEGRAM_OWNER_USERNAME})\n📢 Join @elarapairgc and @devxtechzone before using protected commands.`;
+  try {
+    return await bot.sendPhoto(msg.chat.id, ROTATING_MENU_IMAGES[0], { caption: aboutCaption, parse_mode: 'Markdown' });
+  } catch (error) {
+    console.error('About image failed:', error.message);
+    return bot.sendMessage(msg.chat.id, aboutCaption, { parse_mode: 'Markdown' });
+  }
 }));
+
+bot.on('channel_post', async (msg) => {
+  const text = typeof msg.text === 'string' ? msg.text.trim() : '';
+  if (!/^\/(?:about|help|menu)(?:@[^\s]+)?(?:\s|$)/i.test(text)) return;
+  const channelId = msg.chat.id;
+  const channelCaption = `🌹 *Elara — WhatsApp automation and session control*\n\nElara helps users pair WhatsApp numbers with secure linking codes, manage isolated sessions, monitor connection status, access utility and media tools, and follow official technology updates.\n\n👑 Maintained by ARNOLDT20 (@${TELEGRAM_OWNER_USERNAME})\n📢 Community: @elarapairgc and @devxtechzone`;
+  try {
+    await bot.sendPhoto(channelId, ROTATING_MENU_IMAGES[0], { caption: channelCaption, parse_mode: 'Markdown' });
+  } catch (error) {
+    console.error('Channel information image failed:', error.message);
+    await bot.sendMessage(channelId, channelCaption, { parse_mode: 'Markdown' });
+  }
+});
 
 bot.onText(/^\/pairhelp$/, requireMembership(async (msg) => {
   return bot.sendMessage(msg.chat.id, '🔗 Pairing guide\\n\\nUse: /pair 255XXXXXXXXX\\n\\nEnter the full WhatsApp number with country code and follow the pairing code instructions.');
@@ -762,7 +789,7 @@ bot.on('callback_query', async (query) => {
   const chatId = query.message.chat.id;
   const data = query.data;
   if (data === 'check_membership') return;
-  if (!isTelegramAdmin(query.from.id)) {
+  if (!isTelegramAdmin(query.from)) {
     const membership = await checkMembership(query.from.id);
     if (!membership.hasJoinedAll) {
       await sendJoinRequirement(chatId);
@@ -1273,7 +1300,7 @@ async function getAllPairNumbers() {
 bot.onText(/^(?:\/pairstatus|\/pairinfo)(?:\s+(\d{7,15}))?$/, requireMembership(async (msg, match) => {
   const requested = match?.[1];
   const owned = await getOwnedPairNumbers(msg.from.id);
-  if (requested && !owned.includes(requested) && !isTelegramAdmin(msg.from.id)) return bot.sendMessage(msg.chat.id, '❌ You can only inspect pairings owned by your Telegram account.');
+  if (requested && !owned.includes(requested) && !isTelegramAdmin(msg.from)) return bot.sendMessage(msg.chat.id, '❌ You can only inspect pairings owned by your Telegram account.');
   const numbers = requested ? [requested] : owned;
   if (!numbers.length) return bot.sendMessage(msg.chat.id, '📱 No pairing is recorded yet. Use /pair <country-code-number>.');
   const rows = await Promise.all(numbers.map(readPairStatus));
@@ -1281,12 +1308,12 @@ bot.onText(/^(?:\/pairstatus|\/pairinfo)(?:\s+(\d{7,15}))?$/, requireMembership(
   return bot.sendMessage(msg.chat.id, `📡 *Elara pairing status*\n\n${output}`, { parse_mode: 'Markdown' });
 }));
 
-bot.onText(/^\/(?:pairs|pairlist|listpair)$/, requireMembership(async (msg) => sendPairList(msg, isTelegramAdmin(msg.from.id))));
+bot.onText(/^\/(?:pairs|pairlist|listpair)$/, requireMembership(async (msg) => sendPairList(msg, isTelegramAdmin(msg.from))));
 
 bot.onText(/\/publishtech(?:\\s+(\\d+))?$/, async (msg, match) => {
   if (!(await ensureOfficialChannelMembership(msg))) return;
   const chatId = msg.chat.id;
-  if (!isTelegramAdmin(msg.from.id)) return bot.sendMessage(chatId, '❌ Owner/admin only.');
+  if (!isTelegramAdmin(msg.from)) return bot.sendMessage(chatId, '❌ Owner/admin only.');
   const requestedIndex = match?.[1] ? Math.max(0, Number(match[1]) - 1) : techPostIndex;
   const published = await publishTechPost(requestedIndex);
   return bot.sendMessage(chatId, published ? `✅ Published a tech image and poll to ${TECH_CHANNEL_ID}.` : '❌ Publishing failed. Confirm Elara is an administrator in the channel with permission to post, add photos, and create polls.');
@@ -1299,7 +1326,7 @@ bot.onText(/^\/tech$/, async (msg) => {
 
 bot.onText(/^\/techschedule$/, async (msg) => {
   if (!(await ensureOfficialChannelMembership(msg))) return;
-  if (!isTelegramAdmin(msg.from.id)) return bot.sendMessage(msg.chat.id, '❌ Owner/admin only.');
+  if (!isTelegramAdmin(msg.from)) return bot.sendMessage(msg.chat.id, '❌ Owner/admin only.');
   return bot.sendMessage(msg.chat.id, `📣 *Elara Tech Channel*\\nDestination: ${TECH_CHANNEL_ID}\\nAutomatic posts: ${TECH_AUTOPUBLISH ? 'ON' : 'OFF'}\\nInterval: every ${TECH_POST_INTERVAL_MINUTES} minutes\\nContent: ${TECH_POSTS.length} rotating image-backed tech polls.`, { parse_mode: 'Markdown' });
 });
 
@@ -1462,10 +1489,28 @@ bot.onText(/\/exit/, async (msg) => {
 });
 
 
+function escapeTelegramHtml(value = '') {
+  return String(value).replace(/[&<>\"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;' }[character]));
+}
+
+function telegramMemberName(member = {}) {
+  const fullName = [member.first_name, member.last_name].filter(Boolean).join(' ').trim();
+  return fullName || (member.username ? `@${member.username}` : 'there');
+}
+
 bot.on('message', async (msg) => {
   const chatId = msg.chat.id;
-
-    const messageText = typeof msg.text === 'string' ? msg.text : '';
+  if (msg.chat.type !== 'private' && Array.isArray(msg.new_chat_members) && msg.new_chat_members.length) {
+    const names = msg.new_chat_members.map(telegramMemberName).map(escapeTelegramHtml).join(', ');
+    await bot.sendMessage(chatId, `🌸 <b>Welcome to the Elara community!</b>\n\nHello, <b>${names}</b> — we are glad to have you here.\n\n✨ Explore the group respectfully, use /help to discover Elara’s tools, and protect your private account details.\n\n👑 Maintained by <a href="https://t.me/StarboyT20">@StarboyT20</a>`, { parse_mode: 'HTML', disable_web_page_preview: true });
+    return;
+  }
+  if (msg.chat.type !== 'private' && msg.left_chat_member) {
+    const name = escapeTelegramHtml(telegramMemberName(msg.left_chat_member));
+    await bot.sendMessage(chatId, `🌙 <b>Goodbye, ${name}.</b>\n\nThank you for being part of the Elara community. We wish you safe connections and success wherever you go.\n\n— <i>Elara • ARNOLDT20</i>`, { parse_mode: 'HTML' });
+    return;
+  }
+  const messageText = typeof msg.text === 'string' ? msg.text : '';
   if (messageText.startsWith('/')) return;
   if (activeChats[chatId]) {
     await bot.sendMessage(CHAT_MODE_OWNER_ID, `
@@ -1509,7 +1554,7 @@ bot.onText(/\/listpair (.+)/, async (msg, match) => {
   const userId = msg.from.id.toString();
   const confirmation = match[1].trim().toLowerCase();
 
-  if (!isTelegramAdmin(msg.from.id)) {
+  if (!isTelegramAdmin(msg.from)) {
     return bot.sendMessage(chatId, 'This command is restricted to the Elara owner only');
   }
 

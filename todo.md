@@ -109,6 +109,12 @@
 - [x] Add and apply a clear, polished Telegram bot description and short profile text.
 - [x] Validate Telegram metadata/help output, restart Elara, and push the identity update.
 
-- [ ] Rewrite the Telegram bot description to clearly explain Elara’s purpose, capabilities, pairing flow, privacy boundaries, and access requirements.
-- [ ] Apply the refined description to Telegram profile metadata and visible help/about text.
-- [ ] Validate, restart Elara, and push the refined Telegram description.
+- [x] Rewrite the Telegram bot description to clearly explain Elara’s purpose, capabilities, pairing flow, privacy boundaries, and access requirements.
+- [x] Apply the refined description to Telegram profile metadata and visible help/about text.
+- [x] Validate, restart Elara, and push the refined Telegram description.
+
+- [x] Recognize @StarboyT20 as the configured Telegram owner for owner-only pair commands.
+- [x] Add an image-backed Telegram /about description using the existing Elara artwork.
+- [x] Configure Telegram group and channel command scopes and document required bot permissions.
+- [x] Add beautiful Telegram group welcome and goodbye messages for members joining or leaving.
+- [x] Validate, restart, and push the Telegram group and owner-access update.

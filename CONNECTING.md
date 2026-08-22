@@ -83,3 +83,10 @@ On a fresh Render deployment, set `WHATSAPP_NUMBER=255625606354` and deploy the 
 ## Testing checklist
 
 After connection, confirm the logs show the WhatsApp account as connected, the newsletter follow operations as successful, and the group join result. Then test a basic command such as `.menu`, an owner-only command from `255627417402`, and a normal public command. If a command depends on an external API, test that service separately because API availability is outside Elara’s control.
+
+## Telegram groups and channels
+Elara registers its command menu for private chats, group chats, and group administrators. Add the bot to a Telegram group and promote it to an administrator if you want reliable welcome and goodbye messages. Allow it to send messages and media; grant delete-message permission only when moderation commands require it. Supported commands can be used in groups, including `/menu`, `/help`, `/pair`, `/listpair`, and `/pairstatus`.
+
+For a Telegram channel, add Elara as an administrator with permission to post messages and photos. Informational `/about`, `/help`, and `/menu` channel posts are handled when the bot has channel posting permission. Start WhatsApp pairing from a private Telegram chat, not a public channel, so the phone number and pairing code are not exposed to channel members.
+
+Elara sends a styled welcome message when members join a group and a goodbye message when members leave. If group commands are not visible, review the bot privacy setting with BotFather and ensure the bot is allowed to receive the relevant group updates. Keep the Telegram token private and never paste it into a group or channel.
