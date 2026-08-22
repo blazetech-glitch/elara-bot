@@ -118,3 +118,7 @@
 - [x] Configure Telegram group and channel command scopes and document required bot permissions.
 - [x] Add beautiful Telegram group welcome and goodbye messages for members joining or leaving.
 - [x] Validate, restart, and push the Telegram group and owner-access update.
+
+- [x] Remove incorrect WhatsApp owner-link redirects from Telegram-visible owner/support/profile messages.
+- [x] Ensure all Telegram owner buttons and text use only https://t.me/StarboyT20.
+- [x] Start Elara fresh, validate routing and startup health, and push the fix.

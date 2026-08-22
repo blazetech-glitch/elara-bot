@@ -1047,7 +1047,7 @@ bot.onText(/\/pair (.+)/, requireMembership(async (msg, match) => {
     const pairedCount = files.filter(file => file.endsWith('@s.whatsapp.net')).length;
     
     if (pairedCount >= 30) {
-      return bot.sendMessage(chatId, "Pairing limit reached. Try again later or inform my owner wa.me/255627417402 .",
+      return bot.sendMessage(chatId, `Pairing limit reached. Try again later or contact my owner on Telegram: @${TELEGRAM_OWNER_USERNAME}.`,
             { 
       parse_mode: 'Markdown',
       reply_markup: {
