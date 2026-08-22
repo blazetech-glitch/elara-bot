@@ -828,6 +828,8 @@ bot.on('callback_query', async (query) => {
   }
 
   if (data === 'inline_menu') {
+    await sendRotatingMenu(chatId, false);
+    return bot.answerCallbackQuery(query.id, { text: 'Elara menu loaded.' });
     const captionText = `
 \`\`\`
 ━━「 𝐁𝐎𝐓 𝐈𝐍𝐅𝐎 」━━╼

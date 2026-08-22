@@ -135,3 +135,7 @@
 - [x] Send a polished Telegram confirmation after WhatsApp login reaches the open state.
 - [x] Include the connected number, successful status, session isolation, and normal-logic activation details.
 - [x] Validate, restart, and push the post-login notification update.
+
+- [x] Unify Telegram private-chat and group menu layouts into one shared categorized design.
+- [x] Ensure every menu request rotates through the configured Elara artwork images.
+- [x] Validate group/private menu consistency, restart, and push the menu update.
