@@ -62,7 +62,17 @@ const TELEGRAM_COMMANDS = [
   { command: 'links', description: 'Show Elara links' },
   { command: 'checkchannel', description: 'Check channel membership' }
 ];
+const TELEGRAM_OWNER_USERNAME = 'StarboyT20';
+const TELEGRAM_OWNER_URL = `https://t.me/${TELEGRAM_OWNER_USERNAME}`;
+const TELEGRAM_BOT_DESCRIPTION = 'Elara is a secure WhatsApp pairing and multi-session management assistant by ARNOLDT20. Connect WhatsApp devices, monitor isolated sessions, explore tech tools, and access the official Elara community. Join the required channels before using protected commands.';
+const TELEGRAM_BOT_SHORT_DESCRIPTION = 'Elara: secure WhatsApp pairing, isolated session management, tech tools, and community support by ARNOLDT20.';
+
 bot.setMyCommands(TELEGRAM_COMMANDS).then(() => console.log('✅ Telegram command menu registered.')).catch(error => console.error('⚠️ Telegram command menu registration failed:', error.message));
+Promise.all([
+  bot.setMyName({ name: 'Elara' }),
+  bot.setMyDescription({ description: TELEGRAM_BOT_DESCRIPTION }),
+  bot.setMyShortDescription({ short_description: TELEGRAM_BOT_SHORT_DESCRIPTION })
+]).then(() => console.log('✅ Elara Telegram profile metadata registered.')).catch(error => console.error('⚠️ Telegram profile metadata registration failed:', error.message));
 bot.on('polling_error', error => {
   console.error(`⚠️ Telegram polling connection error: ${error.code || 'NETWORK'} ${error.message}`);
 });
@@ -308,7 +318,7 @@ const SOCIAL_LINKS = {
   group1: 'https://t.me/elarachatzone',
   group2: 'https://t.me/elarapairgc',
   group3: 'https://t.me/elarapairgc',
-  developer: 'https://t.me/StarboyT20',
+  developer: TELEGRAM_OWNER_URL,
   whatsappGroup: 'https://chat.whatsapp.com/HxCDA2s89LMEZMyixnTSy5?s=cl&p=a&mlu=4',
 };
 
@@ -607,11 +617,11 @@ bot.onText(/^(?:\/jid|\/id)$/, requireMembership(async (msg) => {
 }));
 
 bot.onText(/^\/owner$/, requireMembership(async (msg) => {
-  return bot.sendMessage(msg.chat.id, '👑 Elara owner: ARNOLDT20\nTelegram: https://t.me/StarboyT20');
+  return bot.sendMessage(msg.chat.id, `👑 Elara owner: ARNOLDT20\nTelegram: @${TELEGRAM_OWNER_USERNAME}\nProfile: ${TELEGRAM_OWNER_URL}`);
 }));
 
 bot.onText(/^\/support$/, requireMembership(async (msg) => {
-  return bot.sendMessage(msg.chat.id, '🛟 Elara support: https://t.me/StarboyT20');
+  return bot.sendMessage(msg.chat.id, `🛟 Elara support is provided by ARNOLDT20\nTelegram: @${TELEGRAM_OWNER_USERNAME}`);
 }));
 
 bot.onText(/^(?:\/group|\/community)$/, requireMembership(async (msg) => {
@@ -623,7 +633,7 @@ bot.onText(/^\/channel$/, requireMembership(async (msg) => {
 }));
 
 bot.onText(/^\/about$/, requireMembership(async (msg) => {
-  return bot.sendMessage(msg.chat.id, '🌹 Elara is a WhatsApp pairing, management, and tech community assistant powered by ARNOLDT20.');
+  return bot.sendMessage(msg.chat.id, `🌹 *Elara — secure connection, smarter control*\n\nElara helps you pair and manage isolated WhatsApp sessions, check live connection status, access useful tech tools, and stay connected with the official Elara community.\n\n👑 Owner: ARNOLDT20 (@${TELEGRAM_OWNER_USERNAME})\n🔐 Privacy: credentials remain private to their connection flow.\n📢 Access: join the required Elara channels before using protected commands.`, { parse_mode: 'Markdown' });
 }));
 
 bot.onText(/^\/pairhelp$/, requireMembership(async (msg) => {
@@ -1366,10 +1376,10 @@ bot.onText(/^(?:\/help|\/commands)\b/, async (msg) => {
 ──────────────────────────────
 
 📖 ᴀʙᴏᴜᴛ Elara
-Elara ᴠ² ɪs ᴀ sᴍᴀʀᴛ ᴀssɪsᴛᴀɴᴛ ʙᴏᴛ
-ᴅᴇsɪɢɴᴇᴅ ᴛᴏ ʜᴇʟᴘ ʏᴏᴜ ᴘᴀɪʀ ᴀɴᴅ ᴍᴀɴᴀɢᴇ
-ᴡʜᴀᴛsᴀᴘᴘ ᴅᴇᴠɪᴄᴇs ᴇᴀsɪʟʏ ᴜsɪɴɢ sɪᴍᴘʟᴇ
-ᴄᴏᴍᴍᴀɴᴅs. 
+Elara ᴠ² ɪs ᴀ sᴇᴄᴜʀᴇ ᴡʜᴀᴛsᴀᴘᴘ ᴘᴀɪʀɪɴɢ
+ᴀɴᴅ ᴍᴜʟᴛɪ-sᴇssɪᴏɴ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ ᴀssɪsᴛᴀɴᴛ
+ʙʏ ᴀʀɴᴏʟᴅᴛ20 — ᴡɪᴛʜ ᴛᴇᴄʜ ᴛᴏᴏʟs
+ᴀɴᴅ ᴏғғɪᴄɪᴀʟ ᴄᴏᴍᴍᴜɴɪᴛʏ sᴜᴘᴘᴏʀᴛ.
 
 ──────────────────────────────
 

@@ -104,3 +104,7 @@
 - [ ] Configure the user-provided Telegram token only as a private Render runtime secret and verify its bot identity.
 
 > Note: the live pairing transition and Render uptime/database items remain operational follow-ups requiring deployment credentials and real device testing.
+
+- [x] Configure Telegram owner identity as @StarboyT20 across visible Elara text.
+- [x] Add and apply a clear, polished Telegram bot description and short profile text.
+- [x] Validate Telegram metadata/help output, restart Elara, and push the identity update.

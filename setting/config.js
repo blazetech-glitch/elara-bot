@@ -30,7 +30,7 @@ global.richpp = ' '
 global.packname = "Sticker By Elara"
 global.author = "ARNOLDT20"
 global.creator = "255627417402@s.whatsapp.net"
-global.ownername = 'ARNOLDT20'
+global.ownername = '@StarboyT20'
 global.onlyowner = `Only ARNOLDT20 can use this Command 💜`
   // reply 
 global.database = `*To Exist In The Database Contact The Owner of this bot*`
@@ -75,4 +75,4 @@ require('fs').watchFile(file, () => {
 
 // Elara project configuration
 //owner number:255627417402
-//telegram owner: ARNOLDT20
+//telegram owner: @StarboyT20
