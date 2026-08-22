@@ -108,3 +108,7 @@
 - [x] Configure Telegram owner identity as @StarboyT20 across visible Elara text.
 - [x] Add and apply a clear, polished Telegram bot description and short profile text.
 - [x] Validate Telegram metadata/help output, restart Elara, and push the identity update.
+
+- [ ] Rewrite the Telegram bot description to clearly explain Elara’s purpose, capabilities, pairing flow, privacy boundaries, and access requirements.
+- [ ] Apply the refined description to Telegram profile metadata and visible help/about text.
+- [ ] Validate, restart Elara, and push the refined Telegram description.

@@ -64,8 +64,8 @@ const TELEGRAM_COMMANDS = [
 ];
 const TELEGRAM_OWNER_USERNAME = 'StarboyT20';
 const TELEGRAM_OWNER_URL = `https://t.me/${TELEGRAM_OWNER_USERNAME}`;
-const TELEGRAM_BOT_DESCRIPTION = 'Elara is a secure WhatsApp pairing and multi-session management assistant by ARNOLDT20. Connect WhatsApp devices, monitor isolated sessions, explore tech tools, and access the official Elara community. Join the required channels before using protected commands.';
-const TELEGRAM_BOT_SHORT_DESCRIPTION = 'Elara: secure WhatsApp pairing, isolated session management, tech tools, and community support by ARNOLDT20.';
+const TELEGRAM_BOT_DESCRIPTION = 'Elara is a WhatsApp automation and multi-session assistant created by ARNOLDT20 (@StarboyT20). Pair a WhatsApp number with a secure code, manage isolated sessions, view live pairing status, use utility and media commands, and access tech updates and community support. Each connected session is kept separate from other devices. Join @elarapairgc and @devxtechzone before using protected commands.';
+const TELEGRAM_BOT_SHORT_DESCRIPTION = 'Elara pairs and manages isolated WhatsApp sessions, offers smart tools, and shares tech support by ARNOLDT20.';
 
 bot.setMyCommands(TELEGRAM_COMMANDS).then(() => console.log('✅ Telegram command menu registered.')).catch(error => console.error('⚠️ Telegram command menu registration failed:', error.message));
 Promise.all([
@@ -633,7 +633,7 @@ bot.onText(/^\/channel$/, requireMembership(async (msg) => {
 }));
 
 bot.onText(/^\/about$/, requireMembership(async (msg) => {
-  return bot.sendMessage(msg.chat.id, `🌹 *Elara — secure connection, smarter control*\n\nElara helps you pair and manage isolated WhatsApp sessions, check live connection status, access useful tech tools, and stay connected with the official Elara community.\n\n👑 Owner: ARNOLDT20 (@${TELEGRAM_OWNER_USERNAME})\n🔐 Privacy: credentials remain private to their connection flow.\n📢 Access: join the required Elara channels before using protected commands.`, { parse_mode: 'Markdown' });
+  return bot.sendMessage(msg.chat.id, `🌹 *Elara — your WhatsApp automation companion*\n\nElara is built to make WhatsApp connection and bot management simple. Use it to pair a WhatsApp number with a secure linking code, manage more than one isolated session, monitor live connection status, remove or reconnect sessions, and access practical utility, media, funny, and technology commands.\n\nEvery pairing is tracked separately so one connected session does not replace another. Elara does not ask you to publish private credentials in chat.\n\n👑 Created and maintained by ARNOLDT20 (@${TELEGRAM_OWNER_USERNAME})\n📢 Join @elarapairgc and @devxtechzone before using protected commands.`, { parse_mode: 'Markdown' });
 }));
 
 bot.onText(/^\/pairhelp$/, requireMembership(async (msg) => {
@@ -1376,10 +1376,10 @@ bot.onText(/^(?:\/help|\/commands)\b/, async (msg) => {
 ──────────────────────────────
 
 📖 ᴀʙᴏᴜᴛ Elara
-Elara ᴠ² ɪs ᴀ sᴇᴄᴜʀᴇ ᴡʜᴀᴛsᴀᴘᴘ ᴘᴀɪʀɪɴɢ
-ᴀɴᴅ ᴍᴜʟᴛɪ-sᴇssɪᴏɴ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ ᴀssɪsᴛᴀɴᴛ
-ʙʏ ᴀʀɴᴏʟᴅᴛ20 — ᴡɪᴛʜ ᴛᴇᴄʜ ᴛᴏᴏʟs
-ᴀɴᴅ ᴏғғɪᴄɪᴀʟ ᴄᴏᴍᴍᴜɴɪᴛʏ sᴜᴘᴘᴏʀᴛ.
+Elara ᴠ² ɪs ᴀ ᴡʜᴀᴛsᴀᴘᴘ ᴀᴜᴛᴏᴍᴀᴛɪᴏɴ
+ᴀɴᴅ ᴍᴜʟᴛɪ-sᴇssɪᴏɴ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ ᴀssɪsᴛᴀɴᴛ.
+ᴘᴀɪʀ ᴅᴇᴠɪᴄᴇs, ᴠɪᴇᴡ sᴛᴀᴛᴜs, ᴜsᴇ
+ᴛᴇᴄʜ ᴛᴏᴏʟs, ᴀɴᴅ ɢᴇᴛ ᴄᴏᴍᴍᴜɴɪᴛʏ sᴜᴘᴘᴏʀᴛ.
 
 ──────────────────────────────
 
