@@ -185,3 +185,7 @@
 - [x] Replace the second owner username with @devgift across the visible repository.
 - [x] Use the mathematical double-struck display name 𝔻𝕖𝕧 𝔾𝕚𝕗𝕥 for Owner 2.
 - [x] Add a crown to Owner 2 labels and validate, restart, and push the identity update.
+
+- [x] Change Owner 2 username to @DevxXofficial across visible Elara references.
+- [x] Change Owner 2 display name to mathematical-style 𝕕𝕖𝕧-𝕏 𝕋𝕖𝕔𝕙.
+- [x] Change Owner 1 display name to mathematical-style 𝔻𝕖𝕧-𝕋𝟚𝟘 and validate, restart, and push the identity update.
