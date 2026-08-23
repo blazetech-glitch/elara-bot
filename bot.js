@@ -68,12 +68,13 @@ const TELEGRAM_COMMANDS = [
 ];
 const TELEGRAM_OWNER_USERNAME = 'StarboyT20';
 const TELEGRAM_OWNER_URL = `https://t.me/${TELEGRAM_OWNER_USERNAME}`;
-const TELEGRAM_SUPPORT_USERNAME = 'Mrddev';
+const TELEGRAM_SUPPORT_USERNAME = 'devgift';
+const TELEGRAM_SUPPORT_DISPLAY_NAME = '𝔻𝕖𝕧 𝔾𝕚𝕗𝕥';
 const TELEGRAM_SUPPORT_URL = `https://t.me/${TELEGRAM_SUPPORT_USERNAME}`;
 const TELEGRAM_OWNER_PHOTO_URL = 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/uIfntqbUwWrNWGVJ.jpg';
 const TELEGRAM_SUPPORT_PHOTO_URL = 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/xWVuJKbtgZFbkxug.jpg';
 const TELEGRAM_PRIVACY_URL = process.env.ELARA_PRIVACY_URL || 'https://queen-elara.onrender.com/privacy';
-const TELEGRAM_BOT_DESCRIPTION = 'Elara is a WhatsApp automation and multi-session assistant created by ARNOLDT20 (@StarboyT20), with additional support from @Mrddev. Pair a WhatsApp number with a secure code, manage isolated sessions, view live pairing status, use utility and media commands, and access tech updates and community support. Each connected session is kept separate from other devices. Join @elarapairgc and @devxtechzone before using protected commands. Use /privacy to read how Elara handles information.';
+const TELEGRAM_BOT_DESCRIPTION = 'Elara is a WhatsApp automation and multi-session assistant created by ARNOLDT20 (@StarboyT20), with additional support from @devgift. Pair a WhatsApp number with a secure code, manage isolated sessions, view live pairing status, use utility and media commands, and access tech updates and community support. Each connected session is kept separate from other devices. Join @elarapairgc and @devxtechzone before using protected commands. Use /privacy to read how Elara handles information.';
 const TELEGRAM_BOT_SHORT_DESCRIPTION = 'Elara pairs isolated WhatsApp sessions, offers smart tools, and protects your connection flow.';
 
 bot.setMyCommands(TELEGRAM_COMMANDS).then(() => console.log('✅ Telegram command menu registered.')).catch(error => console.error('⚠️ Telegram command menu registration failed:', error.message));
@@ -341,7 +342,7 @@ async function sendRotatingMenu(chatId, full = false) {
     reply_markup: { inline_keyboard: [
       [{ text: '📋 𝐀𝐋𝐋 𝐂𝐎𝐌𝐌𝐀𝐍𝐃𝐒', callback_data: 'all_commands' }],
       [{ text: '👑 𝐎𝐖𝐍𝐄𝐑 𝟏', url: 'https://t.me/StarboyT20' }, { text: '📢 𝐂𝐇𝐀𝐍𝐍𝐄𝐋 𝟏', url: 'https://t.me/elarapairgc' }],
-      [{ text: '🛟 𝐎𝐖𝐍𝐄𝐑 𝟐', url: 'https://t.me/Mrddev' }, { text: '🛠 𝐂𝐇𝐀𝐍𝐍𝐄𝐋 𝟐', url: 'https://t.me/devxtechzone' }]
+      [{ text: '👑 𝐎𝐖𝐍𝐄𝐑 𝟐', url: 'https://t.me/devgift' }, { text: '🛠 𝐂𝐇𝐀𝐍𝐍𝐄𝐋 𝟐', url: 'https://t.me/devxtechzone' }]
     ] }
   });
 }
@@ -705,11 +706,11 @@ bot.onText(/^(?:\/jid|\/id)$/, requireMembership(async (msg) => {
 }));
 
 const sendOwnerCard = async (chatId) => {
-  const caption = `👑 *ELARA OWNER & SUPPORT TEAM*\n\nTwo profiles, one direct line to the Elara team.\n\n👑 *ARNOLDT20* — @${TELEGRAM_OWNER_USERNAME}\n🛟 *Mrddev* — @${TELEGRAM_SUPPORT_USERNAME}\n\n💬 Tap a profile below to connect.`;
+  const caption = `👑 *ELARA OWNER & SUPPORT TEAM*\n\nTwo profiles, one direct line to the Elara team.\n\n👑 *ARNOLDT20* — @${TELEGRAM_OWNER_USERNAME}\n🛟 *${TELEGRAM_SUPPORT_DISPLAY_NAME}* — @${TELEGRAM_SUPPORT_USERNAME}\n\n💬 Tap a profile below to connect.`;
   try {
     await bot.sendMediaGroup(chatId, [
       { type: 'photo', media: TELEGRAM_OWNER_PHOTO_URL, caption: caption, parse_mode: 'Markdown' },
-      { type: 'photo', media: TELEGRAM_SUPPORT_PHOTO_URL, caption: '🛟 *Mrddev* — @Mrddev', parse_mode: 'Markdown' }
+      { type: 'photo', media: TELEGRAM_SUPPORT_PHOTO_URL, caption: '👑 *𝔻𝕖𝕧 𝔾𝕚𝕗𝕥* — @devgift', parse_mode: 'Markdown' }
     ]);
   } catch (error) {
     console.error('Owner profile photo album failed:', error.message);
@@ -718,7 +719,7 @@ const sendOwnerCard = async (chatId) => {
     parse_mode: 'Markdown',
     reply_markup: { inline_keyboard: [[
       { text: '👑 @StarboyT20', url: TELEGRAM_OWNER_URL },
-      { text: '🛟 @Mrddev', url: TELEGRAM_SUPPORT_URL }
+      { text: '👑 𝔻𝕖𝕧 𝔾𝕚𝕗𝕥', url: TELEGRAM_SUPPORT_URL }
     ]] }
   });
 };
@@ -983,7 +984,7 @@ bot.on('callback_query', async (query) => {
               { text: "📢 𝐂𝐇𝐀𝐍𝐍𝐄𝐋 𝟏", url: "https://t.me/elarapairgc" }
             ],
             [
-              { text: "🛟 𝐎𝐖𝐍𝐄𝐑 𝟐", url: "https://t.me/Mrddev" },
+              { text: "👑 𝐎𝐖𝐍𝐄𝐑 𝟐", url: "https://t.me/devgift" },
               { text: "🛠 𝐂𝐇𝐀𝐍𝐍𝐄𝐋 𝟐", url: "https://t.me/devxtechzone" }
             ],
             [
@@ -1004,7 +1005,7 @@ bot.on('callback_query', async (query) => {
               { text: "📢 𝐂𝐇𝐀𝐍𝐍𝐄𝐋 𝟏", url: "https://t.me/elarapairgc" }
             ],
             [
-              { text: "🛟 𝐎𝐖𝐍𝐄𝐑 𝟐", url: "https://t.me/Mrddev" },
+              { text: "👑 𝐎𝐖𝐍𝐄𝐑 𝟐", url: "https://t.me/devgift" },
               { text: "🛠 𝐂𝐇𝐀𝐍𝐍𝐄𝐋 𝟐", url: "https://t.me/devxtechzone" }
             ],
             [
@@ -1603,7 +1604,7 @@ Elara ᴠ² ɪs ᴀ ᴡʜᴀᴛsᴀᴘᴘ ᴀᴜᴛᴏᴍᴀᴛɪᴏɴ
           { text: "📢 𝐂𝐇𝐀𝐍𝐍𝐄𝐋 𝟏", url: "https://t.me/elarapairgc" }
         ],
         [
-          { text: "🛟 𝐎𝐖𝐍𝐄𝐑 𝟐", url: "https://t.me/Mrddev" },
+          { text: "👑 𝐎𝐖𝐍𝐄𝐑 𝟐", url: "https://t.me/devgift" },
           { text: "🛠 𝐂𝐇𝐀𝐍𝐍𝐄𝐋 𝟐", url: "https://t.me/devxtechzone" }
         ],
         [

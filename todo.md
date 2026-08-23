@@ -181,3 +181,7 @@
 - [x] Put channel 1 and channel 2 in a vertical right column below the menu.
 - [x] Use stylish button labels, remove extra explanatory display text, and preserve all menu paths.
 - [x] Validate, restart, and push the redesigned menu buttons.
+
+- [x] Replace the second owner username with @devgift across the visible repository.
+- [x] Use the mathematical double-struck display name 𝔻𝕖𝕧 𝔾𝕚𝕗𝕥 for Owner 2.
+- [x] Add a crown to Owner 2 labels and validate, restart, and push the identity update.
