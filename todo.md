@@ -147,3 +147,7 @@
 - [x] Diagnose why newly supplied artwork is not appearing in live Telegram menu rotation.
 - [x] Ensure the live menu renderer uses the supplied artwork URLs and exposes a deterministic way to see them.
 - [x] Validate live image delivery, restart, and push the visible-rotation fix.
+
+- [x] Track unique Telegram users by UTC day using the existing local user registry.
+- [x] Announce a new user joining Elara to the configured owner/team audience without exposing private IDs or phone numbers.
+- [x] Add an owner-only daily-user report command and validate restart/publish behavior.

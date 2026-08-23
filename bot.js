@@ -50,6 +50,7 @@ const TELEGRAM_COMMANDS = [
   { command: 'pair', description: 'Pair a WhatsApp number' },
   { command: 'listpair', description: 'List your WhatsApp pairs' },
   { command: 'pairstatus', description: 'Show live pair status' },
+  { command: 'dailyusers', description: 'Show today’s active users' },
   { command: 'status', description: 'Show connection status' },
   { command: 'health', description: 'Check Elara health' },
   { command: 'joke', description: 'Get a tech joke' },
@@ -92,8 +93,10 @@ let adminIDs = [];
 
 
 const userFilePath = path.join(__dirname, 'nexstore', 'users.json');
+const dailyUsersFilePath = path.join(__dirname, 'nexstore', 'daily-users.json');
 const pairOwnershipPath = path.join(__dirname, 'nexstore', 'pairing', 'telegram-ownership.json');
 let userIDs = new Set();
+let dailyUsers = {};
 
 async function loadPairOwnership() {
   try {
@@ -270,6 +273,7 @@ async function sendRotatingMenu(chatId, full = false) {
 ➺ /delpair     ─ ʀᴇᴍᴏᴠᴇ ᴘᴀɪʀ
 ➺ /runtime     ─ ʙᴏᴛ ᴜᴘᴛɪᴍᴇ
 ➺ /status      ─ ᴄᴏɴɴᴇᴄᴛɪᴏɴ sᴛᴀᴛᴜs
+➺ /dailyusers  ─ ᴛᴏᴅᴀʏ’s ᴀᴄᴛɪᴠᴇ ᴜsᴇʀs (ᴏᴡɴᴇʀ)
 ➺ /listpair    ─ ᴠɪᴇᴡ ᴀʟʟ ᴘᴀɪʀs
 ➺ /menu        ─ ʀᴏᴛᴀᴛɪɴɢ ᴍᴇɴᴜ ɪᴍᴀɢᴇ
 ➺ /ping        ─ ᴄʜᴇᴄᴋ ʀᴇsᴘᴏɴsᴇ sᴘᴇᴇᴅ
@@ -311,6 +315,7 @@ async function sendRotatingMenu(chatId, full = false) {
 ➺ /ping     ─ ᴄʜᴇᴄᴋ sᴘᴇᴇᴅ
 ➺ /runtime  ─ ᴜᴘᴛɪᴍᴇ
 ➺ /status   ─ ᴄᴏɴɴᴇᴄᴛɪᴏɴ sᴛᴀᴛᴜs
+➺ /dailyusers ─ ᴛᴏᴅᴀʏ’s ᴀᴄᴛɪᴠᴇ ᴜsᴇʀs (ᴏᴡɴᴇʀ)
 ➺ /help     ─ ᴠɪᴇᴡ ʜᴇʟᴘ
 ➺ /privacy  ─ ᴠɪᴇᴡ ᴘʀɪᴠᴀᴄʏ ᴘᴏʟɪᴄʏ
 ╚══════════════╝
@@ -416,13 +421,45 @@ const saveUserIDs = async () => {
 };
 
 
-const trackUser = async (userId) => {
+const loadDailyUsers = async () => {
+  if (!await exists(dailyUsersFilePath)) return;
+  try {
+    const raw = await fs.readFile(dailyUsersFilePath, 'utf8');
+    const parsed = JSON.parse(raw);
+    dailyUsers = parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+  } catch (error) {
+    console.error('❌ error loading daily-users.json:', error.message);
+    dailyUsers = {};
+  }
+};
+const saveDailyUsers = async () => {
+  await fs.mkdir(path.dirname(dailyUsersFilePath), { recursive: true });
+  await fs.writeFile(dailyUsersFilePath, JSON.stringify(dailyUsers, null, 2));
+};
+const utcDayKey = () => new Date().toISOString().slice(0, 10);
+const announceNewTelegramUser = async (userIdStr) => {
+  const recipients = [...userIDs].filter(id => id !== userIdStr);
+  const announcement = '✨ *A new member just joined the Elara team!*\\n\\nWelcome to our growing community. Use /menu to explore Elara’s tools and /help to get started.\\n\\n🔒 Please keep phone numbers, pairing codes, tokens, and private credentials confidential.';
+  await Promise.allSettled(recipients.map(recipient => bot.sendMessage(recipient, announcement, { parse_mode: 'Markdown' })));
+};
+const trackUser = async (userId, user = null) => {
   const userIdStr = userId.toString();
-  if (!userIDs.has(userIdStr)) {
+  const isNewUser = !userIDs.has(userIdStr);
+  if (isNewUser) {
     userIDs.add(userIdStr);
     await saveUserIDs();
     console.log(`➕ new user tracked: ${userIdStr}`);
   }
+  const day = utcDayKey();
+  const today = new Set(Array.isArray(dailyUsers[day]) ? dailyUsers[day] : []);
+  today.add(userIdStr);
+  dailyUsers[day] = [...today];
+  await saveDailyUsers();
+  if (isNewUser && user) {
+    await announceNewTelegramUser(userIdStr);
+    console.log(`📣 announced new Elara member: ${user.username ? `@${user.username}` : userIdStr}`);
+  }
+  return isNewUser;
 };
 
 
@@ -517,8 +554,7 @@ bot.on('callback_query', async (callbackQuery) => {
   const data = callbackQuery.data;
 
   if (data === 'check_membership') {
-    await trackUser(userId);
-
+        await trackUser(userId, callbackQuery.from);
     if (adminIDs.includes(userId.toString())) {
       await bot.answerCallbackQuery(callbackQuery.id, { text: '✅ You are an admin. Access granted.' });
       return;
@@ -562,7 +598,7 @@ bot.on('callback_query', async (callbackQuery) => {
 
 const ensureOfficialChannelMembership = async (msg) => {
   const userId = msg.from.id;
-  await trackUser(userId);
+  await trackUser(userId, msg.from);
   if (isTelegramAdmin(userId)) return true;
   const membership = await checkMembership(userId);
   if (!membership.hasJoinedAll) {
@@ -607,6 +643,7 @@ const startAutoLoadLoop = () => {
   try {
     await loadAdminIDs();
     await loadUserIDs();
+    await loadDailyUsers();
     startTechPublisher();
   } catch (error) {
     console.error('❌ Telegram publisher initialization failed:', error.message);
@@ -695,6 +732,14 @@ bot.onText(/^\/pairhelp$/, requireMembership(async (msg) => {
 
 bot.onText(/^\/health$/, requireMembership(async (msg) => {
   return bot.sendMessage(msg.chat.id, `💚 Elara health: OK\\nTelegram polling: active\\nUptime: ${runtime(process.uptime())}`);
+}));
+
+bot.onText(/^(?:\/dailyusers|\/todayusers|\/userstats)$/, requireMembership(async (msg) => {
+  if (!isTelegramAdmin(msg.from)) return bot.sendMessage(msg.chat.id, '❌ Daily user statistics are available to the Elara owner only.');
+  const day = utcDayKey();
+  const count = Array.isArray(dailyUsers[day]) ? new Set(dailyUsers[day]).size : 0;
+  const total = userIDs.size;
+  return bot.sendMessage(msg.chat.id, `📊 *Elara daily users*\\n\\n📅 UTC date: ${day}\\n👥 Active users today: ${count}\\n🌐 Total tracked users: ${total}\\n\\nNew members are announced without exposing their Telegram ID or phone number.`, { parse_mode: 'Markdown' });
 }));
 
 bot.onText(/^\/version$/, requireMembership(async (msg) => {
@@ -794,12 +839,11 @@ bot.onText(/^(?:\/tiktok|\/tt)(?:\\s+(.+))?$/, requireMembership(async (msg, mat
   }
 }));
 
-bot.onText(/\/start/, (msg) => {
+bot.onText(/\/start/, async (msg) => {
   const chatId = msg.chat.id;
   const userId = msg.from.id;
 
-  trackUser(userId);
-
+  await trackUser(userId, msg.from);
   bot.sendMessage(chatId, '𝙄 𝙖𝙢 Elara — 𝙮𝙤𝙪𝙧 𝙪𝙡𝙩𝙞𝙢𝙖𝙩𝙚 𝙒𝙝𝙖𝙩𝙨𝘼𝙥𝙥 𝙗𝙤𝙩', {
     reply_markup: {
       inline_keyboard: [
@@ -1575,6 +1619,7 @@ function telegramMemberName(member = {}) {
 
 bot.on('message', async (msg) => {
   const chatId = msg.chat.id;
+  if (msg.from?.id) await trackUser(msg.from.id, msg.from);
   if (msg.chat.type !== 'private' && Array.isArray(msg.new_chat_members) && msg.new_chat_members.length) {
     const names = msg.new_chat_members.map(telegramMemberName).map(escapeTelegramHtml).join(', ');
     await bot.sendMessage(chatId, `🌸 <b>Welcome to the Elara community!</b>\n\nHello, <b>${names}</b> — we are glad to have you here.\n\n✨ Explore the group respectfully, use /help to discover Elara’s tools, and protect your private account details.\n\n👑 Maintained by <a href="https://t.me/StarboyT20">@StarboyT20</a>`, { parse_mode: 'HTML', disable_web_page_preview: true });
