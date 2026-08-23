@@ -163,3 +163,7 @@
 - [x] Remove authorization wording from the visible owner/support card.
 - [x] Keep only the two owner profiles and their clickable Telegram contacts in the card.
 - [x] Validate, restart, and push the simplified owner-card wording.
+
+- [x] Show two distinct owner profile pictures side by side in the Telegram owner card.
+- [x] Associate each picture with the correct clickable owner contact.
+- [x] Validate image delivery, restart, and push the profile-picture card update.

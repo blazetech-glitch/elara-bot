@@ -70,6 +70,8 @@ const TELEGRAM_OWNER_USERNAME = 'StarboyT20';
 const TELEGRAM_OWNER_URL = `https://t.me/${TELEGRAM_OWNER_USERNAME}`;
 const TELEGRAM_SUPPORT_USERNAME = 'Mrddev';
 const TELEGRAM_SUPPORT_URL = `https://t.me/${TELEGRAM_SUPPORT_USERNAME}`;
+const TELEGRAM_OWNER_PHOTO_URL = 'https://cdn4.telesco.pe/file/vxmwsyCdYxTE_8hfjh9WwKU17dZuZQcL9SAWRPus7yBspeRCBUE9kGVybTt5zvjoRGtDoG_lvnSsy4jJBBc_S9gPlYFjaX1Y3bcKAGf4VcwtG7fcfq6q_ETC4ExmYx8XZopXgaTSq68uutUBKhZcnOrio5I9qK1-tFDsAD4VPuFoEKDwxgFR5vt7ls5xzHUrzXkfAiXRwnXiq7WmlwFojKNYph2LV0A_EABoNFRskBcH7q3KmJ-YqVdXhymDdHh6_Zhelk8JTS0qAi9qka5PHns317cXxuNGcLT1BlBVYr5Hh80T_gyBj_ZENRe7juBziHLzOlQiIbexaG8vPv7nDw.jpg';
+const TELEGRAM_SUPPORT_PHOTO_URL = 'https://cdn4.telesco.pe/file/oVH3EicP55VCKyOlHpEOFiykLW3Qq8TuRdT4oOq2pr2eLWK84Cn2GMZ9Xtr4nuM83vI8t5m-Re3J0a3x5n_T3lsLoOCgyJkNXD--EsE_ZP9OhaSh0qgpKvEuDIx1Iw03s25s4GL31osHGN2bG_JtoeT6m8HEJLBIeAsWSfxcuDaThIHG34uVqM8bPOtPIBIsMA4xd2nzyKlGAqmyKN0VFbkF5yd5dKoWdD5wfxvC7KzDxS5SY3-wV_pZ9z-8rVanPAqFPXRcfD3fZAZn6rYZM6MwefvgVwjeX3t8iK5Oz2QJWxw-rjBjoalUdn4Vtbm6rZ3DFpWUcZjjGNluJhNK9A.jpg';
 const TELEGRAM_PRIVACY_URL = process.env.ELARA_PRIVACY_URL || 'https://queen-elara.onrender.com/privacy';
 const TELEGRAM_BOT_DESCRIPTION = 'Elara is a WhatsApp automation and multi-session assistant created by ARNOLDT20 (@StarboyT20), with additional support from @Mrddev. Pair a WhatsApp number with a secure code, manage isolated sessions, view live pairing status, use utility and media commands, and access tech updates and community support. Each connected session is kept separate from other devices. Join @elarapairgc and @devxtechzone before using protected commands. Use /privacy to read how Elara handles information.';
 const TELEGRAM_BOT_SHORT_DESCRIPTION = 'Elara pairs isolated WhatsApp sessions, offers smart tools, and protects your connection flow.';
@@ -688,14 +690,24 @@ bot.onText(/^(?:\/jid|\/id)$/, requireMembership(async (msg) => {
   return bot.sendMessage(msg.chat.id, '🆔 Chat ID: ' + msg.chat.id);
 }));
 
-const sendOwnerCard = (chatId) => bot.sendMessage(chatId, `👑 *ELARA OWNER & SUPPORT TEAM*\n\n\`\`\`\n┌──────────────────────┬──────────────────────┐\n│ 👑 PRIMARY OWNER      │ 🛟 SUPPORT CONTACT   │\n│ ARNOLDT20             │ @${TELEGRAM_SUPPORT_USERNAME}          │\n│ @${TELEGRAM_OWNER_USERNAME}          │ Mrddev               │\n└──────────────────────┴──────────────────────┘\n\`\`\`\n\n💬 Connect with either profile below.`, {
-  parse_mode: 'Markdown',
-  disable_web_page_preview: true,
-  reply_markup: { inline_keyboard: [[
-    { text: '👑 @StarboyT20', url: TELEGRAM_OWNER_URL },
-    { text: '🛟 @Mrddev', url: TELEGRAM_SUPPORT_URL }
-  ]] }
-});
+const sendOwnerCard = async (chatId) => {
+  const caption = `👑 *ELARA OWNER & SUPPORT TEAM*\n\nTwo profiles, one direct line to the Elara team.\n\n👑 *ARNOLDT20* — @${TELEGRAM_OWNER_USERNAME}\n🛟 *Mrddev* — @${TELEGRAM_SUPPORT_USERNAME}\n\n💬 Tap a profile below to connect.`;
+  try {
+    await bot.sendMediaGroup(chatId, [
+      { type: 'photo', media: TELEGRAM_OWNER_PHOTO_URL, caption: caption, parse_mode: 'Markdown' },
+      { type: 'photo', media: TELEGRAM_SUPPORT_PHOTO_URL, caption: '🛟 *Mrddev* — @Mrddev', parse_mode: 'Markdown' }
+    ]);
+  } catch (error) {
+    console.error('Owner profile photo album failed:', error.message);
+  }
+  return bot.sendMessage(chatId, '👑 *Elara owner profiles*', {
+    parse_mode: 'Markdown',
+    reply_markup: { inline_keyboard: [[
+      { text: '👑 @StarboyT20', url: TELEGRAM_OWNER_URL },
+      { text: '🛟 @Mrddev', url: TELEGRAM_SUPPORT_URL }
+    ]] }
+  });
+};
 bot.onText(/^\/owner$/, requireMembership(async (msg) => sendOwnerCard(msg.chat.id)));
 bot.onText(/^\/support$/, requireMembership(async (msg) => sendOwnerCard(msg.chat.id)));
 
