@@ -151,3 +151,7 @@
 - [x] Track unique Telegram users by UTC day using the existing local user registry.
 - [x] Announce a new user joining Elara to the configured owner/team audience without exposing private IDs or phone numbers.
 - [x] Add an owner-only daily-user report command and validate restart/publish behavior.
+
+- [x] Add @Mrddev as an additional visible Elara owner contact.
+- [x] Deduplicate new-user announcements so each new user triggers at most one notice.
+- [x] Replace the announcement with a concise, beautiful, lightweight message and validate normal command flow.

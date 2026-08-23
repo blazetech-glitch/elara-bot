@@ -68,8 +68,10 @@ const TELEGRAM_COMMANDS = [
 ];
 const TELEGRAM_OWNER_USERNAME = 'StarboyT20';
 const TELEGRAM_OWNER_URL = `https://t.me/${TELEGRAM_OWNER_USERNAME}`;
+const TELEGRAM_SUPPORT_USERNAME = 'Mrddev';
+const TELEGRAM_SUPPORT_URL = `https://t.me/${TELEGRAM_SUPPORT_USERNAME}`;
 const TELEGRAM_PRIVACY_URL = process.env.ELARA_PRIVACY_URL || 'https://queen-elara.onrender.com/privacy';
-const TELEGRAM_BOT_DESCRIPTION = 'Elara is a WhatsApp automation and multi-session assistant created by ARNOLDT20 (@StarboyT20). Pair a WhatsApp number with a secure code, manage isolated sessions, view live pairing status, use utility and media commands, and access tech updates and community support. Each connected session is kept separate from other devices. Join @elarapairgc and @devxtechzone before using protected commands. Use /privacy to read how Elara handles information.';
+const TELEGRAM_BOT_DESCRIPTION = 'Elara is a WhatsApp automation and multi-session assistant created by ARNOLDT20 (@StarboyT20), with additional support from @Mrddev. Pair a WhatsApp number with a secure code, manage isolated sessions, view live pairing status, use utility and media commands, and access tech updates and community support. Each connected session is kept separate from other devices. Join @elarapairgc and @devxtechzone before using protected commands. Use /privacy to read how Elara handles information.';
 const TELEGRAM_BOT_SHORT_DESCRIPTION = 'Elara pairs isolated WhatsApp sessions, offers smart tools, and protects your connection flow.';
 
 bot.setMyCommands(TELEGRAM_COMMANDS).then(() => console.log('✅ Telegram command menu registered.')).catch(error => console.error('⚠️ Telegram command menu registration failed:', error.message));
@@ -438,8 +440,9 @@ const saveDailyUsers = async () => {
 };
 const utcDayKey = () => new Date().toISOString().slice(0, 10);
 const announceNewTelegramUser = async (userIdStr) => {
-  const recipients = [...userIDs].filter(id => id !== userIdStr);
-  const announcement = '✨ *A new member just joined the Elara team!*\\n\\nWelcome to our growing community. Use /menu to explore Elara’s tools and /help to get started.\\n\\n🔒 Please keep phone numbers, pairing codes, tokens, and private credentials confidential.';
+  const recipients = [...new Set([...adminIDs.map(String), String(CHAT_MODE_OWNER_ID)])].filter(id => id !== userIdStr);
+  if (!recipients.length) return;
+  const announcement = '✨ *New Elara member*\\n\\nA new user has joined the team. Welcome them to the community.\\n\\n🔒 No Telegram ID, phone number, pairing code, or private credential is shared.';
   await Promise.allSettled(recipients.map(recipient => bot.sendMessage(recipient, announcement, { parse_mode: 'Markdown' })));
 };
 const trackUser = async (userId, user = null) => {
@@ -452,9 +455,11 @@ const trackUser = async (userId, user = null) => {
   }
   const day = utcDayKey();
   const today = new Set(Array.isArray(dailyUsers[day]) ? dailyUsers[day] : []);
-  today.add(userIdStr);
-  dailyUsers[day] = [...today];
-  await saveDailyUsers();
+  if (!today.has(userIdStr)) {
+    today.add(userIdStr);
+    dailyUsers[day] = [...today];
+    await saveDailyUsers();
+  }
   if (isNewUser && user) {
     await announceNewTelegramUser(userIdStr);
     console.log(`📣 announced new Elara member: ${user.username ? `@${user.username}` : userIdStr}`);
@@ -684,11 +689,10 @@ bot.onText(/^(?:\/jid|\/id)$/, requireMembership(async (msg) => {
 }));
 
 bot.onText(/^\/owner$/, requireMembership(async (msg) => {
-  return bot.sendMessage(msg.chat.id, `👑 Elara owner: ARNOLDT20\nTelegram: @${TELEGRAM_OWNER_USERNAME}\nProfile: ${TELEGRAM_OWNER_URL}`);
+  return bot.sendMessage(msg.chat.id, `👑 *Elara ownership*\n\nCreator: ARNOLDT20\nTelegram: @${TELEGRAM_OWNER_USERNAME}\nProfile: ${TELEGRAM_OWNER_URL}\n\nSupport contact: @${TELEGRAM_SUPPORT_USERNAME}\nSupport profile: ${TELEGRAM_SUPPORT_URL}`, { parse_mode: 'Markdown' });
 }));
-
 bot.onText(/^\/support$/, requireMembership(async (msg) => {
-  return bot.sendMessage(msg.chat.id, `🛟 Elara support is provided by ARNOLDT20\nTelegram: @${TELEGRAM_OWNER_USERNAME}`);
+  return bot.sendMessage(msg.chat.id, `🛟 *Elara support desk*\n\nOwner: ARNOLDT20 (@${TELEGRAM_OWNER_USERNAME})\nAdditional support: @${TELEGRAM_SUPPORT_USERNAME}\n\nPlease never send tokens, pairing codes, or private credentials in a public chat.`, { parse_mode: 'Markdown' });
 }));
 
 bot.onText(/^(?:\/group|\/community)$/, requireMembership(async (msg) => {
@@ -700,7 +704,7 @@ bot.onText(/^\/channel$/, requireMembership(async (msg) => {
 }));
 
 bot.onText(/^\/about$/, requireMembership(async (msg) => {
-  const aboutCaption = `🌹 *Elara — your WhatsApp automation companion*\n\nElara is built to make WhatsApp connection and bot management simple. Use it to pair a WhatsApp number with a secure linking code, manage more than one isolated session, monitor live connection status, remove or reconnect sessions, and access practical utility, media, funny, and technology commands.\n\nEvery pairing is tracked separately so one connected session does not replace another. Elara does not ask you to publish private credentials in chat.\n\n👑 Created and maintained by ARNOLDT20 (@${TELEGRAM_OWNER_USERNAME})\n📢 Join @elarapairgc and @devxtechzone before using protected commands.`;
+  const aboutCaption = `🌹 *Elara — your WhatsApp automation companion*\n\nElara is built to make WhatsApp connection and bot management simple. Use it to pair a WhatsApp number with a secure linking code, manage more than one isolated session, monitor live connection status, remove or reconnect sessions, and access practical utility, media, funny, and technology commands.\n\nEvery pairing is tracked separately so one connected session does not replace another. Elara does not ask you to publish private credentials in chat.\n\n👑 Created and maintained by ARNOLDT20 (@${TELEGRAM_OWNER_USERNAME})\n🛟 Additional support: @${TELEGRAM_SUPPORT_USERNAME}\n📢 Join @elarapairgc and @devxtechzone before using protected commands.`;
   try {
     return await bot.sendPhoto(msg.chat.id, ROTATING_MENU_IMAGES[0], { caption: aboutCaption, parse_mode: 'Markdown' });
   } catch (error) {
@@ -713,7 +717,7 @@ bot.on('channel_post', async (msg) => {
   const text = typeof msg.text === 'string' ? msg.text.trim() : '';
   if (!/^\/(?:about|help|menu)(?:@[^\s]+)?(?:\s|$)/i.test(text)) return;
   const channelId = msg.chat.id;
-  const channelCaption = `🌹 *Elara — WhatsApp automation and session control*\n\nElara helps users pair WhatsApp numbers with secure linking codes, manage isolated sessions, monitor connection status, access utility and media tools, and follow official technology updates.\n\n👑 Maintained by ARNOLDT20 (@${TELEGRAM_OWNER_USERNAME})\n📢 Community: @elarapairgc and @devxtechzone`;
+  const channelCaption = `🌹 *Elara — WhatsApp automation and session control*\n\nElara helps users pair WhatsApp numbers with secure linking codes, manage isolated sessions, monitor connection status, access utility and media tools, and follow official technology updates.\n\n👑 Maintained by ARNOLDT20 (@${TELEGRAM_OWNER_USERNAME})\n🛟 Additional support: @${TELEGRAM_SUPPORT_USERNAME}\n📢 Community: @elarapairgc and @devxtechzone`;
   try {
     await bot.sendPhoto(channelId, ROTATING_MENU_IMAGES[0], { caption: channelCaption, parse_mode: 'Markdown' });
   } catch (error) {
