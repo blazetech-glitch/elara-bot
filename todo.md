@@ -167,3 +167,8 @@
 - [x] Show two distinct owner profile pictures side by side in the Telegram owner card.
 - [x] Associate each picture with the correct clickable owner contact.
 - [x] Validate image delivery, restart, and push the profile-picture card update.
+
+- [x] Safely test the owner media album send path without broadcasting a live test message.
+- [x] Add one automatic welcome greeting for each genuinely new Telegram user without duplicate notices.
+- [x] Add quick links to @elarapairgc and @devxtechzone in the Telegram menu buttons.
+- [x] Validate, restart, and push the media, greeting, and quick-link update.

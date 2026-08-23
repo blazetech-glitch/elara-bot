@@ -338,7 +338,10 @@ async function sendRotatingMenu(chatId, full = false) {
   return bot.sendPhoto(chatId, image, {
     caption,
     parse_mode: 'Markdown',
-    reply_markup: { inline_keyboard: [[{ text: '📋 ALL COMMANDS', callback_data: 'all_commands' }, { text: '📢 OFFICIAL CHANNEL', url: 'https://t.me/elarapairgc' }]] }
+    reply_markup: { inline_keyboard: [
+      [{ text: '📋 ALL COMMANDS', callback_data: 'all_commands' }],
+      [{ text: '📢 ELARA CHANNEL', url: 'https://t.me/elarapairgc' }, { text: '🛠 DEV CHANNEL', url: 'https://t.me/devxtechzone' }]
+    ] }
   });
 }
 
@@ -463,8 +466,18 @@ const trackUser = async (userId, user = null) => {
     await saveDailyUsers();
   }
   if (isNewUser && user) {
-    await announceNewTelegramUser(userIdStr);
-    console.log(`📣 announced new Elara member: ${user.username ? `@${user.username}` : userIdStr}`);
+    const welcome = `✨ *Welcome to Elara*\n\nHello${user.first_name ? ` ${user.first_name}` : ''}! You are now connected to the Elara team.\n\nExplore WhatsApp pairing, session tools, media utilities, and tech features with /menu.\n\n📢 Follow our channels below for updates and support.`;
+    await Promise.allSettled([
+      bot.sendMessage(userIdStr, welcome, {
+        parse_mode: 'Markdown',
+        reply_markup: { inline_keyboard: [[
+          { text: '📢 ELARA CHANNEL', url: 'https://t.me/elarapairgc' },
+          { text: '🛠 DEV CHANNEL', url: 'https://t.me/devxtechzone' }
+        ]] }
+      }),
+      announceNewTelegramUser(userIdStr)
+    ]);
+    console.log(`📣 welcomed new Elara member: ${user.username ? `@${user.username}` : userIdStr}`);
   }
   return isNewUser;
 };
@@ -966,7 +979,8 @@ bot.on('callback_query', async (query) => {
           inline_keyboard: [
             [
               { text: "❃ OWNER ❃", url: "https://t.me/StarboyT20" },
-              { text: "📢 DEV CHANNEL", url: "https://t.me/elarapairgc" }
+              { text: "📢 ELARA CHANNEL", url: "https://t.me/elarapairgc" },
+              { text: "🛠 DEV CHANNEL", url: "https://t.me/devxtechzone" }
             ],
             [
               { text: "🔙 BACK", callback_data: "start_bot" }
@@ -983,7 +997,8 @@ bot.on('callback_query', async (query) => {
           inline_keyboard: [
             [
               { text: "❃ OWNER ❃", url: "https://t.me/StarboyT20" },
-              { text: "📢 DEV CHANNEL", url: "https://t.me/elarapairgc" }
+              { text: "📢 ELARA CHANNEL", url: "https://t.me/elarapairgc" },
+              { text: "🛠 DEV CHANNEL", url: "https://t.me/devxtechzone" }
             ],
             [
               { text: "🔙 BACK", callback_data: "start_bot" }
@@ -1578,7 +1593,8 @@ Elara ᴠ² ɪs ᴀ ᴡʜᴀᴛsᴀᴘᴘ ᴀᴜᴛᴏᴍᴀᴛɪᴏɴ
       inline_keyboard: [
         [
           { text: "❃ OWNER ❃", url: "https://t.me/StarboyT20" },
-          { text: "📢 DEV CHANNEL", url: "https://t.me/elarapairgc" }
+          { text: "📢 ELARA CHANNEL", url: "https://t.me/elarapairgc" },
+              { text: "🛠 DEV CHANNEL", url: "https://t.me/devxtechzone" }
         ],
         [
           { text: "🔙 BACK", callback_data: "start_bot" }
