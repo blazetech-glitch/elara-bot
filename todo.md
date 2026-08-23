@@ -143,3 +143,7 @@
 - [x] Upload all user-supplied artwork files for persistent deployment access.
 - [x] Add the supplied artwork URLs to Elara’s shared rotating Telegram menu while preserving existing images.
 - [x] Validate image references and rotation, restart Elara, and push the expanded rotation.
+
+- [x] Diagnose why newly supplied artwork is not appearing in live Telegram menu rotation.
+- [x] Ensure the live menu renderer uses the supplied artwork URLs and exposes a deterministic way to see them.
+- [x] Validate live image delivery, restart, and push the visible-rotation fix.

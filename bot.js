@@ -224,14 +224,7 @@ function startTechPublisher() {
 }
 
 const ROTATING_MENU_IMAGES = [
-  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/UfiIdVKkEjUERBsd.jpeg',
-  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/vfFkvsyORahaIdnW.jpeg',
-  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/yZLyxizTkhNHOoqa.jpeg',
-  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/xNITSdJzkXFkwyug.jpeg',
-  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/qgrjlJSbVnayRrrq.jpeg',
-  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/iuJzBkUcorbbzhSc.jpeg',
-  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/tJUCzJKiePbxxjji.jpeg',
-  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/VjeqqjBeqwVPwRgq.jpeg',
+  // Newly supplied Elara menu artwork — shown first after each fresh restart.
   'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/yZDGOcIKiPKgXSkV.jpg',
   'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/ZwmryLxwtjPmLRHj.jpg',
   'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/BvOBSgcGlZOIaGfJ.jpg',
@@ -248,7 +241,16 @@ const ROTATING_MENU_IMAGES = [
   'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/gNonthuWdbXUURwp.jpg',
   'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/LRdncnplMdKPOnvS.jpg',
   'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/DbswQqJIiynrwIps.jpg',
-  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/lQBghfcbLgfbkIpD.jpg'
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/lQBghfcbLgfbkIpD.jpg',
+  // Original Elara menu artwork retained for continued rotation.
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/UfiIdVKkEjUERBsd.jpeg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/vfFkvsyORahaIdnW.jpeg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/yZLyxizTkhNHOoqa.jpeg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/xNITSdJzkXFkwyug.jpeg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/qgrjlJSbVnayRrrq.jpeg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/iuJzBkUcorbbzhSc.jpeg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/tJUCzJKiePbxxjji.jpeg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/VjeqqjBeqwVPwRgq.jpeg'
 ];
 let rotatingMenuIndex = 0;
 
