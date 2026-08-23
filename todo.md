@@ -139,3 +139,7 @@
 - [x] Unify Telegram private-chat and group menu layouts into one shared categorized design.
 - [x] Ensure every menu request rotates through the configured Elara artwork images.
 - [x] Validate group/private menu consistency, restart, and push the menu update.
+
+- [x] Upload all user-supplied artwork files for persistent deployment access.
+- [x] Add the supplied artwork URLs to Elara’s shared rotating Telegram menu while preserving existing images.
+- [x] Validate image references and rotation, restart Elara, and push the expanded rotation.

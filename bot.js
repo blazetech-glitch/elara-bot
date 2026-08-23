@@ -231,7 +231,24 @@ const ROTATING_MENU_IMAGES = [
   'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/qgrjlJSbVnayRrrq.jpeg',
   'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/iuJzBkUcorbbzhSc.jpeg',
   'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/tJUCzJKiePbxxjji.jpeg',
-  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/VjeqqjBeqwVPwRgq.jpeg'
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/VjeqqjBeqwVPwRgq.jpeg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/yZDGOcIKiPKgXSkV.jpg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/ZwmryLxwtjPmLRHj.jpg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/BvOBSgcGlZOIaGfJ.jpg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/GjQrAHMCwlHjQDeZ.jpg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/RFfWyAqDzzyGZOYa.jpg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/oxhqbIIQJUoMYKdJ.jpg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/mllNNQXyqQAJrOCO.jpg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/JYUqmjqQSgwLnsML.jpg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/CiFtDsHRWUgvMHwb.jpg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/jubiatftZDHnofiq.jpg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/xOCKXNPtRbPwGTah.jpg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/STOoWMbsdItconIb.jpg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/drownRWXDwTKNvfl.jpg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/gNonthuWdbXUURwp.jpg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/LRdncnplMdKPOnvS.jpg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/DbswQqJIiynrwIps.jpg',
+  'https://files.manuscdn.com/user_upload_by_module/session_file/310519663894798070/lQBghfcbLgfbkIpD.jpg'
 ];
 let rotatingMenuIndex = 0;
 
