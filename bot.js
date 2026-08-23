@@ -688,7 +688,7 @@ bot.onText(/^(?:\/jid|\/id)$/, requireMembership(async (msg) => {
   return bot.sendMessage(msg.chat.id, '🆔 Chat ID: ' + msg.chat.id);
 }));
 
-const sendOwnerCard = (chatId) => bot.sendMessage(chatId, `👑 *ELARA OWNER & SUPPORT TEAM*\n\n\`\`\`\n┌──────────────────────┬──────────────────────┐\n│ 👑 PRIMARY OWNER      │ 🛟 SUPPORT CONTACT   │\n│ ARNOLDT20             │ @${TELEGRAM_SUPPORT_USERNAME}          │\n│ @${TELEGRAM_OWNER_USERNAME}          │ Mrddev               │\n└──────────────────────┴──────────────────────┘\n\`\`\`\n\n🔐 Owner-only commands remain protected for @${TELEGRAM_OWNER_USERNAME}.\n💬 For support, contact either profile below.\n🔒 Never share tokens, pairing codes, or private credentials in a public chat.`, {
+const sendOwnerCard = (chatId) => bot.sendMessage(chatId, `👑 *ELARA OWNER & SUPPORT TEAM*\n\n\`\`\`\n┌──────────────────────┬──────────────────────┐\n│ 👑 PRIMARY OWNER      │ 🛟 SUPPORT CONTACT   │\n│ ARNOLDT20             │ @${TELEGRAM_SUPPORT_USERNAME}          │\n│ @${TELEGRAM_OWNER_USERNAME}          │ Mrddev               │\n└──────────────────────┴──────────────────────┘\n\`\`\`\n\n💬 Connect with either profile below.`, {
   parse_mode: 'Markdown',
   disable_web_page_preview: true,
   reply_markup: { inline_keyboard: [[

@@ -159,3 +159,7 @@
 - [x] Show @StarboyT20 and @Mrddev together in one polished side-by-side-style Telegram owner card.
 - [x] Add separate clickable profile buttons while preserving @StarboyT20 as the only owner-authorized account.
 - [x] Validate, restart, and push the combined owner-card update.
+
+- [x] Remove authorization wording from the visible owner/support card.
+- [x] Keep only the two owner profiles and their clickable Telegram contacts in the card.
+- [x] Validate, restart, and push the simplified owner-card wording.
