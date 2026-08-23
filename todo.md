@@ -155,3 +155,7 @@
 - [x] Add @Mrddev as an additional visible Elara owner contact.
 - [x] Deduplicate new-user announcements so each new user triggers at most one notice.
 - [x] Replace the announcement with a concise, beautiful, lightweight message and validate normal command flow.
+
+- [x] Show @StarboyT20 and @Mrddev together in one polished side-by-side-style Telegram owner card.
+- [x] Add separate clickable profile buttons while preserving @StarboyT20 as the only owner-authorized account.
+- [x] Validate, restart, and push the combined owner-card update.

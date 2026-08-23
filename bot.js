@@ -688,12 +688,16 @@ bot.onText(/^(?:\/jid|\/id)$/, requireMembership(async (msg) => {
   return bot.sendMessage(msg.chat.id, '🆔 Chat ID: ' + msg.chat.id);
 }));
 
-bot.onText(/^\/owner$/, requireMembership(async (msg) => {
-  return bot.sendMessage(msg.chat.id, `👑 *Elara ownership*\n\nCreator: ARNOLDT20\nTelegram: @${TELEGRAM_OWNER_USERNAME}\nProfile: ${TELEGRAM_OWNER_URL}\n\nSupport contact: @${TELEGRAM_SUPPORT_USERNAME}\nSupport profile: ${TELEGRAM_SUPPORT_URL}`, { parse_mode: 'Markdown' });
-}));
-bot.onText(/^\/support$/, requireMembership(async (msg) => {
-  return bot.sendMessage(msg.chat.id, `🛟 *Elara support desk*\n\nOwner: ARNOLDT20 (@${TELEGRAM_OWNER_USERNAME})\nAdditional support: @${TELEGRAM_SUPPORT_USERNAME}\n\nPlease never send tokens, pairing codes, or private credentials in a public chat.`, { parse_mode: 'Markdown' });
-}));
+const sendOwnerCard = (chatId) => bot.sendMessage(chatId, `👑 *ELARA OWNER & SUPPORT TEAM*\n\n\`\`\`\n┌──────────────────────┬──────────────────────┐\n│ 👑 PRIMARY OWNER      │ 🛟 SUPPORT CONTACT   │\n│ ARNOLDT20             │ @${TELEGRAM_SUPPORT_USERNAME}          │\n│ @${TELEGRAM_OWNER_USERNAME}          │ Mrddev               │\n└──────────────────────┴──────────────────────┘\n\`\`\`\n\n🔐 Owner-only commands remain protected for @${TELEGRAM_OWNER_USERNAME}.\n💬 For support, contact either profile below.\n🔒 Never share tokens, pairing codes, or private credentials in a public chat.`, {
+  parse_mode: 'Markdown',
+  disable_web_page_preview: true,
+  reply_markup: { inline_keyboard: [[
+    { text: '👑 @StarboyT20', url: TELEGRAM_OWNER_URL },
+    { text: '🛟 @Mrddev', url: TELEGRAM_SUPPORT_URL }
+  ]] }
+});
+bot.onText(/^\/owner$/, requireMembership(async (msg) => sendOwnerCard(msg.chat.id)));
+bot.onText(/^\/support$/, requireMembership(async (msg) => sendOwnerCard(msg.chat.id)));
 
 bot.onText(/^(?:\/group|\/community)$/, requireMembership(async (msg) => {
   return bot.sendMessage(msg.chat.id, '👥 Elara WhatsApp community:\n' + SOCIAL_LINKS.whatsappGroup);
