@@ -172,3 +172,7 @@
 - [x] Add one automatic welcome greeting for each genuinely new Telegram user without duplicate notices.
 - [x] Add quick links to @elarapairgc and @devxtechzone in the Telegram menu buttons.
 - [x] Validate, restart, and push the media, greeting, and quick-link update.
+
+- [x] Diagnose why the two Telegram owner photos are not visible in the owner card.
+- [x] Replace unreliable remote photo delivery with a deployment-safe image path and fallback.
+- [x] Validate photo visibility, restart, and push the owner-card fix.
