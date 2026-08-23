@@ -339,8 +339,9 @@ async function sendRotatingMenu(chatId, full = false) {
     caption,
     parse_mode: 'Markdown',
     reply_markup: { inline_keyboard: [
-      [{ text: '📋 ALL COMMANDS', callback_data: 'all_commands' }],
-      [{ text: '📢 ELARA CHANNEL', url: 'https://t.me/elarapairgc' }, { text: '🛠 DEV CHANNEL', url: 'https://t.me/devxtechzone' }]
+      [{ text: '📋 𝐀𝐋𝐋 𝐂𝐎𝐌𝐌𝐀𝐍𝐃𝐒', callback_data: 'all_commands' }],
+      [{ text: '👑 𝐎𝐖𝐍𝐄𝐑 𝟏', url: 'https://t.me/StarboyT20' }, { text: '📢 𝐂𝐇𝐀𝐍𝐍𝐄𝐋 𝟏', url: 'https://t.me/elarapairgc' }],
+      [{ text: '🛟 𝐎𝐖𝐍𝐄𝐑 𝟐', url: 'https://t.me/Mrddev' }, { text: '🛠 𝐂𝐇𝐀𝐍𝐍𝐄𝐋 𝟐', url: 'https://t.me/devxtechzone' }]
     ] }
   });
 }
@@ -978,9 +979,12 @@ bot.on('callback_query', async (query) => {
         reply_markup: {
           inline_keyboard: [
             [
-              { text: "❃ OWNER ❃", url: "https://t.me/StarboyT20" },
-              { text: "📢 ELARA CHANNEL", url: "https://t.me/elarapairgc" },
-              { text: "🛠 DEV CHANNEL", url: "https://t.me/devxtechzone" }
+              { text: "👑 𝐎𝐖𝐍𝐄𝐑 𝟏", url: "https://t.me/StarboyT20" },
+              { text: "📢 𝐂𝐇𝐀𝐍𝐍𝐄𝐋 𝟏", url: "https://t.me/elarapairgc" }
+            ],
+            [
+              { text: "🛟 𝐎𝐖𝐍𝐄𝐑 𝟐", url: "https://t.me/Mrddev" },
+              { text: "🛠 𝐂𝐇𝐀𝐍𝐍𝐄𝐋 𝟐", url: "https://t.me/devxtechzone" }
             ],
             [
               { text: "🔙 BACK", callback_data: "start_bot" }
@@ -996,9 +1000,12 @@ bot.on('callback_query', async (query) => {
         reply_markup: {
           inline_keyboard: [
             [
-              { text: "❃ OWNER ❃", url: "https://t.me/StarboyT20" },
-              { text: "📢 ELARA CHANNEL", url: "https://t.me/elarapairgc" },
-              { text: "🛠 DEV CHANNEL", url: "https://t.me/devxtechzone" }
+              { text: "👑 𝐎𝐖𝐍𝐄𝐑 𝟏", url: "https://t.me/StarboyT20" },
+              { text: "📢 𝐂𝐇𝐀𝐍𝐍𝐄𝐋 𝟏", url: "https://t.me/elarapairgc" }
+            ],
+            [
+              { text: "🛟 𝐎𝐖𝐍𝐄𝐑 𝟐", url: "https://t.me/Mrddev" },
+              { text: "🛠 𝐂𝐇𝐀𝐍𝐍𝐄𝐋 𝟐", url: "https://t.me/devxtechzone" }
             ],
             [
               { text: "🔙 BACK", callback_data: "start_bot" }
@@ -1592,9 +1599,12 @@ Elara ᴠ² ɪs ᴀ ᴡʜᴀᴛsᴀᴘᴘ ᴀᴜᴛᴏᴍᴀᴛɪᴏɴ
     reply_markup: {
       inline_keyboard: [
         [
-          { text: "❃ OWNER ❃", url: "https://t.me/StarboyT20" },
-          { text: "📢 ELARA CHANNEL", url: "https://t.me/elarapairgc" },
-              { text: "🛠 DEV CHANNEL", url: "https://t.me/devxtechzone" }
+          { text: "👑 𝐎𝐖𝐍𝐄𝐑 𝟏", url: "https://t.me/StarboyT20" },
+          { text: "📢 𝐂𝐇𝐀𝐍𝐍𝐄𝐋 𝟏", url: "https://t.me/elarapairgc" }
+        ],
+        [
+          { text: "🛟 𝐎𝐖𝐍𝐄𝐑 𝟐", url: "https://t.me/Mrddev" },
+          { text: "🛠 𝐂𝐇𝐀𝐍𝐍𝐄𝐋 𝟐", url: "https://t.me/devxtechzone" }
         ],
         [
           { text: "🔙 BACK", callback_data: "start_bot" }

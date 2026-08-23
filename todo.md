@@ -176,3 +176,8 @@
 - [x] Diagnose why the two Telegram owner photos are not visible in the owner card.
 - [x] Replace unreliable remote photo delivery with a deployment-safe image path and fallback.
 - [x] Validate photo visibility, restart, and push the owner-card fix.
+
+- [x] Put owner contacts in a vertical left column below the menu.
+- [x] Put channel 1 and channel 2 in a vertical right column below the menu.
+- [x] Use stylish button labels, remove extra explanatory display text, and preserve all menu paths.
+- [x] Validate, restart, and push the redesigned menu buttons.
