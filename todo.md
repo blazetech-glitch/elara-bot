@@ -53,7 +53,7 @@
 - [x] Add concurrency, isolation, and deployment configuration tests.
 - [x] Provide the shared-site deployment steps and required secrets.
 - [x] Repair the Render no-open-port failure so the Elara panel binds to the assigned PORT.
-- [ ] Redeploy the latest bot commit and verify the Render service remains Live.
+- [x] Redeploy the latest bot commit and verify the Render service remains Live.
 - [x] Diagnose why the live Render root still shows the old menu or redirect.
 - [x] Make the Render-only connection form the live root page.
 - [ ] Make the Render-hosted Elara service the primary user-facing connection website instead of the Manus portal.
