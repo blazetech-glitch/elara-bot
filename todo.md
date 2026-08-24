@@ -189,3 +189,7 @@
 - [x] Change Owner 2 username to @DevxXofficial across visible Elara references.
 - [x] Change Owner 2 display name to mathematical-style 𝕕𝕖𝕧-𝕏 𝕋𝕖𝕔𝕙.
 - [x] Change Owner 1 display name to mathematical-style 𝔻𝕖𝕧-𝕋𝟚𝟘 and validate, restart, and push the identity update.
+
+- [ ] Compare queen-elara.onrender.com with the latest GitHub commit and live response markers.
+- [ ] Verify Render repository, branch, build command, and start command configuration.
+- [ ] Trigger or document a clean Render redeploy and verify current Elara updates are live.
