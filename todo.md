@@ -193,3 +193,11 @@
 - [ ] Compare queen-elara.onrender.com with the latest GitHub commit and live response markers.
 - [ ] Verify Render repository, branch, build command, and start command configuration.
 - [ ] Trigger or document a clean Render redeploy and verify current Elara updates are live.
+
+- [x] Check access to the user’s blazetech GitHub account and Elara repository.
+- [ ] Align the local Elara remote with the accessible blazetech repository if available.
+- [ ] Verify the source URL and document the remaining Render reconnection step if account access is unavailable.
+
+- [ ] Recheck the newly configured BlazeTech GitHub connection and use it for the Elara source and Render deployment.
+
+- [ ] Recheck GitHub authentication after BlazeTech was configured and push Elara to the correct repository if access is active.
