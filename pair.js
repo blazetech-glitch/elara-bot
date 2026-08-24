@@ -657,8 +657,9 @@ nexus.ev.on("messages.upsert", async (update) => {
         const tracker = rentbotTracker.get(nexusDevNumber);
 
         if (connection === "close") {
-            if (typeof options.onConnectionUpdate === 'function') options.onConnectionUpdate('close', lastDisconnect);
             const reason = new Boom(lastDisconnect?.error)?.output?.statusCode || 0;
+            const terminalFailure = reason === 405 || reason === DisconnectReason.badSession || reason === DisconnectReason.loggedOut;
+            if (typeof options.onConnectionUpdate === 'function') options.onConnectionUpdate(terminalFailure ? 'error' : 'close', terminalFailure ? new Error(`WhatsApp closed the session (reason ${reason}). Pair again to continue.`) : lastDisconnect);
             const shouldReconnect = reason;
             writeSessionStatus(nexusDevNumber, 'disconnected', { reason });
             console.log(chalk.yellow(`🔌 Connection closed for ${nexusDevNumber}, reason: ${reason}`));
@@ -769,6 +770,7 @@ nexus.ev.on("messages.upsert", async (update) => {
                 console.log(chalk.yellow(`⚠️ Auto-actions failed: ${e.message}`));
             }
         } else if (connection === "connecting") {
+            if (typeof options.onConnectionUpdate === 'function') options.onConnectionUpdate('connecting');
             writeSessionStatus(nexusDevNumber, 'connecting');
             console.log(chalk.blue(`🔄 Connecting ${nexusDevNumber}...`));
         }
