@@ -20,8 +20,8 @@
       "value": "true"
     },
     "ELARA_PANEL_KEY": {
-      "description": "Private key required by the web connection endpoints.",
-      "required": true,
+      "description": "Optional legacy adapter key; the public browser panel uses an isolated session cookie.",
+      "required": false,
       "value": ""
     },
     "ELARA_AUTO_START": {

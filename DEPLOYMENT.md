@@ -46,9 +46,23 @@ Add `@Queenelara_bot` to `@elarapairgc` as an administrator if the bot should pu
 
 Create a Node.js service, select Node.js 18 or newer, set the start command to `npm start`, and add the variables above through the panel’s secret/environment-variable screen. For interactive first start, leave `ELARA_PROVIDER`, `WHATSAPP_NUMBER`, and `BOT_TOKEN` unset and open the panel console. For a worker that cannot accept console input, configure the provider and secret variables before starting. Enable persistent storage for the project directory when the panel offers it.
 
+## Heroku deployment
+
+Elara is prepared for a Heroku **web dyno**. The repository includes a `Procfile` with `web: npm start`, uses the Heroku-22 stack in `app.json`, respects Heroku’s assigned `PORT`, and starts through `render-entry.js`, which binds the Elara Connect page before loading the normal bot bootstrap. Heroku must run one web dyno for the panel and bot process; do not use a separate worker unless you intentionally want another bot process.
+
+Create a Heroku app, connect the `blazetech-glitch/elara-bot` GitHub repository, and deploy the `main` branch. Alternatively, from a local clone run `heroku create <your-app-name>`, `git push heroku main`, and `heroku logs --tail`. The required build and start settings are already in the repository, so no custom build command is needed beyond Heroku’s normal Node.js buildpack.
+
+For browser-first pairing, set `ELARA_PANEL_MODE=true`, `ELARA_AUTO_START=true`, and `TELEGRAM_OFFICIAL_CHANNEL=@elarapairgc`. Leave `ELARA_PROVIDER`, `WHATSAPP_NUMBER`, and `BOT_TOKEN` empty if users will connect through the web page. The public page creates an isolated browser session and lets the user request a WhatsApp pairing code. A legacy `ELARA_PANEL_KEY` is optional and is not required by the current browser page.
+
+For a fixed provider at startup, set `ELARA_PROVIDER=whatsapp` with `WHATSAPP_NUMBER`, `ELARA_PROVIDER=telegram` with `BOT_TOKEN`, or `ELARA_PROVIDER=both` with both credentials. Add credentials only with `heroku config:set WHATSAPP_NUMBER=... BOT_TOKEN=...` or through Heroku’s Config Vars screen; never commit them to GitHub, `app.json`, or deployment files.
+
+Heroku’s normal dyno filesystem is ephemeral. WhatsApp authentication under `nexstore/pairing/` and other local runtime files can be lost after dyno replacement, so a restart or redeploy may require pairing again. For reliable persistent sessions, use an external durable storage/database integration or a host with persistent disk. A single web dyno also avoids cross-process in-memory session interference; do not scale horizontally without moving session state and coordination out of memory.
+
+Heroku free or sleeping-style plans can delay the first request and are not suitable for guaranteed 24/7 WhatsApp availability. Use an always-on paid dyno or another persistent host for continuous operation, and monitor with `heroku logs --tail`. Manus provides managed hosting with custom domains as an alternative, but Heroku remains supported as an explicit deployment target through the included files.
+
 ## Render and Heroku-style workers
 
-Use the included `render.yaml`, `Procfile`, and `app.json` as worker configurations. Set `ELARA_PROVIDER` explicitly on non-interactive workers and add `WHATSAPP_NUMBER` and/or `BOT_TOKEN` through the host’s secret manager. Do not place real credentials in `render.yaml`, `app.json`, or GitHub.
+Use the included `render.yaml`, `Procfile`, and `app.json` as deployment configurations. Set `ELARA_PROVIDER` explicitly on non-interactive workers and add `WHATSAPP_NUMBER` and/or `BOT_TOKEN` through the host’s secret manager. Do not place real credentials in `render.yaml`, `app.json`, or GitHub.
 
 ## Render web panel
 

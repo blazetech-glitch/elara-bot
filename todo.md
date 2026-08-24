@@ -205,3 +205,7 @@
 - [ ] Inspect current Queen-elara Render logs and record runtime health or errors.
 - [ ] Make the web panel pairing flow clearly generate, display, copy, and track WhatsApp codes.
 - [ ] Confirm connected-state handoff to normal Elara logic and validate latest deployment behavior.
+
+- [x] Audit Heroku runtime, process, port, and environment-variable compatibility.
+- [x] Add Heroku-ready process and deployment documentation without breaking Render.
+- [x] Validate Heroku readiness locally and push the update to origin/main.
