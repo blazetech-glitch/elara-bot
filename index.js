@@ -61,7 +61,8 @@ async function configureStartupProvider() {
     activeProvider = normalizeProvider(activeProvider || process.env.ELARA_PROVIDER);
     const hasWhatsApp = Boolean(HOSTED_WHATSAPP_NUMBER);
     const hasTelegram = Boolean(process.env.BOT_TOKEN || localToken.BOT_TOKEN);
-    if (PANEL_MODE && !hasWhatsApp && !hasTelegram && !isAuthenticated() && !activeProvider) {
+    const hostedPanelMode = PANEL_MODE || Boolean(process.env.PORT);
+    if (hostedPanelMode && !hasWhatsApp && !hasTelegram && !isAuthenticated() && !activeProvider) {
         activeProvider = 'panel';
         console.log(chalk.cyan('🌐 Panel-only mode active; choose WhatsApp or Telegram from the Elara Connect page.'));
         return activeProvider;

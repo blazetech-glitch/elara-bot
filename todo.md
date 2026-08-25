@@ -209,3 +209,7 @@
 - [x] Audit Heroku runtime, process, port, and environment-variable compatibility.
 - [x] Add Heroku-ready process and deployment documentation without breaking Render.
 - [x] Validate Heroku readiness locally and push the update to origin/main.
+
+- [x] Diagnose KataBump non-interactive startup crash when no provider credential is configured.
+- [x] Keep browser-first panel-only deployments online without requiring a startup credential.
+- [x] Validate explicit WhatsApp/Telegram provider startup remains fail-closed and document KataBump Config Vars.

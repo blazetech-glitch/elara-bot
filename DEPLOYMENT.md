@@ -44,7 +44,7 @@ Add `@Queenelara_bot` to `@elarapairgc` as an administrator if the bot should pu
 
 ## Katabump or generic panel setup
 
-Create a Node.js service, select Node.js 18 or newer, set the start command to `npm start`, and add the variables above through the panel’s secret/environment-variable screen. For interactive first start, leave `ELARA_PROVIDER`, `WHATSAPP_NUMBER`, and `BOT_TOKEN` unset and open the panel console. For a worker that cannot accept console input, configure the provider and secret variables before starting. Enable persistent storage for the project directory when the panel offers it.
+Create a Node.js service, select Node.js 18 or newer, set the start command to `npm start`, and add the variables above through the panel’s secret/environment-variable screen. For interactive first start, leave `ELARA_PROVIDER`, `WHATSAPP_NUMBER`, and `BOT_TOKEN` unset and open the panel console. For a worker that cannot accept console input, configure the provider and secret variables before starting. For a hosted web process with an assigned `PORT`, Elara automatically stays online in browser-first panel-only mode when no provider is configured; set `ELARA_PANEL_MODE=true` explicitly on KataBump for clarity. Enable persistent storage for the project directory when the panel offers it.
 
 ## Heroku deployment
 
