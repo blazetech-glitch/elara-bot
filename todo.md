@@ -221,3 +221,6 @@
 - [x] Trace WhatsApp download command registrations, URL extraction, downloader dependencies, and reply errors.
 - [x] Fix supported download-command failure paths without changing normal bot flow.
 - [x] Add regression coverage for download routing and error handling, then push directly to main.
+
+- [x] Add a direct one-click Heroku deploy URL and button to the GitHub README.
+- [x] Validate the Heroku deploy template URL and app.json metadata, then push directly to main.
