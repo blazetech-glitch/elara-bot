@@ -222,6 +222,31 @@ function forceCleanupSession(nexusDevNumber) {
 }
 
 // Session cleanup function
+async function restartSession(nexusDevNumber, options = {}) {
+    const normalized = String(nexusDevNumber || '').replace(/[^0-9]/g, '');
+    if (!/^\d{7,15}$/.test(normalized)) throw new Error('Invalid WhatsApp number.');
+    const tracker = rentbotTracker.get(normalized);
+    writeSessionStatus(normalized, 'restarting');
+    if (tracker) {
+        tracker.skipReconnect = true;
+        tracker.disconnected = true;
+        try {
+            tracker.connection?.end?.();
+            tracker.connection?.ws?.close?.();
+        } catch (error) {
+            console.log(chalk.yellow(`⚠️ Existing connection close failed for ${normalized}: ${error.message}`));
+        }
+        tracker.connection = null;
+    }
+    await sleep(750);
+    const currentTracker = rentbotTracker.get(normalized);
+    if (currentTracker) {
+        currentTracker.skipReconnect = false;
+        currentTracker.disconnected = false;
+    }
+    return startpairing(normalized, options);
+}
+
 function cleanupExpiredSessions() {
     const sessionDir = './nexstore/pairing';
     if (!fs.existsSync(sessionDir)) return;
@@ -290,6 +315,7 @@ async function startpairing(nexusDevNumber, options = {}) {
             connection: null,
             retryCount: 0,
             disconnected: false,
+            skipReconnect: false,
             lastActivity: Date.now()
         });
     }
@@ -657,8 +683,16 @@ nexus.ev.on("messages.upsert", async (update) => {
         const tracker = rentbotTracker.get(nexusDevNumber);
 
         if (connection === "close") {
-            if (typeof options.onConnectionUpdate === 'function') options.onConnectionUpdate('close', lastDisconnect);
             const reason = new Boom(lastDisconnect?.error)?.output?.statusCode || 0;
+            const terminalFailure = reason === 405 || reason === DisconnectReason.badSession || reason === DisconnectReason.loggedOut;
+            if (tracker?.skipReconnect) {
+                tracker.skipReconnect = false;
+                tracker.disconnected = true;
+                tracker.connection = null;
+                console.log(chalk.blue(`🔁 Manual restart requested for ${nexusDevNumber}; automatic reconnect skipped.`));
+                return;
+            }
+            if (typeof options.onConnectionUpdate === 'function') options.onConnectionUpdate(terminalFailure ? 'error' : 'close', terminalFailure ? new Error(`WhatsApp closed the session (reason ${reason}). Pair again to continue.`) : lastDisconnect);
             const shouldReconnect = reason;
             writeSessionStatus(nexusDevNumber, 'disconnected', { reason });
             console.log(chalk.yellow(`🔌 Connection closed for ${nexusDevNumber}, reason: ${reason}`));
@@ -769,6 +803,7 @@ nexus.ev.on("messages.upsert", async (update) => {
                 console.log(chalk.yellow(`⚠️ Auto-actions failed: ${e.message}`));
             }
         } else if (connection === "connecting") {
+            if (typeof options.onConnectionUpdate === 'function') options.onConnectionUpdate('connecting');
             writeSessionStatus(nexusDevNumber, 'connecting');
             console.log(chalk.blue(`🔄 Connecting ${nexusDevNumber}...`));
         }
@@ -868,3 +903,4 @@ module.exports = startpairing;
 module.exports.reactToStatus = reactToStatus;
 module.exports.reactToNewsletterPost = reactToNewsletterPost;
 module.exports.disconnectSession = forceCleanupSession;
+module.exports.restartSession = restartSession;

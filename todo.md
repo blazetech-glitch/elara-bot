@@ -53,13 +53,13 @@
 - [x] Add concurrency, isolation, and deployment configuration tests.
 - [x] Provide the shared-site deployment steps and required secrets.
 - [x] Repair the Render no-open-port failure so the Elara panel binds to the assigned PORT.
-- [ ] Redeploy the latest bot commit and verify the Render service remains Live.
+- [x] Redeploy the latest bot commit and verify the Render service remains Live.
 - [x] Diagnose why the live Render root still shows the old menu or redirect.
 - [x] Make the Render-only connection form the live root page.
 - [ ] Make the Render-hosted Elara service the primary user-facing connection website instead of the Manus portal.
 - [ ] Document the Render-only user flow and its session-isolation limitations before implementation.
 - [x] Remove the Manus portal redirect from the Render-facing page.
-- [ ] Add Render page inputs for WhatsApp number and Telegram token with pairing/status responses.
+- [x] Add Render page inputs for WhatsApp number and Telegram token with pairing/status responses.
 - [x] Fix WhatsApp pairing loading and incorrect-error handling for valid country-code phone numbers.
 - [ ] Diagnose why live Render WhatsApp pairing remains pending and never completes.
 - [ ] Verify a real pairing-code/status transition before declaring the Render flow complete.
@@ -80,7 +80,7 @@
 - [ ] Diagnose Render sleep/crash/disconnect causes and add a 24/7 uptime strategy with automatic recovery.
 - [x] Verify the local Elara process is reachable and Telegram polling is genuinely responding.
 - [x] Fix local Telegram connection retry/error handling after TLS timeouts.
-- [ ] Fix WhatsApp sessions that remain stuck on “Logging in” after code acceptance.
+- [x] Fix WhatsApp sessions that remain stuck on “Logging in” after code acceptance.
 - [x] Restore provider-first startup: choose WhatsApp or Telegram, collect only the selected credential, verify Telegram channel membership, and continue normal logic.
 - [x] Add provider-choice controls to the Render page and reveal only the selected credential form.
 - [x] Keep Telegram running independently when a WhatsApp connection is selected.
@@ -190,14 +190,30 @@
 - [x] Change Owner 2 display name to mathematical-style 𝕕𝕖𝕧-𝕏 𝕋𝕖𝕔𝕙.
 - [x] Change Owner 1 display name to mathematical-style 𝔻𝕖𝕧-𝕋𝟚𝟘 and validate, restart, and push the identity update.
 
-- [ ] Compare queen-elara.onrender.com with the latest GitHub commit and live response markers.
-- [ ] Verify Render repository, branch, build command, and start command configuration.
-- [ ] Trigger or document a clean Render redeploy and verify current Elara updates are live.
+- [x] Compare queen-elara.onrender.com with the latest GitHub commit and live response markers.
+- [x] Verify Render repository, branch, build command, and start command configuration.
+- [x] Trigger or document a clean Render redeploy and verify current Elara updates are live.
 
 - [x] Check access to the user’s blazetech GitHub account and Elara repository.
-- [ ] Align the local Elara remote with the accessible blazetech repository if available.
-- [ ] Verify the source URL and document the remaining Render reconnection step if account access is unavailable.
+- [x] Align the local Elara remote with the accessible blazetech repository if available.
+- [x] Verify the source URL and document the remaining Render reconnection step if account access is unavailable.
 
-- [ ] Recheck the newly configured BlazeTech GitHub connection and use it for the Elara source and Render deployment.
+- [x] Recheck the newly configured BlazeTech GitHub connection and use it for the Elara source and Render deployment.
 
-- [ ] Recheck GitHub authentication after BlazeTech was configured and push Elara to the correct repository if access is active.
+- [x] Recheck GitHub authentication after BlazeTech was configured and push Elara to the correct repository if access is active.
+
+- [ ] Inspect current Queen-elara Render logs and record runtime health or errors.
+- [ ] Make the web panel pairing flow clearly generate, display, copy, and track WhatsApp codes.
+- [ ] Confirm connected-state handoff to normal Elara logic and validate latest deployment behavior.
+
+- [x] Audit Heroku runtime, process, port, and environment-variable compatibility.
+- [x] Add Heroku-ready process and deployment documentation without breaking Render.
+- [x] Validate Heroku readiness locally and push the update to origin/main.
+
+- [x] Diagnose KataBump non-interactive startup crash when no provider credential is configured.
+- [x] Keep browser-first panel-only deployments online without requiring a startup credential.
+- [x] Validate explicit WhatsApp/Telegram provider startup remains fail-closed and document KataBump Config Vars.
+
+- [x] Add a Telegram /restart command for each user’s own WhatsApp pair created through /pair.
+- [x] Keep restart session-scoped so other users and the shared Telegram bot are not interrupted.
+- [x] Validate restart success, missing-pair, and failure responses and push the feature.
