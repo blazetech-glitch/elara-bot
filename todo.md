@@ -213,3 +213,7 @@
 - [x] Diagnose KataBump non-interactive startup crash when no provider credential is configured.
 - [x] Keep browser-first panel-only deployments online without requiring a startup credential.
 - [x] Validate explicit WhatsApp/Telegram provider startup remains fail-closed and document KataBump Config Vars.
+
+- [x] Add a Telegram /restart command for each user’s own WhatsApp pair created through /pair.
+- [x] Keep restart session-scoped so other users and the shared Telegram bot are not interrupted.
+- [x] Validate restart success, missing-pair, and failure responses and push the feature.

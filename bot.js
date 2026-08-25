@@ -48,6 +48,7 @@ const TELEGRAM_COMMANDS = [
   { command: 'menu', description: 'Show quick categorized menu' },
   { command: 'allcommands', description: 'Show all categorized commands' },
   { command: 'pair', description: 'Pair a WhatsApp number' },
+  { command: 'restart', description: 'Restart your WhatsApp pair' },
   { command: 'listpair', description: 'List your WhatsApp pairs' },
   { command: 'pairstatus', description: 'Show live pair status' },
   { command: 'dailyusers', description: 'Show today’s active users' },
@@ -1345,6 +1346,43 @@ bot.onText(/\/pair (.+)/, requireMembership(async (msg, match) => {
 },
  ));
 
+bot.onText(/^\/restart(?:\s+(\d{7,15}))?\s*$/, requireMembership(async (msg, match) => {
+  const chatId = msg.chat.id;
+  const requested = match?.[1];
+  try {
+    const owned = await getOwnedPairNumbers(msg.from.id);
+    if (requested && !owned.includes(requested) && !isTelegramAdmin(msg.from)) {
+      return bot.sendMessage(chatId, '❌ You can only restart a WhatsApp pair owned by your Telegram account.');
+    }
+    const numbers = requested ? [requested] : owned;
+    if (!numbers.length) {
+      return bot.sendMessage(chatId, '📱 No WhatsApp pair is recorded for this Telegram account. Use /pair <country-code-number> first.');
+    }
+    if (!requested && numbers.length > 1) {
+      return bot.sendMessage(chatId, `🔁 You have ${numbers.length} WhatsApp pairs. Choose one to restart:\n\n${numbers.map(number => `/restart ${number}`).join('\n')}`);
+    }
+    const number = numbers[0];
+    const current = await readPairStatus(number);
+    if (current.status === 'not_found') {
+      return bot.sendMessage(chatId, `❌ No saved WhatsApp session was found for +${number}. Use /pair ${number} to pair it again.`);
+    }
+    const pair = require('./pair.js');
+    await bot.sendMessage(chatId, `🔄 Restarting Elara WhatsApp for +${number}...\\n\\n🔒 Only this isolated pair will be restarted. Other users and the Telegram bot will remain online.`);
+    await pair.restartSession(number, {
+      onConnectionUpdate: (state, error) => {
+        if (state === 'open') {
+          void bot.sendMessage(chatId, `✅ Elara WhatsApp restarted successfully for +${number}.\\n\\n🟢 Normal bot logic is active again.`);
+        } else if (state === 'error') {
+          void bot.sendMessage(chatId, `❌ Restart failed for +${number}.\\n\\n${error?.message || 'WhatsApp returned a terminal login error.'}\\n\\nUse /pair ${number} if this session needs to be paired again.`);
+        }
+      }
+    });
+    return bot.sendMessage(chatId, `⏳ Restart requested for +${number}. Use /pairstatus ${number} to watch the connection state.`);
+  } catch (error) {
+    console.error('restart pair error:', error);
+    return bot.sendMessage(chatId, `❌ Could not restart the WhatsApp pair.\\n\\n${error.message || 'Unknown restart error.'}`);
+  }
+}));
 bot.onText(/^\/delpair\s*$/, requireMembership((msg) => {
   const chatId = msg.chat.id;
   bot.sendMessage(chatId, 'To proceed enter a phone number in the format: /delpair 234xxxxxxxx',

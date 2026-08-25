@@ -7,7 +7,7 @@
     "start": "node render-entry.js",
     "dev": "nodemon index.js",
     "bot": "node bot.js",
-    "test": "node --check index.js && node --check bot.js && node --check pair.js"
+    "test": "node --check index.js && node --check bot.js && node --check pair.js && node --test restart_command.test.js"
   },
   "keywords": [
     "whiskeysockets",
