@@ -217,3 +217,7 @@
 - [x] Add a Telegram /restart command for each user’s own WhatsApp pair created through /pair.
 - [x] Keep restart session-scoped so other users and the shared Telegram bot are not interrupted.
 - [x] Validate restart success, missing-pair, and failure responses and push the feature.
+
+- [x] Trace WhatsApp download command registrations, URL extraction, downloader dependencies, and reply errors.
+- [x] Fix supported download-command failure paths without changing normal bot flow.
+- [x] Add regression coverage for download routing and error handling, then push directly to main.
