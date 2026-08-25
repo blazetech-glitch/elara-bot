@@ -6137,16 +6137,15 @@ if (!text) return reply(example("ғᴀᴅᴇᴅ ʙʏ ᴀʟᴀɴ ᴡᴀʟᴋᴇʀ
 await devtrust.sendMessage(m.chat, {react: {text: '👻', key: m.key}})
 let ytsSearch = await yts(text)
 const res = await ytsSearch.all[0]
-
-var anu = await ytdl.ytmp3(`${res.url}`)
-
-if (anu.status) {
-let urlMp3 = anu.download.url
-await devtrust.sendMessage(m.chat, {audio: {url: urlMp3}, mimetype: "audio/mpeg", contextInfo: { externalAdReply: {thumbnailUrl: res.thumbnail, title: res.title, body: `Author ${res.author.name} || Duration ${res.timestamp}`, sourceUrl: res.url, renderLargerThumbnail: true, mediaType: 1}}}, {quoted: m})
-await devtrust.sendMessage(m.chat, {react: {text: '', key: m.key}})
+const { data: audioData } = await axios.get(`https://api.bk9.dev/download/ytmp3?url=${encodeURIComponent(res.url)}`, { timeout: 20000 });
+const urlMp3 = audioData?.BK9?.downloadUrl || audioData?.result?.download_url;
+if (audioData?.status && urlMp3) {
+const audioBuffer = await fetchMediaBuffer(urlMp3, { timeout: 45000, maxBytes: 40 * 1024 * 1024 });
+await devtrust.sendMessage(m.chat, { audio: audioBuffer, mimetype: "audio/mpeg", contextInfo: { externalAdReply: { thumbnailUrl: res.thumbnail, title: res.title, body: `Author ${res.author.name} || Duration ${res.timestamp}`, sourceUrl: res.url, renderLargerThumbnail: true, mediaType: 1 } } }, { quoted: m });
+await devtrust.sendMessage(m.chat, { react: { text: '✅', key: m.key } });
 } else {
-return reply("Error! Result Not Found")
-}
+return reply("❌ The YouTube provider returned no downloadable audio.");
+}}
 }
  break
                case 'bomb':
@@ -6187,21 +6186,20 @@ return reply("Error! Result Not Found")
 
     try {
         reply('Fetching voice note, please wait...');
-
-        const apiUrl = `https://apis.prexzyvilla.site/download/ytmp3?url=${encodeURIComponent(text)}`;
-        const { data } = await axios.get(apiUrl, { timeout: 15000 });
-
-        if (data && data.success) {
-            const { title, thumbnail, download_url } = data.result;
-
-            // Download audio to buffer
-            const audioBuffer = (await axios.get(download_url, { responseType: 'arraybuffer' })).data;
-
-            // Optional: Send preview
-            await devtrust.sendMessage(m.chat, {
-                image: { url: thumbnail },
-                caption: `*Voice Note Ready!*\n *Title:* ${title}\n\n*By Elara 💘*`
-            }, { quoted: m });
+        const apiUrl = `https://api.bk9.dev/download/ytmp3?url=${encodeURIComponent(text)}`;
+        const { data } = await axios.get(apiUrl, { timeout: 20000 });
+        const result = data?.BK9 || data?.result;
+        const title = result?.title || 'YouTube audio';
+        const thumbnail = result?.image || result?.thumbnail;
+        const downloadUrl = result?.downloadUrl || result?.download_url;
+        if (data?.status && downloadUrl) {
+            const audioBuffer = await fetchMediaBuffer(downloadUrl, { timeout: 45000, maxBytes: 40 * 1024 * 1024 });
+            if (thumbnail) {
+              await devtrust.sendMessage(m.chat, {
+                  image: { url: thumbnail },
+                  caption: `*Voice Note Ready!*\n *Title:* ${title}\n\n*By Elara 💘*`
+              }, { quoted: m });
+            }
 
             // Send audio as PTT (voice note)
             await devtrust.sendMessage(m.chat, {
@@ -8170,11 +8168,19 @@ switch (command) {
     case 'download': {
       if (!m.quoted) return reply('❌ Reply to an image, video, audio, or document to download it.');
       try {
-        const media = await devtrust.downloadMediaMessage(m.quoted);
-        const mimeType = m.quoted.mimetype || 'application/octet-stream';
-        return devtrust.sendMessage(m.chat, { document: media, mimetype: mimeType, fileName: `elara-download-${Date.now()}` }, { quoted: m });
+        const media = typeof m.quoted.download === 'function'
+          ? await m.quoted.download()
+          : await devtrust.downloadMediaMessage(m.quoted);
+        const mimeType = m.quoted.mimetype || m.quoted.msg?.mimetype || 'application/octet-stream';
+        const extension = mimeType.split('/')[1]?.split(';')[0] || 'bin';
+        return devtrust.sendMessage(m.chat, {
+          document: media,
+          mimetype: mimeType,
+          fileName: `elara-download-${Date.now()}.${extension}`
+        }, { quoted: m });
       } catch (error) {
-        return reply('❌ I could not download that quoted media.');
+        console.error('WhatsApp quoted download error:', error);
+        return reply(`❌ I could not download that quoted media. ${error.message || 'The media may have expired.'}`);
       }
     }
     break;

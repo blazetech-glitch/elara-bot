@@ -9,11 +9,23 @@
 [![License](https://img.shields.io/badge/License-MIT-8B5CF6?style=for-the-badge)](LICENSE)
 [![Repository](https://img.shields.io/badge/Repository-Private-EC4899?style=for-the-badge&logo=github&logoColor=white)](https://github.com/blazetech-glitch/elara-bot)
 
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/blazetech-glitch/elara-bot)
+
 > **Elara** is a refreshed WhatsApp bot project that preserves the original command flow and file structure while bringing a softer, more distinctive visual identity to the experience.
 
 </div>
 
 ---
+
+## One-click Heroku deployment
+
+Use the button above or open the direct deployment URL:
+
+```text
+https://heroku.com/deploy?template=https://github.com/blazetech-glitch/elara-bot
+```
+
+Heroku reads the repository’s `app.json` during setup and presents the declared configuration variables before creating the app. Review all generated Config Vars and add private credentials only in Heroku’s settings.
 
 ## Overview
 
