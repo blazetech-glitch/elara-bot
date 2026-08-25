@@ -3,7 +3,7 @@
   "description": "A feature-rich WhatsApp bot with a refreshed feminine identity.",
   "repository": "https://github.com/blazetech-glitch/elara-bot",
   "keywords": ["whatsapp", "bot", "nodejs", "automation"],
-  "stack": "heroku-22",
+  "stack": "heroku-24",
   "formation": {
     "web": {
       "quantity": 1,

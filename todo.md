@@ -224,3 +224,6 @@
 
 - [x] Add a direct one-click Heroku deploy URL and button to the GitHub README.
 - [x] Validate the Heroku deploy template URL and app.json metadata, then push directly to main.
+
+- [x] Replace deprecated Heroku-22 stack metadata with Heroku-24 and update deployment guidance.
+- [x] Validate the one-click Heroku template after the stack change and push directly to main.

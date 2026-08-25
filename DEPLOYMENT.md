@@ -48,7 +48,7 @@ Create a Node.js service, select Node.js 18 or newer, set the start command to `
 
 ## Heroku deployment
 
-Elara is prepared for a Heroku **web dyno**. The repository includes a `Procfile` with `web: npm start`, uses the Heroku-22 stack in `app.json`, respects Heroku’s assigned `PORT`, and starts through `render-entry.js`, which binds the Elara Connect page before loading the normal bot bootstrap. Heroku must run one web dyno for the panel and bot process; do not use a separate worker unless you intentionally want another bot process.
+Elara is prepared for a Heroku **web dyno**. The repository includes a `Procfile` with `web: npm start`, uses the Heroku-24 stack in `app.json`, respects Heroku’s assigned `PORT`, and starts through `render-entry.js`, which binds the Elara Connect page before loading the normal bot bootstrap. Heroku must run one web dyno for the panel and bot process; do not use a separate worker unless you intentionally want another bot process.
 
 Create a Heroku app, connect the `blazetech-glitch/elara-bot` GitHub repository, and deploy the `main` branch. Alternatively, from a local clone run `heroku create <your-app-name>`, `git push heroku main`, and `heroku logs --tail`. The required build and start settings are already in the repository, so no custom build command is needed beyond Heroku’s normal Node.js buildpack.
 
