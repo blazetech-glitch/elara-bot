@@ -18,3 +18,16 @@ test('YouTube audio handlers use current provider downloadUrl response fields', 
   assert.match(source, /audioData\?\.BK9\?\.downloadUrl/);
   assert.match(source, /fetchMediaBuffer\(downloadUrl/);
 });
+
+test('Facebook handler uses the active BK9 fb route and normalizes SD video URLs', () => {
+  assert.match(source, /api\.bk9\.dev\/download\/fb/);
+  assert.match(source, /facebookResult\?\.sdVideo \|\| facebookResult\?\.sd/);
+  assert.match(source, /const fbvid = sdVideo/);
+  assert.match(source, /url: fbvid/);
+});
+
+test('Instagram handler avoids the dead Vercel endpoint and handles provider messages', () => {
+  assert.match(source, /api\.bk9\.dev\/download\/instagram/);
+  assert.doesNotMatch(source, /delirius-apiofc\.vercel\.app\/download\/instagram/);
+  assert.match(source, /Instagram media is unavailable for this link/);
+});

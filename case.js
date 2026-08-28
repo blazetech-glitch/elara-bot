@@ -8530,15 +8530,17 @@ case 'facebook':
         });
 
         try {
-          const response = await axios.get(`https://apis.prexzyvilla.site/download/facebook?url=${encodeURIComponent(url)}`);
+          const response = await axios.get(`https://api.bk9.dev/download/fb?url=${encodeURIComponent(url)}`, { timeout: 20000 });
           const data = response.data;
 
-          if (!data || data.status !== 200 || !data.facebook || !data.facebook.sdVideo) {
+          const facebookResult = data?.facebook || data?.BK9 || data?.result;
+          const sdVideo = facebookResult?.sdVideo || facebookResult?.sd || facebookResult?.video;
+          if (!data?.status || !sdVideo) {
             await devtrust.sendMessage(m.chat, { react: { text: '❌', key: m.key } }); // Send error reaction
             return reply("❌ Facebook provider returned no downloadable video. Please try another public link.");
           }
 
-          const fbvid = data.facebook.sdVideo;
+          const fbvid = sdVideo;
 
           if (!fbvid) {
             await devtrust.sendMessage(m.chat, { react: { text: '❌', key: m.key } }); // Send error reaction
@@ -8609,25 +8611,36 @@ case 'ig': {
   );
 
   try {
-    const apiUrl = `https://delirius-apiofc.vercel.app/download/instagram?url=${encodeURIComponent(text)}`;
-    const res = await fetch(apiUrl);
-    if (!res.ok) return reply("⚠️ Instagram API not reachable.");
+    const apiUrl = `https://api.bk9.dev/download/instagram?url=${encodeURIComponent(text)}`;
+    const res = await fetch(apiUrl, { headers: { 'User-Agent': 'Mozilla/5.0' } });
+    if (!res.ok) return reply(`⚠️ Instagram provider returned HTTP ${res.status}.`);
 
     const json = await res.json();
-    if (!json.status || !Array.isArray(json.data) || json.data.length === 0) {
-      return reply("❌ Failed to fetch Instagram media.");
+    const providerResult = json?.BK9 || json?.result;
+    const mediaItems = Array.isArray(json?.data)
+      ? json.data
+      : Array.isArray(providerResult?.data)
+        ? providerResult.data
+        : [];
+    const directUrl = typeof providerResult === 'string'
+      ? providerResult.startsWith('http') ? providerResult : null
+      : providerResult?.url || providerResult?.downloadUrl || providerResult?.download_url;
+    const items = mediaItems.length ? mediaItems : (directUrl ? [{ url: directUrl, type: 'video' }] : []);
+    if (!json?.status || items.length === 0) {
+      const providerMessage = typeof json?.BK9 === 'string' ? ` ${json.BK9}.` : '';
+      return reply(`❌ Instagram media is unavailable for this link.${providerMessage}`);
     }
 
-    for (const media of json.data) {
+    for (const media of items) {
       if (!media?.url) continue;
-      const mediaBuffer = await fetchMediaBuffer(media.url);
-      if (media.type === "video") {
+      const mediaBuffer = await fetchMediaBuffer(media.url, { timeout: 45000, maxBytes: 60 * 1024 * 1024 });
+      if (media.type === "video" || media.type === "reel") {
         await devtrust.sendMessage(m.chat, {
           video: mediaBuffer,
           mimetype: 'video/mp4',
           caption: `Url: ${text}\nInstagram video retrieved ✅`
         }, { quoted: m });
-      } else if (media.type === "image") {
+      } else {
         await devtrust.sendMessage(m.chat, {
           image: mediaBuffer,
           caption: `Url: ${text}\nInstagram image retrieved ✅`

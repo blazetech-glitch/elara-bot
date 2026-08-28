@@ -58,6 +58,23 @@ For a fixed provider at startup, set `ELARA_PROVIDER=whatsapp` with `WHATSAPP_NU
 
 Heroku’s normal dyno filesystem is ephemeral. WhatsApp authentication under `nexstore/pairing/` and other local runtime files can be lost after dyno replacement, so a restart or redeploy may require pairing again. For reliable persistent sessions, use an external durable storage/database integration or a host with persistent disk. A single web dyno also avoids cross-process in-memory session interference; do not scale horizontally without moving session state and coordination out of memory.
 
+### Durable WhatsApp session storage
+
+Redis alone does not automatically make the current Baileys `useMultiFileAuthState` directory persistent. The current implementation writes credential JSON and key files into `nexstore/pairing/<phone-number>`, so a Redis add-on can safely hold locks, status, ownership metadata, and restart coordination, but preserving the actual login requires either durable object storage/database synchronization or a rewritten Baileys auth-state adapter that stores every credential and key record in Redis.
+
+For the current code, the safest Heroku setup is one always-on web dyno plus an external durable filesystem/object store or a host with persistent disk. If using Redis, provision a Heroku-compatible Redis add-on, copy its `REDIS_URL` into Config Vars, and use it for coordination only unless the auth adapter has been explicitly migrated. Do not store session credentials in client-side storage or commit them to GitHub.
+
+At minimum, configure:
+
+```text
+NODE_ENV=production
+ELARA_PANEL_MODE=true
+ELARA_AUTO_START=true
+REDIS_URL=the-private-redis-url-from-your-heroku-addon
+```
+
+After enabling durable storage, keep exactly one bot dyno during migration, deploy, confirm the existing `nexstore/pairing/` directory is restored before startup, and test `/restart` on one pair. If the dyno was already replaced and the pairing files are gone, Redis cannot reconstruct them unless they were previously synchronized there; the affected WhatsApp numbers must be paired again.
+
 Heroku free or sleeping-style plans can delay the first request and are not suitable for guaranteed 24/7 WhatsApp availability. Use an always-on paid dyno or another persistent host for continuous operation, and monitor with `heroku logs --tail`. Manus provides managed hosting with custom domains as an alternative, but Heroku remains supported as an explicit deployment target through the included files.
 
 ## Render and Heroku-style workers

@@ -227,3 +227,8 @@
 
 - [x] Replace deprecated Heroku-22 stack metadata with Heroku-24 and update deployment guidance.
 - [x] Validate the one-click Heroku template after the stack change and push directly to main.
+
+- [x] Audit WhatsApp auth/session directories and determine whether Redis can safely persist the current Baileys credential files.
+- [x] Document a Heroku-safe durable-storage option and required Redis or object-storage variables without committing secrets.
+- [x] Re-audit all WhatsApp download commands, fix remaining provider or payload failures, and extend regression tests.
+- [ ] Validate the combined persistence/download changes and push directly to origin/main.
